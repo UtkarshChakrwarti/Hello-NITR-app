@@ -1,11 +1,19 @@
 name: hello_nitr
-description: "A new Flutter project."
+description: "A contact sharing app for NIT Rourkela official use."
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
 
-version: 1.0.0+1
+version: 2.0.0 
+# The version number should follow the semantic versioning format,
+# which consists of three numbers separated by dots (major.minor.patch), 
+# and an optional build number separated by a plus sign (+).
+# Major version number should be incremented for incompatible changes.
+# Minor version number should be incremented for backward-compatible changes.
+# Patch version number should be incremented for backward-compatible bug fixes.
+# Build number should be incremented for backward-compatible changes in the build process (e.g. changing the build number format).
+
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -15,17 +23,22 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.6
+  url_launcher: ^6.3.0
+  flutter_local_notifications: ^17.1.2
+  permission_handler: ^11.3.1
+  provider: ^6.1.2
+  http: ^1.2.1
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-  flutter_launcher_icons: ^0.13.1 # For Launcher Icon
-
 
 flutter:
 
   uses-material-design: true
 
   assets:
-    - assets/images/logo_nitr.png
+    - assets/images/hello_nitr.png
+    - assets/images/error/error_illustration.png

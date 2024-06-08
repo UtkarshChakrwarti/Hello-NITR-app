@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/app.dart';
-import 'package:hello_nitr/core/services/notifications_service.dart';
-import 'package:hello_nitr/core/services/permissions_service.dart';
+import 'package:hello_nitr/core/services/notifications/notifications_service.dart';
+import 'package:hello_nitr/core/services/permissions/permissions_service.dart';
 
 
 void main() async {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:hello_nitr/core/custom_error/custom_error.dart';
-import 'package:hello_nitr/core/services/notifications_service.dart';
+import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
+import 'package:hello_nitr/core/services/notifications/notifications_service.dart';
 import 'package:hello_nitr/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import 'package:hello_nitr/providers/sample_provider.dart';

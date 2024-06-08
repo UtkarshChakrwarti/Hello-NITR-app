@@ -1,6 +1,6 @@
 class AppConstants {
   // Security key for encryption
-  static const String securityKey = "secret_key"; // Key for encryption
+  static const String securityKey = "wW6BOreU82Aab4V"; // Key for encryption
 
   // API URLs (example, update with real URLs)
   static const String baseUrl = 'https://nitrkl.ac.in/WebApi';
@@ -8,7 +8,7 @@ class AppConstants {
   // For checking Update App using Play Store URL
   static const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.example.hellonitr&hl=en&gl=US';
 
-  //CAT URL
+  //CAT (Centre for Automation Cell) URL
   static const String catUrl = 'https://www.nitrkl.ac.in/CAT#:~:text=The%20Centre%20for%20Automation%20Technology,%2C%20and%20non-academic%20processes.';
 
   // Use this flag to switch between mock and real API services

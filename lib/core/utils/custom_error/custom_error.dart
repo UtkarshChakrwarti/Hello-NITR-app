@@ -24,7 +24,7 @@ class CustomError extends StatelessWidget {
             Text(
               kDebugMode
                   ? errorDetails.summary.toString()
-                  : 'Oups! Something went wrong!',
+                  : 'Oops! Something went wrong!',
               textAlign: TextAlign.center,
               style: const TextStyle(
                   color: kDebugMode ? Colors.red : Colors.black,

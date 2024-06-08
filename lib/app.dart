@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
 import 'package:hello_nitr/core/services/notifications/notifications_service.dart';
 import 'package:hello_nitr/routes/app_routes.dart';
 import 'package:provider/provider.dart';
-import 'package:hello_nitr/providers/sample_provider.dart';
+
 
 class MyApp extends StatelessWidget {
   final NotificationService notificationService;
@@ -15,8 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-            create: (_) => SampleProvider()), // Add your provider here
+        ChangeNotifierProvider(create: (_) => LoginProvider()),
+        //ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         builder: (BuildContext context, Widget? widget) {
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Hello NITR',
         theme: _buildAppTheme(),
-        initialRoute: '/error',
+        initialRoute: '/',
         routes: appRoutes,
       ),
     );

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
+import 'package:hello_nitr/screens/contacts/update/contacts_update_screen.dart';
+import 'package:hello_nitr/screens/home/home_screen.dart';
 import 'package:hello_nitr/screens/login/login_screen.dart';
 import 'package:hello_nitr/screens/otp/otp_verification_screen.dart';
+import 'package:hello_nitr/screens/pin/create/pin_creation_screen.dart';
 import 'package:hello_nitr/screens/sim/sim_selection_screen.dart';
 import 'package:hello_nitr/screens/splash/splash_screen.dart';
 
@@ -15,7 +18,17 @@ final Map<String, WidgetBuilder> appRoutes = {
   //Sim Selection Screen
   '/simSelection': (context) => SimSelectionScreen(),
 
+  //OTP Verification Screen
   '/otp': (context) => const OtpVerificationScreen(mobileNumber: ''),
+
+  //Contacts Update Screen
+  '/contactsUpdate': (context) => ContactsUpdateScreen(),
+
+  //Pin Creation Screen
+  '/pinCreation': (context) => PinCreationScreen(),
+
+  //Home Screen
+  '/home': (context) => HomeScreen(),
 
   //Custom error page
   '/error': (context) => CustomError(

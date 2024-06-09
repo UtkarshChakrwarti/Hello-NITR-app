@@ -3,6 +3,7 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'dart:async';
 import 'package:hello_nitr/controllers/otp_verification_controller.dart';
+import 'package:hello_nitr/screens/contacts/update/contacts_update_screen.dart';
 import 'package:hello_nitr/screens/otp/widgets/otp_input.dart';
 import 'package:hello_nitr/screens/otp/widgets/resend_button.dart';
 import 'package:hello_nitr/screens/otp/widgets/verify_button.dart';
@@ -67,7 +68,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     try {
       bool isSuccess = await _otpVerificationController.verifyOtp(_enteredOtp, _actualOtp);
       if (isSuccess) {
-        // Navigate to ContactsLoadScreen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ContactsUpdateScreen()),
+        );
       } else {
         _showErrorDialog('Invalid OTP');
       }
@@ -107,7 +111,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   Text('Confirmation', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
                 ],
               ),
-              content: Text('Are you sure you want to start again?', style: const TextStyle(fontSize: 16)),
+              content: const Text('Are you sure you want to start again?', style: TextStyle(fontSize: 16)),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),

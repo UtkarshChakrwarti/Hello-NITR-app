@@ -6,83 +6,106 @@ class PinInputField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final FocusNode focusNode;
+  final bool pinVisible;
+  final VoidCallback toggleVisibility;
   final ValueChanged<String>? onChanged;
 
-  const PinInputField({super.key, 
+  const PinInputField({
+    Key? key,
     required this.label,
     required this.controller,
     required this.focusNode,
+    required this.pinVisible,
+    required this.toggleVisibility,
     this.onChanged,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: FontWeight.w600,
             color: theme.primaryColor,
           ),
         ),
-        const SizedBox(height: 12),
-        Pinput(
-          length: 4,
-          controller: controller,
-          focusNode: focusNode,
-          autofocus: label == 'Create PIN',
-          cursor:
-              Container(width: 2, height: 40, color: AppColors.primaryColor),
-          defaultPinTheme: PinTheme(
-            width: 50,
-            height: 50,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: AppColors.primaryColor.withOpacity(0.3), width: 2),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: Pinput(
+                length: 4,
+                controller: controller,
+                focusNode: focusNode,
+                autofocus: true,
+                obscureText: !pinVisible,
+                cursor: Container(
+                  width: 2,
+                  height: 40,
+                  color: AppColors.primaryColor,
+                ),
+                defaultPinTheme: PinTheme(
+                  width: 50,
+                  height: 50,
+                  textStyle: const TextStyle(
+                    fontSize: 22,
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.primaryColor.withOpacity(0.3),
+                    ),
+                  ),
+                ),
+                focusedPinTheme: PinTheme(
+                  width: 50,
+                  height: 50,
+                  textStyle: const TextStyle(
+                    fontSize: 22,
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.primaryColor),
+                  ),
+                ),
+                submittedPinTheme: PinTheme(
+                  width: 50,
+                  height: 50,
+                  textStyle: const TextStyle(
+                    fontSize: 22,
+                    color: AppColors.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.primaryColor.withOpacity(0.3),
+                    ),
+                  ),
+                ),
+                onChanged: onChanged,
               ),
             ),
-          ),
-          focusedPinTheme: const PinTheme(
-            width: 50,
-            height: 50,
-            textStyle: TextStyle(
-              fontSize: 22,
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(color: AppColors.primaryColor, width: 2),
+            IconButton(
+              icon: Icon(
+                pinVisible
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                color: AppColors.primaryColor,
               ),
+              onPressed: toggleVisibility,
             ),
-          ),
-          submittedPinTheme: PinTheme(
-            width: 50,
-            height: 50,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              color: AppColors.primaryColor,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                    color: AppColors.primaryColor.withOpacity(0.3), width: 2),
-              ),
-            ),
-          ),
-          onChanged: onChanged,
+          ],
         ),
       ],
     );

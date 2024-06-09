@@ -6,8 +6,10 @@ import 'package:logging/logging.dart';
 
 class ContactsUpdateController {
   final Logger _logger = Logger('ContactsUpdateController');
-  final StreamController<double> _progressController = StreamController<double>.broadcast();
-  final StreamController<String> _statusController = StreamController<String>.broadcast();
+  final StreamController<double> _progressController =
+      StreamController<double>.broadcast();
+  final StreamController<String> _statusController =
+      StreamController<String>.broadcast();
   final _apiService = ApiService();
   int totalContacts = 0;
 
@@ -34,17 +36,18 @@ class ContactsUpdateController {
       // Step 3: Update the contacts in the local database with progress updates
       for (int i = 0; i < totalContacts; i++) {
         await LocalStorageService.saveUser(serverUsers[i]);
-        _logger.info('Updated contact: ${serverUsers[i].firstName} ${serverUsers[i].lastName}');
+        _logger.info(
+            'Updated contact: ${serverUsers[i].firstName} ${serverUsers[i].lastName}');
         _progressController.add((i + 1) / totalContacts);
       }
 
-      _statusController.add('Contacts Updated Successfully!');
       _logger.info('Contacts updated successfully');
       _progressController.close();
       _statusController.close();
     } catch (e) {
       _logger.severe('Error updating contacts: $e');
-      _statusController.addError('An error occurred while updating contacts. Please try again.');
+      _statusController.addError(
+          'An error occurred while updating contacts. Please try again.');
       _progressController.close();
       _statusController.close();
     }

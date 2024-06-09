@@ -17,6 +17,9 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   final TextEditingController _confirmPinController = TextEditingController();
   final FocusNode _pinFocusNode = FocusNode();
   final FocusNode _confirmPinFocusNode = FocusNode();
+  bool _pinVisible = false;
+  bool _confirmPinVisible = false;
+  bool _pinsMatch = false;
 
   @override
   void initState() {
@@ -27,8 +30,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    final shouldExit =
-        await DialogsAndPrompts.showExitConfirmationDialog(context);
+    final shouldExit = await DialogsAndPrompts.showExitConfirmationDialog(context);
     if (shouldExit != null && shouldExit) {
       await _logoutAndNavigateToLogin();
     }
@@ -36,9 +38,11 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   }
 
   void _onSubmit() {
-    if (_pinController.text.length == 4 &&
-        _confirmPinController.text.length == 4) {
-      if (_pinController.text == _confirmPinController.text) {
+    if (_pinController.text.length == 4 && _confirmPinController.text.length == 4) {
+      setState(() {
+        _pinsMatch = _pinController.text == _confirmPinController.text;
+      });
+      if (_pinsMatch) {
         try {
           _pinCreationController.savePin(_pinController.text).then((_) {
             Navigator.pushReplacementNamed(context, '/home');
@@ -47,8 +51,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
           DialogsAndPrompts.showErrorDialog('Failed to save PIN.', context);
         }
       } else {
-        DialogsAndPrompts.showErrorDialog(
-            'PINs do not match. Please try again.', context);
+        DialogsAndPrompts.showErrorDialog('PINs do not match. Please try again.', context);
         setState(() {
           _pinController.clear();
           _confirmPinController.clear();
@@ -56,8 +59,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
         });
       }
     } else {
-      DialogsAndPrompts.showErrorDialog(
-          'Please enter a 4-digit PIN in both fields.', context);
+      DialogsAndPrompts.showErrorDialog('Please enter a 4-digit PIN in both fields.', context);
     }
   }
 
@@ -69,10 +71,28 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
     }
   }
 
+  void _togglePinVisibility() {
+    setState(() {
+      _pinVisible = !_pinVisible;
+    });
+  }
+
+  void _toggleConfirmPinVisibility() {
+    setState(() {
+      _confirmPinVisible = !_confirmPinVisible;
+    });
+  }
+
   void _onPinChanged(String pin) {
-    if (pin.length == 4) {
-      FocusScope.of(context).requestFocus(_confirmPinFocusNode);
-    }
+    setState(() {
+      _pinsMatch = _pinController.text == _confirmPinController.text;
+    });
+  }
+
+  void _onConfirmPinChanged(String pin) {
+    setState(() {
+      _pinsMatch = _pinController.text == _confirmPinController.text;
+    });
   }
 
   @override
@@ -102,34 +122,65 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                Text(
+                  'To set up your PIN create a 4 digit code then confirm it below',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
+                ),
                 const SizedBox(height: 50),
                 PinInputField(
-                  label: 'Create PIN',
+                  label: 'PIN CODE',
                   controller: _pinController,
                   focusNode: _pinFocusNode,
+                  pinVisible: _pinVisible,
+                  toggleVisibility: _togglePinVisibility,
                   onChanged: _onPinChanged,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
                 PinInputField(
-                  label: 'Re-Enter PIN',
+                  label: 'CONFIRM YOUR PIN CODE',
                   controller: _confirmPinController,
                   focusNode: _confirmPinFocusNode,
+                  pinVisible: _confirmPinVisible,
+                  toggleVisibility: _toggleConfirmPinVisibility,
+                  onChanged: _onConfirmPinChanged,
                 ),
-                const SizedBox(height: 60),
-                Center(
+                if (_pinsMatch)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.check_circle, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Your PIN codes are the same',
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 25),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                     onPressed: _onSubmit,
-                    child: const Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
+                    child: const Text(
+                      'CONTINUE',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),

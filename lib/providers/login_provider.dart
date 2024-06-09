@@ -10,67 +10,80 @@ class LoginProvider with ChangeNotifier {
   final ApiService _apiService = ApiService();
   bool isLoading = false;
   bool isAuthenticated = false;
+  bool isDeviceVerified = false;
+
   final Logger _logger = Logger('LoginProvider');
 
-  /// Logs in the user with the provided [userId] and [password].
-  /// Returns:
-  /// - 1 on successful login,
-  /// - 2 on failure,
-  /// - 3 if the user is already logged in on another device.
-  Future<int?> login(String userId, String password) async {
-    _setLoading(true);
+  Future<int> login(
+      String userId, String password, BuildContext context) async {
+    isLoading = true;
     _logger.info('Attempting login for user: $userId');
 
     try {
-      // Encrypt the password before sending it to the API
       String encryptedPassword = EncryptionFunction().encryptPassword(password);
-      LoginResponse response = await _apiService.login(userId, encryptedPassword);
+      LoginResponse response =
+          await _apiService.login(userId, encryptedPassword);
+      final String udid = await DeviceUtil().getDeviceID();
 
       if (response.loginSuccess) {
         _logger.info('Login successful for user: $userId');
 
-        // Get Device ID
-        String udid = await DeviceUtil().getDeviceID();
-        _logger.info('Device ID obtained: $udid');
-
-        // Check if device ID matches with login response device ID
-        if (response.deviceIMEI != null && response.deviceIMEI!.isNotEmpty && response.deviceIMEI != udid) {
-          _handleAuthFailure('Device ID does not match. Please contact support for assistance.');
-          return 3;
-        }
-
-        // Check if deviceID is null or empty and update it if necessary otherwise save login response
-        if (response.deviceIMEI == null || response.deviceIMEI!.isEmpty) {
-          bool? isSuccess = await _apiService.updateDeviceId(response.empCode, udid);
+        // Fresh Login Attempt
+        if (response.loggedIn == false || response.loggedIn == null) {
+          _logger.info('Fresh Login Attempt');
+          bool? isSuccess =
+              await _apiService.updateDeviceId(response.empCode, udid);
           if (isSuccess == false) {
-            _handleAuthFailure('Failed to update device ID');
-            return 2;
-          } 
+            _logger.info('Failed to update device ID');
+            return 2; // Device ID update failed
+          } else {
+            _logger.info('Device Registered Successfully');
+            isDeviceVerified = true;
+          }
+        }
+        // Already Logged in on Another Device
+        else {
+          _logger.info(
+              'User already logged in on another device: Check if device is same as the one in the response');
+          if (response.deviceIMEI != udid) {
+            _logger.info(
+                'Device ID does not match. Please contact support for assistance.');
+            isDeviceVerified = false;
+            return 3; // Device ID mismatch
+          } else {
+            _logger.info('Device is same and Verified Successfully');
+            isDeviceVerified = true;
+          }
         }
 
-        try {
-          await LocalStorageService.saveLoginResponse(response);
-          isAuthenticated = true;
-          _setLoading(false);
-          _logger.info('Login response saved and user authenticated');
-          return 1;
-        } catch (e) {
-          _handleAuthFailure('Failed to save login response: $e');
-          return 2;
+        if (isDeviceVerified) {
+          try {
+            await LocalStorageService.saveLoginResponse(response);
+            isAuthenticated = true;
+            isLoading = false;
+            _logger.info('Login response saved and user authenticated');
+            return 1; // Login successful
+          } catch (e) {
+            _logger.info('Failed to save login response: $e');
+            return 4; // Failed to save login response
+          }
+        } else {
+          _logger.info('Login failed: Device ID does not match');
+          return 5; // Device verification failed
         }
       } else {
-        _handleAuthFailure('Login failed: ${response.message}');
-        return 2;
+        _logger.info('Login failed: Invalid credentials');
+        return 6; // Login failed
       }
     } catch (e) {
-      _handleAuthFailure('Login failed: $e');
-      return 2;
+      _logger.severe('Login failed: $e');
+      return 0; // Exception occurred
     } finally {
-      _setLoading(false);
+      isLoading = false;
+      notifyListeners();
     }
   }
 
-  /// Logs out the user and navigates to the login screen.
   Future<void> logout(BuildContext context) async {
     _logger.info('Attempting to logout user');
     try {
@@ -81,17 +94,5 @@ class LoginProvider with ChangeNotifier {
     } catch (e) {
       _logger.severe("Logout failed: $e");
     }
-  }
-
-  /// Sets the loading state and notifies listeners.
-  void _setLoading(bool value) {
-    isLoading = value;
-    notifyListeners();
-  }
-
-  /// Handles authentication failure by logging the [message] and updating the state.
-  void _handleAuthFailure(String message) {
-    _logger.severe(message);
-    isAuthenticated = false;
   }
 }

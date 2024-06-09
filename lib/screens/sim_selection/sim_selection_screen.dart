@@ -3,10 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/models/login.dart';
+import 'package:hello_nitr/screens/sim_selection/widgets/error_dialog.dart';
+import 'package:hello_nitr/screens/sim_selection/widgets/loading_indicator.dart';
+import 'package:hello_nitr/screens/sim_selection/widgets/no_sim_card_widget.dart';
+import 'package:hello_nitr/screens/sim_selection/widgets/sim_card_options.dart';
 import 'package:simnumber/siminfo.dart';
 import 'package:simnumber/sim_number.dart';
 import 'package:hello_nitr/controllers/sim_selection_controller.dart';
-import 'package:flutter/cupertino.dart';
+
 
 class SimSelectionScreen extends StatefulWidget {
   @override
@@ -39,9 +43,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
       simInfo = await _simSelectionController.getAvailableSimCards();
       setState(() {
         _isLoading = false;
-        if (simInfo.cards.isEmpty ||
-            simInfo.cards.first.phoneNumber == null ||
-            simInfo.cards.first.phoneNumber!.isEmpty) {
+        if (simInfo.cards.isEmpty || simInfo.cards.first.phoneNumber == null || simInfo.cards.first.phoneNumber!.isEmpty) {
           // Handle the case where no SIM card or phone number is available
         } else {
           _selectedSim = simInfo.cards.first.phoneNumber; // Auto-select the first SIM card
@@ -69,7 +71,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? LoadingIndicator()
           : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -82,54 +84,31 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                simInfo.cards.isEmpty ||
-                        simInfo.cards.first.phoneNumber == null ||
-                        simInfo.cards.first.phoneNumber!.isEmpty
-                    ? _buildNoSimCardWidget()
-                    : _buildSimCardOptions(),
+                simInfo.cards.isEmpty || simInfo.cards.first.phoneNumber == null || simInfo.cards.first.phoneNumber!.isEmpty
+                    ? NoSimCardWidget()
+                    : SimCardOptions(
+                        simInfo: simInfo,
+                        selectedSim: _selectedSim,
+                        onSimSelected: (sim) {
+                          setState(() {
+                            _selectedSim = sim.phoneNumber;
+                          });
+                        },
+                      ),
                 SizedBox(height: 20),
                 Container(
                   width: 140,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: _selectedSim == null
-                        ? null
-                        : () async {
-                            try {
-                              if (_selectedSim != null) {
-                                LoginResponse? currentUser =
-                                    await LocalStorageService.getLoginResponse();
-
-                                if (_simSelectionController.validateSimSelection(
-                                    _selectedSim!, currentUser?.mobile ?? "")) {
-                                  // Navigator.push(
-                                  //   context,
-                                    // MaterialPageRoute(
-                                    //   builder: (context) =>
-                                    //       OtpVerificationScreen(
-                                    //     mobileNumber: _selectedSim!,
-                                    //   ),
-                                    // ),
-                                  // );
-                                } else {
-                                  _showErrorDialog(
-                                      'Selected SIM card does not match with the registered number.');
-                                }
-                              }
-                            } catch (e) {
-                              _showErrorDialog('An error occurred: ${e.toString()}');
-                            }
-                          },
+                    onPressed: _selectedSim == null ? null : _onNextButtonPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedSim == null
-                          ? Colors.grey
-                          : AppColors.primaryColor,
+                      backgroundColor: _selectedSim == null ? Colors.grey : AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                       elevation: 5,
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
@@ -157,123 +136,27 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
     );
   }
 
-  Widget _buildSimCardOptions() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: simInfo.cards.map((sim) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              _selectedSim = sim.phoneNumber;
-            });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: _selectedSim == sim.phoneNumber
-                  ? AppColors.primaryColor.withOpacity(0.1)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.primaryColor),
-            ),
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Icon(Icons.sim_card, color: AppColors.primaryColor, size: 40),
-                SizedBox(height: 10),
-                Text(
-                  'SIM ${sim.slotIndex! + 1}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  sim.phoneNumber ?? '',
-                  style: TextStyle(fontSize: 14, color: AppColors.primaryColor),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  sim.carrierName ?? '',
-                  style: TextStyle(fontSize: 10, color: AppColors.primaryColor),
-                ),
-              ],
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
+  Future<void> _onNextButtonPressed() async {
+    try {
+      if (_selectedSim != null) {
+        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
 
-  Widget _buildNoSimCardWidget() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.primaryColor),
-      ),
-      padding: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Icon(Icons.sim_card_alert, color: AppColors.primaryColor, size: 50),
-          SizedBox(height: 10),
-          Text(
-            "SIM card not found",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
+        if (_simSelectionController.validateSimSelection(_selectedSim!, currentUser?.mobile ?? "")) {
+          // Navigate to OTP Verification Screen
+        } else {
+          _showErrorDialog('Selected SIM card does not match with the registered number.');
+        }
+      }
+    } catch (e) {
+      _showErrorDialog('An error occurred: ${e.toString()}');
+    }
   }
 
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.error, color: AppColors.primaryColor),
-              SizedBox(width: 10),
-              Text(
-                'Error',
-                style: TextStyle(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            message,
-            style: TextStyle(
-              fontSize: 16,
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'OK',
-                style: TextStyle(
-                  color: AppColors.primaryColor,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        return ErrorDialog(message: message);
       },
     );
   }

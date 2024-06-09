@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hello_nitr/core/utils/dialog_helper.dart';
+import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
+import 'package:hello_nitr/screens/sim_selection/sim_selection_screen.dart';
 
 class LoginHelper {
   late TextEditingController usernameController;
@@ -58,11 +59,11 @@ class LoginHelper {
   }
 
   void showErrorDialog(String message, BuildContext context) {
-    DialogHelper.showErrorDialog(message, context);
+    DialogsAndPrompts.showErrorDialog(message, context);
   }
 
   Future<bool?> showExitConfirmationDialog(BuildContext context) {
-    return DialogHelper.showExitConfirmationDialog(context);
+    return DialogsAndPrompts.showExitConfirmationDialog(context);
   }
 
   Future<void> launchURL(String url, BuildContext context) async {
@@ -76,8 +77,7 @@ class LoginHelper {
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       builder: (BuildContext context) {
-        // return SimSelectionScreen();
-        return const SizedBox();
+        return SimSelectionScreen();
       },
     );
   }

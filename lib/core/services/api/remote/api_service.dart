@@ -91,4 +91,18 @@ class ApiService {
     }
     return false;
   }
+
+  Future<bool?> updateDeviceId(String? empCode, String udid) async {
+      // Implement the updateDeviceIMEI API here
+        final Uri url = Uri.parse('$baseUrl/updatelogin?userid=$empCode&deviceid=$udid');
+        final response = await _sendRequest('POST', url);
+  
+        if (response.statusCode == 200) {
+          _logger.info(await response.stream.bytesToString());
+          return true;
+        } else {
+          _logger.severe(response.reasonPhrase);
+          return false;
+        }
+    }
 }

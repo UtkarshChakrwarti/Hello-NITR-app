@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 
-class DialogHelper {
+class DialogsAndPrompts {
   static void showErrorDialog(String message, BuildContext context) {
     showDialog(
       context: context,

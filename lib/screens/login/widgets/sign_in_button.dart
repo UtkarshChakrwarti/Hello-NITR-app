@@ -31,11 +31,14 @@ class SignInButton extends StatelessWidget {
                             final isSuccess = await loginController.login(
                                 loginHelper.usernameController.text,
                                 loginHelper.passwordController.text);
-                            if (isSuccess) {
+                            if (isSuccess == 1) {
                               loginHelper.showSimSelectionModal(context);
-                            } else {
+                            } else if (isSuccess == 2) {
                               loginHelper.showErrorDialog(
-                                  'Invalid username or password', context);
+                                  'Invalid Credentials', context);
+                            }else if (isSuccess == 3) {
+                              loginHelper.showErrorDialog(
+                                  'Device ID does not match. Please contact support for assistance', context);
                             }
                           } catch (e, stacktrace) {
                             // Log the error and stack trace to a monitoring service or console

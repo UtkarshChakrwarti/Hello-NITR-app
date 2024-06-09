@@ -34,6 +34,8 @@ dependencies:
   sqflite: ^2.3.3+1
   flutter_secure_storage: ^9.2.2
   path: ^1.9.0
+  simnumber: ^0.0.12
+  flutter_udid: ^3.0.0
 
 dev_dependencies:
   flutter_test:

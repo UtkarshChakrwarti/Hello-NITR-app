@@ -85,13 +85,17 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
 
   void _onPinChanged(String pin) {
     setState(() {
-      _pinsMatch = _pinController.text == _confirmPinController.text;
+      _pinsMatch = _pinController.text.isNotEmpty &&
+                   _confirmPinController.text.isNotEmpty &&
+                   _pinController.text == _confirmPinController.text;
     });
   }
 
   void _onConfirmPinChanged(String pin) {
     setState(() {
-      _pinsMatch = _pinController.text == _confirmPinController.text;
+      _pinsMatch = _pinController.text.isNotEmpty &&
+                   _confirmPinController.text.isNotEmpty &&
+                   _pinController.text == _confirmPinController.text;
     });
   }
 
@@ -149,13 +153,13 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                   onChanged: _onConfirmPinChanged,
                 ),
                 if (_pinsMatch)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.check_circle, color: AppColors.primaryColor),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           'Your PIN codes are the same',
                           style: TextStyle(

@@ -45,6 +45,8 @@ class PinInputField extends StatelessWidget {
                 focusNode: focusNode,
                 autofocus: true,
                 obscureText: !pinVisible,
+                showCursor: true,
+                autofillHints: const [], // Disable autofill
                 cursor: Container(
                   width: 2,
                   height: 40,

@@ -12,7 +12,7 @@ class ErrorDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      title: Row(
+      title: const Row(
         children: [
           Icon(Icons.error, color: AppColors.primaryColor),
           SizedBox(width: 10),
@@ -27,13 +27,13 @@ class ErrorDialog extends StatelessWidget {
       ),
       content: Text(
         message,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
         ),
       ),
       actions: <Widget>[
         TextButton(
-          child: Text(
+          child: const Text(
             'OK',
             style: TextStyle(
               color: AppColors.primaryColor,

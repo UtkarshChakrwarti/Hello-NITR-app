@@ -11,7 +11,7 @@ class NoSimCardWidget extends StatelessWidget {
         border: Border.all(color: AppColors.primaryColor),
       ),
       padding: EdgeInsets.all(16),
-      child: Column(
+      child: const Column(
         children: [
           Icon(Icons.sim_card_alert, color: AppColors.primaryColor, size: 50),
           SizedBox(height: 10),

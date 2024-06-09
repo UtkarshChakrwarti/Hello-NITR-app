@@ -14,7 +14,7 @@ class ResendButton extends StatelessWidget {
       onPressed: isResendButtonActive ? onResend : null,
       child: Text(
         isResendButtonActive ? "Resend OTP" : "Resend OTP in $remainingSeconds seconds",
-        style: TextStyle(
+        style: const TextStyle(
           color: AppColors.primaryColor,
           decoration: TextDecoration.underline,
           fontSize: 16,

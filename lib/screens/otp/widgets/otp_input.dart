@@ -14,7 +14,7 @@ class OtpInput extends StatelessWidget {
       autofocus: true,
       cursor: Container(width: 2, height: 40, color: AppColors.primaryColor),
       onChanged: onChanged,
-      defaultPinTheme: PinTheme(
+      defaultPinTheme: const PinTheme(
         width: 40,
         height: 58,
         textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
@@ -22,7 +22,7 @@ class OtpInput extends StatelessWidget {
           border: Border(bottom: BorderSide(color: AppColors.primaryColor, width: 2)),
         ),
       ),
-      focusedPinTheme: PinTheme(
+      focusedPinTheme: const PinTheme(
         width: 40,
         height: 58,
         textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
@@ -30,7 +30,7 @@ class OtpInput extends StatelessWidget {
           border: Border(bottom: BorderSide(color: AppColors.primaryColor, width: 2)),
         ),
       ),
-      submittedPinTheme: PinTheme(
+      submittedPinTheme: const PinTheme(
         width: 40,
         height: 58,
         textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),

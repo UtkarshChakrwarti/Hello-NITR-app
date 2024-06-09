@@ -31,21 +31,21 @@ class SimCardOptions extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   'SIM ${sim.slotIndex! + 1}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: AppColors.primaryColor,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   sim.phoneNumber ?? '',
-                  style: TextStyle(fontSize: 14, color: AppColors.primaryColor),
+                  style: const TextStyle(fontSize: 14, color: AppColors.primaryColor),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   sim.carrierName ?? '',
-                  style: TextStyle(fontSize: 10, color: AppColors.primaryColor),
+                  style: const TextStyle(fontSize: 10, color: AppColors.primaryColor),
                 ),
               ],
             ),

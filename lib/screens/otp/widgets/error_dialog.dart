@@ -11,10 +11,10 @@ class ErrorDialog extends StatelessWidget {
     return AlertDialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      title: Row(
+      title: const Row(
         children: [
           Icon(Icons.error, color: AppColors.primaryColor),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Text('Error', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
         ],
       ),

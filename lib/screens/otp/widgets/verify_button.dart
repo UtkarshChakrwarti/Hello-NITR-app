@@ -16,12 +16,12 @@ class VerifyButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('VERIFY', style: TextStyle(color: Colors.white, fontSize: 18)),
-          const SizedBox(width: 10),
-          const Icon(Icons.check, color: Colors.white),
+          SizedBox(width: 10),
+          Icon(Icons.check, color: Colors.white),
         ],
       ),
     );

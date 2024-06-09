@@ -100,10 +100,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             return AlertDialog(
               backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-              title: Row(
+              title: const Row(
                 children: [
                   Icon(Icons.info, color: AppColors.primaryColor),
-                  const SizedBox(width: 10),
+                  SizedBox(width: 10),
                   Text('Confirmation', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
                 ],
               ),
@@ -111,14 +111,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: Text('No', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+                  child: const Text('No', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
                 ),
                 TextButton(
                   onPressed: () async {
                     Navigator.of(context).pop(true);
                     await _logoutAndNavigateToLogin();
                   },
-                  child: Text('Yes', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+                  child: const Text('Yes', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
                 ),
               ],
             );
@@ -152,14 +152,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Verify Your Mobile Number!',
                                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primaryColor),
                                   ),
                                   const SizedBox(height: 20),
                                   Text(
                                     'We have sent an OTP to your mobile number ${widget.mobileNumber}',
-                                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                                    style: const TextStyle(fontSize: 16, color: Colors.black54),
                                     textAlign: TextAlign.center,
                                   ),
                                   const SizedBox(height: 40),
@@ -193,9 +193,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               ),
                             ),
                           ),
-                          Expanded(
+                          const Expanded(
                             flex: 1,
-                            child: const SizedBox.shrink(),
+                            child: SizedBox.shrink(),
                           ),
                         ],
                       ),

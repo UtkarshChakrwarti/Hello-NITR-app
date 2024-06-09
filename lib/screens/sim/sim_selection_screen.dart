@@ -69,7 +69,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -78,7 +78,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
           : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Select the number verified with NITRis',
                   style: TextStyle(
                     fontSize: 17,
@@ -86,7 +86,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 simInfo.cards.isEmpty ||
                         simInfo.cards.first.phoneNumber == null ||
                         simInfo.cards.first.phoneNumber!.isEmpty
@@ -100,7 +100,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
                           });
                         },
                       ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
                   width: 140,
                   height: 50,

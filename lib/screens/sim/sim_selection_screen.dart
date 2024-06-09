@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/models/login.dart';
+import 'package:hello_nitr/screens/otp/otp_verification_screen.dart';
 import 'package:hello_nitr/screens/sim/widgets/error_dialog.dart';
 import 'package:hello_nitr/screens/sim/widgets/loading_indicator.dart';
 import 'package:hello_nitr/screens/sim/widgets/no_sim_card_widget.dart';
@@ -10,7 +11,6 @@ import 'package:hello_nitr/screens/sim/widgets/sim_card_options.dart';
 import 'package:simnumber/siminfo.dart';
 import 'package:simnumber/sim_number.dart';
 import 'package:hello_nitr/controllers/sim_selection_controller.dart';
-
 
 class SimSelectionScreen extends StatefulWidget {
   @override
@@ -43,10 +43,13 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
       simInfo = await _simSelectionController.getAvailableSimCards();
       setState(() {
         _isLoading = false;
-        if (simInfo.cards.isEmpty || simInfo.cards.first.phoneNumber == null || simInfo.cards.first.phoneNumber!.isEmpty) {
+        if (simInfo.cards.isEmpty ||
+            simInfo.cards.first.phoneNumber == null ||
+            simInfo.cards.first.phoneNumber!.isEmpty) {
           // Handle the case where no SIM card or phone number is available
         } else {
-          _selectedSim = simInfo.cards.first.phoneNumber; // Auto-select the first SIM card
+          _selectedSim =
+              simInfo.cards.first.phoneNumber; // Auto-select the first SIM card
         }
       });
     } on PlatformException catch (e) {
@@ -84,7 +87,9 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                simInfo.cards.isEmpty || simInfo.cards.first.phoneNumber == null || simInfo.cards.first.phoneNumber!.isEmpty
+                simInfo.cards.isEmpty ||
+                        simInfo.cards.first.phoneNumber == null ||
+                        simInfo.cards.first.phoneNumber!.isEmpty
                     ? NoSimCardWidget()
                     : SimCardOptions(
                         simInfo: simInfo,
@@ -100,9 +105,12 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
                   width: 140,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: _selectedSim == null ? null : _onNextButtonPressed,
+                    onPressed:
+                        _selectedSim == null ? null : _onNextButtonPressed,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedSim == null ? Colors.grey : AppColors.primaryColor,
+                      backgroundColor: _selectedSim == null
+                          ? Colors.grey
+                          : AppColors.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
@@ -139,12 +147,22 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
   Future<void> _onNextButtonPressed() async {
     try {
       if (_selectedSim != null) {
-        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
+        LoginResponse? currentUser =
+            await LocalStorageService.getLoginResponse();
 
-        if (_simSelectionController.validateSimSelection(_selectedSim!, currentUser?.mobile ?? "")) {
-          // Navigate to OTP Verification Screen
+        if (_simSelectionController.validateSimSelection(
+            _selectedSim!, currentUser?.mobile ?? "")) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtpVerificationScreen(
+                mobileNumber: _selectedSim!,
+              ),
+            ),
+          );
         } else {
-          _showErrorDialog('Selected SIM card does not match with the registered number.');
+          _showErrorDialog(
+              'Selected SIM card does not match with the registered number.');
         }
       }
     } catch (e) {

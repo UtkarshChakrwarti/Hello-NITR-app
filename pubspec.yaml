@@ -36,6 +36,7 @@ dependencies:
   path: ^1.9.0
   simnumber: ^0.0.12
   flutter_udid: ^3.0.0
+  pinput: ^5.0.0
 
 dev_dependencies:
   flutter_test:

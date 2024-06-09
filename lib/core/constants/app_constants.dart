@@ -20,5 +20,7 @@ class AppConstants {
 
   // Session keys
   static const String pinKey = 'pin_key'; // Key for user PIN
-  static const String currentLoggedInUserKey ='current_user_key'; // Key for current user data
+  static const String currentLoggedInUserKey ='current_user_key';
+
+  static int otpTimeOutSeconds = 30; // Key for current user data
 }

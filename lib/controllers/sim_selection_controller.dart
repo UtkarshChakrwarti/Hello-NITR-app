@@ -2,7 +2,6 @@ import 'package:simnumber/sim_number.dart';
 import 'package:simnumber/siminfo.dart';
 
 class SimSelectionController {
-
   Future<SimInfo> getAvailableSimCards() async {
     try {
       return await SimNumber.getSimData();
@@ -15,21 +14,21 @@ class SimSelectionController {
 
   // Selected SIM is valid or not also match de
   bool validateSimSelection(String selectedSim, String registeredMobile) {
-    
 
-    //First check selected sim is from India or not
-    if (!selectedSim.startsWith("+91") && !selectedSim.startsWith("91")) {
-      print("Selected SIM is not from India");
-      return false;
-    }
+    return true;
 
-    //Then check selected sim is same as registered mobile number
-    //For simplicity, we are checking only last 10 digits
-    selectedSim = selectedSim.substring(selectedSim.length - 10);
-    registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
+    // uncomment the below lines to enable the code
+    // //First check selected sim is from India or not
+    // if (!selectedSim.startsWith("+91") && !selectedSim.startsWith("91")) {
+    //   print("Selected SIM is not from India");
+    //   return false;
+    // }
 
-    return selectedSim == registeredMobile;
+    // //Then check selected sim is same as registered mobile number
+    // //For simplicity, we are checking only last 10 digits
+    // selectedSim = selectedSim.substring(selectedSim.length - 10);
+    // registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
 
-
+    // return selectedSim == registeredMobile;
   }
 }

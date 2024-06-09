@@ -149,17 +149,17 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                   onChanged: _onConfirmPinChanged,
                 ),
                 if (_pinsMatch)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.check_circle, color: Colors.green),
-                        const SizedBox(width: 8),
+                        Icon(Icons.check_circle, color: AppColors.primaryColor),
+                        SizedBox(width: 8),
                         Text(
                           'Your PIN codes are the same',
                           style: TextStyle(
-                            color: Colors.green,
+                            color: AppColors.primaryColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
+import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -36,25 +37,17 @@ class SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacementNamed(context, '/login');
       }
     } on PlatformException catch (e) {
-      _showErrorDialog('Platform error checking login status: ${e.message}');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (ctx) =>
+                CustomError(errorDetails: FlutterErrorDetails(exception: e))),
+      );
     } catch (e) {
-      _showErrorDialog('Unexpected error checking login status: $e');
+      Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (ctx) =>
+                CustomError(errorDetails: FlutterErrorDetails(exception: e))),
+      );
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 }

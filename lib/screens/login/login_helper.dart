@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
-import 'package:hello_nitr/screens/sim_selection/sim_selection_screen.dart';
+import 'package:hello_nitr/screens/sim/sim_selection_screen.dart';
 
 class LoginHelper {
   late TextEditingController usernameController;

@@ -24,5 +24,4 @@ class AppConstants {
 
   static const int otpTimeOutSeconds = 30; // OTP timeout in seconds
 
-  static const int apiTimeout = 120; // API timeout in seconds
 }

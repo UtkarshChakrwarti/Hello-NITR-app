@@ -99,7 +99,7 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
   Widget build(BuildContext context) {
     _logger.info('Building ContactsUpdateScreen');
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async => true,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(

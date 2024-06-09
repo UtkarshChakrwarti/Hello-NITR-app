@@ -8,6 +8,7 @@ import 'package:hello_nitr/screens/contacts/update/widgets/error_dialog.dart';
 import 'package:hello_nitr/screens/pin/create/pin_creation_screen.dart';
 import 'package:hello_nitr/controllers/contacts_update_controller.dart';
 import 'package:logging/logging.dart';
+import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
 
 class ContactsUpdateScreen extends StatefulWidget {
   @override
@@ -95,11 +96,16 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
     );
   }
 
+  Future<bool> _onWillPop() async {
+    final exitConfirmed = await DialogsAndPrompts.showExitConfirmationDialog(context);
+    return exitConfirmed ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     _logger.info('Building ContactsUpdateScreen');
     return WillPopScope(
-      onWillPop: () async => true,
+      onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(

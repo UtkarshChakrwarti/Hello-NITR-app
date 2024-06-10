@@ -7,6 +7,7 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:hello_nitr/screens/home/widgets/contact_list_widget.dart';
 import 'package:hello_nitr/screens/home/widgets/search_bar_widget.dart';
+import 'package:hello_nitr/screens/user/profile/user_profile_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -211,6 +212,13 @@ class _HomeScreenState extends State<HomeScreen> {
             iconTheme:
                 IconThemeData(color: AppColors.primaryColor, size: _iconSize),
           ),
+        ),
+        drawer: UserProfileScreen(
+          onSearchCriteriaSelected: () => _enableDepartmentSearch(homeProvider),
+          onFilterByEmployeeType: (employeeType) {
+            homeProvider.selectEmployeeType(employeeType);
+            Navigator.of(context).pop();
+          },
         ),
         body: homeProvider.isLoadingContacts && homeProvider.contacts.isEmpty
             ? Center(

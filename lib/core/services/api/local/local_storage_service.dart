@@ -318,6 +318,27 @@ class LocalStorageService {
     return currentUser != null ? convertLoginResponseToUser(currentUser) : null;
   }
 
+  // Get Total number of users in the database
+  static Future<int> getTotalUsers() async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) FROM ${AppConstants.userTable}');
+    return Sqflite.firstIntValue(result)!;
+  }
+
+  // get total number of users by employee type
+  static Future<int> getTotalUsersByEmployeeType(String employeeType) async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) FROM ${AppConstants.userTable} WHERE employeeType = ?', [employeeType]);
+    return Sqflite.firstIntValue(result)!;
+  }
+
+  // get total number of departments
+  static Future<int> getTotalDepartments() async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(DISTINCT departmentName) FROM ${AppConstants.userTable}');
+    return Sqflite.firstIntValue(result)!;
+  }
+
   // Convert a LoginResponse object to a User object
   static User convertLoginResponseToUser(LoginResponse loginResponse) {
     return User(
@@ -340,4 +361,5 @@ class LocalStorageService {
       photo: loginResponse.photo,
     );
   }
+
 }

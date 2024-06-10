@@ -51,6 +51,19 @@ class ApiService {
     }
   }
 
+  // De-Register the device from the server
+  Future<void> deRegisterDevice(String empCode) async {
+    final Uri url = Uri.parse('$baseUrl/resetlogin?userid=$empCode');
+    final response = await _sendRequest('POST', url);
+
+    if (response.statusCode == 200) {
+      _logger.info(await response.stream.bytesToString());
+    } else {
+      _logger.severe(response.reasonPhrase);
+    }
+  }
+
+
   Future<bool> checkForUpdate() async {
     // Remove this line and uncomment after uploading the app to the Play Store
     return Random().nextBool();

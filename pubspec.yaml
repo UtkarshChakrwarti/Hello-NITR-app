@@ -39,6 +39,7 @@ dependencies:
   pinput: ^5.0.0
   loading_animation_widget: ^1.2.1
   local_auth: ^2.2.0
+  font_awesome_flutter: ^10.7.0
 
 dev_dependencies:
   flutter_test:

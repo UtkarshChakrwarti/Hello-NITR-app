@@ -12,6 +12,8 @@ class HomeProvider extends ChangeNotifier {
   bool _isLoadingSearchContacts = false;
   bool _isSearchActive = false;
   bool _isFilterActive = false;
+  int? _selectedContactIndex;
+  bool _isMenuVisible = false;
 
   List<User> get contacts => _homeController.contacts;
   List<User> get searchContacts => _homeController.searchContacts;
@@ -24,7 +26,10 @@ class HomeProvider extends ChangeNotifier {
   bool get ascending => _homeController.ascending;
   bool get isSearchActive => _isSearchActive;
   bool get isFilterActive => _isFilterActive;
+  int? get selectedContactIndex => _selectedContactIndex;
+  bool get isMenuVisible => _isMenuVisible;
 
+  // Constructor
   HomeProvider() {
     fetchContacts();
     fetchDepartments();
@@ -35,6 +40,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
     await _homeController.fetchContacts();
     _isLoadingContacts = false;
+    _resetExpandedState();
     notifyListeners();
   }
 
@@ -78,6 +84,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
     await _homeController.fetchSearchResults();
     _isLoadingSearchContacts = false;
+    _resetExpandedState();
     notifyListeners();
   }
 
@@ -96,5 +103,20 @@ class HomeProvider extends ChangeNotifier {
 
   void logout(BuildContext context) {
     _loginController.logout(context);
+  }
+
+  void setSelectedContactIndex(int? index) {
+    _selectedContactIndex = index;
+    notifyListeners();
+  }
+
+  void toggleMenuVisibility(bool isVisible) {
+    _isMenuVisible = isVisible;
+    notifyListeners();
+  }
+
+  void _resetExpandedState() {
+    _selectedContactIndex = null;
+    _isMenuVisible = false;
   }
 }

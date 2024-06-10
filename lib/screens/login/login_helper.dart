@@ -67,7 +67,7 @@ class LoginHelper {
   }
 
   Future<void> launchURL(String url, BuildContext context) async {
-    await LinkLauncher.launchURL(url, context);
+    await LinkLauncher.launchURL(url);
   }
 
   void showSimSelectionModal(BuildContext context) {

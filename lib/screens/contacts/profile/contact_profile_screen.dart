@@ -1,10 +1,10 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:hello_nitr/core/utils/link_launcher.dart';
+import 'package:hello_nitr/screens/contacts/profile/widgets/additional_info.dart';
+import 'package:hello_nitr/screens/contacts/profile/widgets/contact_tile.dart';
+import 'package:hello_nitr/screens/contacts/profile/widgets/email_tile.dart';
+import 'package:hello_nitr/screens/contacts/profile/widgets/profile_header.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/models/user.dart';
 
 class ContactProfileScreen extends StatelessWidget {
@@ -19,8 +19,13 @@ Work: ${_prependPrefix(contact.workPhone) ?? 'N/A'}
 Residence: ${_prependPrefix(contact.residencePhone) ?? 'N/A'}
 Email: ${contact.email ?? 'N/A'}, NIT Rourkela
 ''';
-
-    Share.share(contactInfo, subject: "Contact Information");
+    try {
+      Share.share(contactInfo, subject: "Contact Information");
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to share contact: $e')),
+      );
+    }
   }
 
   bool _isValidBase64(String base64String) {
@@ -65,179 +70,36 @@ Email: ${contact.email ?? 'N/A'}, NIT Rourkela
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildProfileHeader(),
+              ProfileHeader(contact: contact, isValidBase64: _isValidBase64),
               Divider(),
-              _buildContactTile("Mobile", contact.mobile, true),
+              ContactTile(
+                  title: "Mobile", subtitle: contact.mobile, isMobile: true),
               if (contact.workPhone != null && contact.workPhone!.isNotEmpty)
-                _buildContactTile(
-                    "Work Number", _prependPrefix(contact.workPhone), false),
+                ContactTile(
+                    title: "Work Number",
+                    subtitle: _prependPrefix(contact.workPhone),
+                    isMobile: false),
               if (contact.residencePhone != null &&
                   contact.residencePhone!.isNotEmpty)
-                _buildContactTile(
-                    "Residence", _prependPrefix(contact.residencePhone), false),
+                ContactTile(
+                    title: "Residence",
+                    subtitle: _prependPrefix(contact.residencePhone),
+                    isMobile: false),
               Divider(),
-              _buildEmailTile("Personal Email", contact.personalEmail),
+              EmailTile(
+                  title: "Personal Email", subtitle: contact.personalEmail),
               if (contact.email != null && contact.email!.isNotEmpty)
-                _buildEmailTile("Work Email", contact.email!),
+                EmailTile(title: "Work Email", subtitle: contact.email!),
               Divider(),
               if (contact.roomNo != null && contact.roomNo!.isNotEmpty)
-                _buildAdditionalInfo("Cabin Number:", contact.roomNo!),
+                AdditionalInfoTile(
+                    label: "Cabin Number:", info: contact.roomNo!),
               if (contact.quarterNo != null && contact.quarterNo!.isNotEmpty)
-                _buildAdditionalInfo("Quarter Number:", "${contact.quarterNo}"),
+                AdditionalInfoTile(
+                    label: "Quarter Number:", info: contact.quarterNo!),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    String fullName =
-        '${contact.firstName} ${contact.middleName ?? ''} ${contact.lastName}';
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.primaryColor,
-              width: 2,
-            ),
-          ),
-          child: CircleAvatar(
-            radius: 40,
-            backgroundImage:
-                contact.photo != null && _isValidBase64(contact.photo!)
-                    ? MemoryImage(base64Decode(contact.photo!))
-                    : null,
-            child: contact.photo == null || !_isValidBase64(contact.photo!)
-                ? Text(
-                    "${contact.firstName![0]}",
-                    style: TextStyle(
-                      color: AppColors.primaryColor,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Roboto',
-                    ),
-                  )
-                : null,
-            backgroundColor: AppColors.secondaryColor,
-          ),
-        ),
-        SizedBox(width: 20),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                fullName,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                contact.designation ?? '',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              Text(
-                contact.departmentName ?? '',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactTile(String title, String? subtitle, bool isMobile) {
-    if (subtitle == null || subtitle.isEmpty) {
-      return SizedBox.shrink();
-    }
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 1.0),
-      title: Text(title, style: TextStyle(fontFamily: 'Roboto')),
-      subtitle: Text(subtitle, style: TextStyle(fontFamily: 'Roboto')),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            icon:
-                Icon(CupertinoIcons.phone_solid, color: AppColors.primaryColor),
-            onPressed: () => LinkLauncher.makeCall(subtitle),
-          ),
-          if (isMobile) ...[
-            SizedBox(width: 10),
-            IconButton(
-              icon: Icon(FontAwesomeIcons.whatsapp,
-                  color: AppColors.primaryColor),
-              onPressed: () => LinkLauncher.sendWpMsg(subtitle),
-            ),
-            SizedBox(width: 10),
-            IconButton(
-              icon: Icon(CupertinoIcons.chat_bubble_text_fill,
-                  color: AppColors.primaryColor),
-              onPressed: () => LinkLauncher.sendMsg(subtitle),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmailTile(String title, String? subtitle) {
-    if (subtitle == null || subtitle.isEmpty) {
-      return SizedBox.shrink();
-    }
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 1.0),
-      title: Text(title, style: TextStyle(fontFamily: 'Roboto')),
-      subtitle: Text(subtitle, style: TextStyle(fontFamily: 'Roboto')),
-      trailing: IconButton(
-        icon: Icon(CupertinoIcons.mail_solid, color: AppColors.primaryColor),
-        onPressed: () => LinkLauncher.sendEmail(subtitle),
-      ),
-    );
-  }
-
-  Widget _buildAdditionalInfo(String label, String info) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontFamily: 'Roboto',
-              ),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              info,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black,
-                fontFamily: 'Roboto',
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

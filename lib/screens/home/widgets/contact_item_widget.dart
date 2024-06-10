@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/models/user.dart';
+import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
 import 'contact_avatar_widget.dart';
 import 'expanded_menu_widget.dart';
 
@@ -52,14 +53,13 @@ class ContactItemWidget extends StatelessWidget {
                   LinkLauncher.makeCall(contact.mobile ?? '');
                   return false;
                 } else if (direction == DismissDirection.endToStart) {
-                  // Navigate to the contact profile screen
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) =>
-                  //         ContactProfileScreen(contact: contact),
-                  //   ),
-                  // );
+                  //Navigate to the contact profile screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ContactProfileScreen(contact),
+                    ),
+                  );
                   return false;
                 }
                 return false;

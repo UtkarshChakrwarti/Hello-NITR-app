@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
+import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
 import 'menu_button_widget.dart';
 
 class ExpandedMenuWidget extends StatelessWidget {
@@ -41,12 +42,12 @@ class ExpandedMenuWidget extends StatelessWidget {
             icon: CupertinoIcons.profile_circled,
             onPressed: () {
               // push to contact profile screen with contact details
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => ContactProfileScreen(contact),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ContactProfileScreen(contact),
+                ),
+              );
             },
           ),
         ],

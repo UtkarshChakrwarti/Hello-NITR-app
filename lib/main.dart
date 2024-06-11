@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/app.dart';
 import 'package:hello_nitr/core/services/notifications/notifications_service.dart';
@@ -14,8 +15,7 @@ void main() async {
   // Initialize the NotificationService
   NotificationService notificationService = NotificationService();
   await notificationService.initializeNotifications();
-  await notificationService
-      .requestNotificationPermissions(); // Request notification permissions
+  await notificationService.requestNotificationPermissions(); // Request notification permissions
 
   // Schedule the update notification
   notificationService.scheduleUpdateNotification();
@@ -23,9 +23,11 @@ void main() async {
   runApp(MyApp(notificationService: notificationService));
 }
 
-void _setupLogging() {
+void _setupLogging() {  // Setup logging for the app only in debug mode
   Logger.root.level = Level.ALL; // Set the logging level
   Logger.root.onRecord.listen((LogRecord rec) {
-    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    if (kDebugMode) {
+      print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    }
   });
 }

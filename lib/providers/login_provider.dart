@@ -5,22 +5,19 @@ class LoginProvider with ChangeNotifier {
   final LoginController _loginController = LoginController();
   bool isLoading = false;
   bool isAuthenticated = false;
-  bool isDeviceVerified = false;
+  bool isFreshLoginAttempt = false;
+  bool isAllowedToLogin = false;
+  bool invalidUserNameOrPassword = false;
 
-  Future<int> login(
+  Future<bool> login(
       String userId, String password, BuildContext context) async {
     isLoading = true;
     notifyListeners();
 
-    int result = await _loginController.login(userId, password);
-
-    if (result == 1) {
-      isAuthenticated = true;
-    } else if (result == 2 || result == 3 || result == 5) {
-      isDeviceVerified = false;
-    }
+    bool result = await _loginController.login(userId, password, context);
 
     isLoading = false;
+    isAuthenticated = result;
     notifyListeners();
 
     return result;
@@ -29,7 +26,24 @@ class LoginProvider with ChangeNotifier {
   Future<void> logout(BuildContext context) async {
     await _loginController.logout(context);
     isAuthenticated = false;
-    isDeviceVerified = false;
+    notifyListeners();
+  }
+
+    // Method to set isFreshLoginAttempt
+  void setFreshLoginAttempt(bool value) {
+    isFreshLoginAttempt = value;
+    notifyListeners();
+  }
+
+  // Method to set isAllowedToLogin
+  void setAllowedToLogin(bool value) {
+    isAllowedToLogin = value;
+    notifyListeners();
+  }
+
+  // Method to set invalidUserNameOrPassword
+  void setInvalidUserNameOrPassword(bool value) {
+    invalidUserNameOrPassword = value;
     notifyListeners();
   }
 }

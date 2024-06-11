@@ -66,7 +66,7 @@ class ApiService {
 
   Future<bool> checkForUpdate() async {
     // Remove this line and uncomment after uploading the app to the Play Store
-    return Random().nextBool();
+    return true; //Random().nextBool();
 
     // try {
     //   // Get the current app version from the platform package info

@@ -81,4 +81,41 @@ class DialogsAndPrompts {
       },
     );
   }
+
+  static void showLoginFromDifferentDeviceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+          title: const Row(
+            children: [
+              Icon(Icons.error, color: AppColors.primaryColor),
+              SizedBox(width: 10),
+              Text('Error',
+                  style: TextStyle(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
+          content: const Text(
+              'You are logged in from a different device. Please De-Register the device and try again.',
+              style: TextStyle(fontSize: 16)),
+          actions: [
+            TextButton(
+              child: const Text('OK',
+                  style: TextStyle(
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

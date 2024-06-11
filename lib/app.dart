@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
 import 'package:hello_nitr/core/services/notifications/notifications_service.dart';
 import 'package:hello_nitr/app_routes.dart';
 import 'package:provider/provider.dart';
-
 
 class MyApp extends StatelessWidget {
   final NotificationService notificationService;
@@ -18,14 +16,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => HomeProvider()),
+        // ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         builder: (BuildContext context, Widget? widget) {
           ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
             return CustomError(errorDetails: errorDetails);
           };
-          return widget!;
+          return widget ?? Container(); // Ensure widget is not null
         },
         debugShowCheckedModeBanner: false,
         title: 'Hello NITR',
@@ -38,7 +36,6 @@ class MyApp extends StatelessWidget {
 
   ThemeData _buildAppTheme() {
     const primaryColor = Color(0xFFC35839);
-
     return ThemeData(
       fontFamily: 'Roboto',
       primaryColor: primaryColor,

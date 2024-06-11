@@ -1,23 +1,16 @@
+import 'dart:convert';
+
 import 'package:hello_nitr/core/constants/app_constants.dart';
 
 class EncryptionFunction {
   String encryptPassword(String password) {
     if (password.isNotEmpty) {
-      // Encrypt the password using the security key
-      String encryptedPassword =  AppConstants.securityKey + password;
+      String base64Encode = base64.encode(utf8.encode(password));
+      String encryptedPassword =  AppConstants.securityKey + base64Encode;
       return encryptedPassword;
     }
 
     return password;
   }
 
-  // String decryptPassword(String encryptedPassword) {
-  //   if (encryptedPassword.isNotEmpty) {
-  //     // Decrypt the password using the security key
-  //     String decryptedPassword = encryptedPassword.replaceAll(AppConstants.securityKey, '');
-  //     return decryptedPassword;
-  //   }
-
-  //   return encryptedPassword;
-  // }
 }

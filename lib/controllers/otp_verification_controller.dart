@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
+import 'package:hello_nitr/core/services/api/remote/api_service.dart';
+import 'package:hello_nitr/core/utils/device_id/device_id.dart';
+import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
 
 class OtpVerificationController {
   final LoginProvider _loginProvider = LoginProvider();
   final Logger _logger = Logger('OtpVerificationController');
+  final ApiService _apiService = ApiService();
+ 
 
   /// Simulates fetching OTP from the server.
   Future<String> fetchOtp() async {
@@ -25,6 +31,17 @@ class OtpVerificationController {
       _logger.info('User logged out successfully');
     } catch (e) {
       _logger.severe("Logout failed: $e");
+    }
+  }
+
+  Future<void> updateDeviceId() async {
+    try {
+       final String udid = await DeviceUtil().getDeviceID();
+       LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
+      await _apiService.updateDeviceId(currentUser!.empCode, udid);
+      _logger.info('Device ID updated successfully');
+    } catch (e) {
+      _logger.severe("Device ID update failed: $e");
     }
   }
 }

@@ -9,35 +9,27 @@ class OtpInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final defaultPinTheme = PinTheme(
+      width: 50,
+      height: 50,
+      textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.primaryColor),
+      ),
+    );
+
     return Pinput(
       length: 6,
       autofocus: true,
-      cursor: Container(width: 2, height: 40, color: AppColors.primaryColor),
       onChanged: onChanged,
-      defaultPinTheme: const PinTheme(
-        width: 40,
-        height: 58,
-        textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.primaryColor, width: 2)),
+      defaultPinTheme: defaultPinTheme,
+      focusedPinTheme: defaultPinTheme.copyWith(
+        decoration: defaultPinTheme.decoration!.copyWith(
+          border: Border.all(color: AppColors.primaryColor, width: 2),
         ),
       ),
-      focusedPinTheme: const PinTheme(
-        width: 40,
-        height: 58,
-        textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.primaryColor, width: 2)),
-        ),
-      ),
-      submittedPinTheme: const PinTheme(
-        width: 40,
-        height: 58,
-        textStyle: TextStyle(fontSize: 24, color: AppColors.primaryColor, fontWeight: FontWeight.bold),
-        decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: AppColors.primaryColor, width: 2)),
-        ),
-      ),
+      submittedPinTheme: defaultPinTheme,
     );
   }
 }

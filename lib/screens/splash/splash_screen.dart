@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
@@ -55,7 +56,7 @@ class SplashScreenState extends State<SplashScreen> {
     try {
       await Future.delayed(const Duration(seconds: 2));
 
-      bool isLoggedIn = await LocalStorageService.checkIfUserIsLoggedIn();
+      bool isLoggedIn =  LoginProvider().userLoggedIn;
       String? storedPin = await LocalStorageService.getPin();
 
       _logger.info('Login status: $isLoggedIn');

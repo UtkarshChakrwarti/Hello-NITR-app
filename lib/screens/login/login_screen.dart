@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_nitr/controllers/login_controller.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
@@ -48,10 +49,6 @@ class _LoginScreenState extends State<LoginScreen>
         curve: Curves.easeInOut,
       ),
     );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_usernameFocusNode);
-    });
   }
 
   void _checkFields() {
@@ -228,12 +225,19 @@ class _LoginScreenState extends State<LoginScreen>
                     _passwordController.text,
                     context);
                 if (!isSuccess) {
-                  if (!loginProvider.isAllowedToLogin && !loginProvider.invalidUserNameOrPassword) {
+                  if (!loginProvider.isAllowedToLogin &&
+                      !loginProvider.invalidUserNameOrPassword) {
                     DialogsAndPrompts.showLoginFromDifferentDeviceDialog(
                         context);
                   } else {
                     _showErrorDialog('Invalid username or password', context);
                   }
+                } else {
+                  //make sure unfocus text fields is called before opening the modal
+                  _usernameFocusNode.unfocus();
+                  _passwordFocusNode.unfocus();
+                  //Open the Sim selection screen
+                  LoginController().showSimSelectionModal(context);
                 }
               } catch (e, stacktrace) {
                 // Log the error and stack trace to a monitoring service or console

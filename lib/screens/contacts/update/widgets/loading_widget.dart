@@ -17,6 +17,16 @@ class LoadingWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        //Add the Text updating contacts center aligned and header
+        const Text(
+          'Updating Contacts...',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryColor,
+          ),
+        ),
+        SizedBox(height: 40),
         LoadingAnimationWidget.staggeredDotsWave(
           color: AppColors.primaryColor,
           size: 50.0,

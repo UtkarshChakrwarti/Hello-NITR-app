@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
+import 'package:hello_nitr/core/utils/nav_to_create_pin_or_home.dart';
 import 'package:hello_nitr/screens/contacts/update/widgets/loading_widget.dart';
 import 'package:hello_nitr/screens/contacts/update/widgets/status_message.dart';
 import 'package:hello_nitr/screens/contacts/update/widgets/success_widget.dart';
 import 'package:hello_nitr/screens/contacts/update/widgets/error_dialog.dart';
-import 'package:hello_nitr/screens/pin/create/pin_creation_screen.dart';
 import 'package:hello_nitr/controllers/contacts_update_controller.dart';
 import 'package:logging/logging.dart';
-import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
 
 class ContactsUpdateScreen extends StatefulWidget {
   @override
@@ -97,8 +95,12 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
   }
 
   Future<bool> _onWillPop() async {
-    final exitConfirmed = await DialogsAndPrompts.showExitConfirmationDialog(context);
-    return exitConfirmed ?? false;
+    //if contacts are not updated, dont allow back press
+    if (_isLoading) {
+      return false;
+    }
+    navigateToPinOrHome(context);
+    return false;
   }
 
   @override
@@ -127,25 +129,8 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
                     animation: _animation,
                     updatedContacts: _updatedContacts,
                     totalContacts: _controller.totalContacts,
-                    onPressed: () async {
-                      try {
-                        final pin = await LocalStorageService.getPin();
-                        if (pin != null) {
-                          Navigator.pushReplacementNamed(context, '/home');
-                          _logger.info('Navigated to home screen');
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PinCreationScreen(),
-                            ),
-                          );
-                          _logger.info('Navigated to PIN creation screen');
-                        }
-                      } catch (e) {
-                        _showErrorDialog('An error occurred while retrieving PIN. Please try again.');
-                        _logger.severe('Error retrieving PIN: $e');
-                      }
+                    onPressed: () {
+                      navigateToPinOrHome(context);
                     },
                   ),
               ],

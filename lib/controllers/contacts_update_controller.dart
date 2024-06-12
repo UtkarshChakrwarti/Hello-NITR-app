@@ -56,7 +56,6 @@ class ContactsUpdateController {
   Future<List<User>> fetchContactsFromServer() async {
     try {
       _logger.info('Fetching contacts from server');
-      // Fetch contacts from the abstracted API service class
       return await _apiService.fetchContacts();
     } catch (e) {
       _logger.severe('Error fetching contacts: $e');

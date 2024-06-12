@@ -19,19 +19,19 @@ class SimSelectionController {
     _logger.info(
         'Validating SIM selection: selectedSim=$selectedSim, registeredMobile=$registeredMobile');
 
-    return true; // make this line as to enable the code
+    return true; // make this line as comment and uncomment the code below to enable the service
 
-    // First check selected sim is from India or not
-    if (!selectedSim.startsWith("+91") && !selectedSim.startsWith("91")) {
-      _logger.warning("Selected SIM is not from India");
-      return false;
-    }
+    // // First check selected sim is from India or not
+    // if (!selectedSim.startsWith("+91") && !selectedSim.startsWith("91")) {
+    //   _logger.warning("Selected SIM is not from India");
+    //   return false;
+    // }
 
-    // Then check selected sim is same as registered mobile number
-    // For simplicity, we are checking only last 10 digits
-    selectedSim = selectedSim.substring(selectedSim.length - 10);
-    registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
+    // // Then check selected sim is same as registered mobile number
+    // // For simplicity, we are checking only last 10 digits
+    // selectedSim = selectedSim.substring(selectedSim.length - 10);
+    // registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
 
-    return selectedSim == registeredMobile;
+    // return selectedSim == registeredMobile;
   }
 }

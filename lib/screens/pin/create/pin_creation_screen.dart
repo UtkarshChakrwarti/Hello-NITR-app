@@ -30,7 +30,8 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   }
 
   Future<bool> _onWillPop() async {
-    final shouldExit = await DialogsAndPrompts.showExitConfirmationDialog(context);
+    final shouldExit =
+        await DialogsAndPrompts.showExitConfirmationDialog(context);
     if (shouldExit != null && shouldExit) {
       await _logoutAndNavigateToLogin();
     }
@@ -38,7 +39,8 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   }
 
   void _onSubmit() {
-    if (_pinController.text.length == 4 && _confirmPinController.text.length == 4) {
+    if (_pinController.text.length == 4 &&
+        _confirmPinController.text.length == 4) {
       setState(() {
         _pinsMatch = _pinController.text == _confirmPinController.text;
       });
@@ -51,7 +53,8 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
           DialogsAndPrompts.showErrorDialog('Failed to save PIN.', context);
         }
       } else {
-        DialogsAndPrompts.showErrorDialog('PINs do not match. Please try again.', context);
+        DialogsAndPrompts.showErrorDialog(
+            'PINs do not match. Please try again.', context);
         setState(() {
           _pinController.clear();
           _confirmPinController.clear();
@@ -59,7 +62,8 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
         });
       }
     } else {
-      DialogsAndPrompts.showErrorDialog('Please enter a 4-digit PIN in both fields.', context);
+      DialogsAndPrompts.showErrorDialog(
+          'Please enter a 4-digit PIN in both fields.', context);
     }
   }
 
@@ -86,16 +90,16 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
   void _onPinChanged(String pin) {
     setState(() {
       _pinsMatch = _pinController.text.isNotEmpty &&
-                   _confirmPinController.text.isNotEmpty &&
-                   _pinController.text == _confirmPinController.text;
+          _confirmPinController.text.isNotEmpty &&
+          _pinController.text == _confirmPinController.text;
     });
   }
 
   void _onConfirmPinChanged(String pin) {
     setState(() {
       _pinsMatch = _pinController.text.isNotEmpty &&
-                   _confirmPinController.text.isNotEmpty &&
-                   _pinController.text == _confirmPinController.text;
+          _confirmPinController.text.isNotEmpty &&
+          _pinController.text == _confirmPinController.text;
     });
   }
 
@@ -110,15 +114,15 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.only(top: topPadding + 20, left: 20, right: 20),
+            padding: EdgeInsets.only(top: topPadding + 25, left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: Alignment.center,
                   child: Text(
                     'Create Your\nHello NITR PIN',
-                    textAlign: TextAlign.left,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -136,7 +140,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                 ),
                 const SizedBox(height: 50),
                 PinInputField(
-                  label: 'PIN CODE',
+                  label: 'ENTER YOUR PIN',
                   controller: _pinController,
                   focusNode: _pinFocusNode,
                   pinVisible: _pinVisible,
@@ -145,7 +149,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                 ),
                 const SizedBox(height: 20),
                 PinInputField(
-                  label: 'CONFIRM YOUR PIN CODE',
+                  label: 'CONFIRM YOUR PIN',
                   controller: _confirmPinController,
                   focusNode: _confirmPinFocusNode,
                   pinVisible: _confirmPinVisible,
@@ -153,13 +157,13 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                   onChanged: _onConfirmPinChanged,
                 ),
                 if (_pinsMatch)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.check_circle, color: AppColors.primaryColor),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         Text(
                           'Your PIN codes are the same',
                           style: TextStyle(
@@ -172,19 +176,22 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                   ),
                 const SizedBox(height: 30),
                 SizedBox(
-                  width: double.infinity,
+                  width: 170,
+                  height: 60,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 40, vertical: 18),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+                          borderRadius: BorderRadius.circular(30)),
+                      elevation: 5,
+                      shadowColor: Colors.black54,
                     ),
                     onPressed: _onSubmit,
                     child: const Text(
                       'CONTINUE',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ),

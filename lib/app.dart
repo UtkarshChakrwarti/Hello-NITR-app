@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        // ChangeNotifierProvider(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         builder: (BuildContext context, Widget? widget) {

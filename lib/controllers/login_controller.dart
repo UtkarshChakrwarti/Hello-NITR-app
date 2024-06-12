@@ -14,22 +14,25 @@ class LoginController {
   final Logger _logger = Logger('LoginController');
 
   Future<bool> login(
-      String userId, String password, BuildContext context) async {
+    String userId,
+    String password,
+    BuildContext context,
+  ) async {
     try {
-      // Encrypt the password before sending it to the API
       String encryptedPassword = EncryptionFunction().encryptPassword(password);
-      LoginResponse response =
-          await _apiService.login(userId, encryptedPassword);
+      LoginResponse response = await _apiService.login(userId, encryptedPassword);
+
       final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+
       if (response.loginSuccess) {
-        // Save the login response securely
         await LocalStorageService.saveLoginResponse(response);
 
         // Fetch the user details from the saved session
-        LoginResponse? currentUser =
-            await LocalStorageService.getLoginResponse();
+        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
         _logger.info(
-            'User logged in (Fetched From saved logged In info from secured storage): ${currentUser!.firstName} ${currentUser.lastName}');
+          '''User logged in (Fetched From saved logged In info from secured storage):
+             ${currentUser!.firstName} ${currentUser.lastName}''',
+        );
 
         if (response.loggedIn == true) {
           // User Already Logged In somewhere else so check if this is the same device or not
@@ -39,11 +42,12 @@ class LoginController {
             loginProvider.setAllowedToLogin(false);
             loginProvider.setInvalidUserNameOrPassword(false);
             _logger.warning(
-                'User logged in from a different device thus not allowed to login from this device.');
+              'User logged in from a different device thus not allowed to login from this device.',
+            );
             _logger.warning(
-                'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}');
-            _logger.info(
-                'Is Allowed to login : ${loginProvider.isAllowedToLogin}');
+              'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}',
+            );
+            _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
             return false;
           }
 
@@ -52,17 +56,16 @@ class LoginController {
           loginProvider.setInvalidUserNameOrPassword(false);
           loginProvider.setFreshLoginAttempt(false);
           _logger.info(
-              'User logged in from the same device thus allowed to login from this device.');
-          _logger
-              .info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
+            'User logged in from the same device thus allowed to login from this device.',
+          );
+          _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
           return true;
         }
 
         loginProvider.setFreshLoginAttempt(true);
         loginProvider.setAllowedToLogin(true);
         loginProvider.setInvalidUserNameOrPassword(false);
-        _logger.info(
-            'Is Fresh Login Attempt : ${loginProvider.isFreshLoginAttempt}');
+        _logger.info('Is Fresh Login Attempt : ${loginProvider.isFreshLoginAttempt}');
         _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
         _logger.info('User logged in');
 
@@ -93,8 +96,7 @@ class LoginController {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return SimSelectionScreen();
       },

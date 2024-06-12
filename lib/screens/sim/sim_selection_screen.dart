@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hello_nitr/controllers/sim_selection_controller.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/models/login.dart';
@@ -8,24 +9,38 @@ import 'package:hello_nitr/screens/sim/widgets/error_dialog.dart';
 import 'package:hello_nitr/screens/sim/widgets/loading_indicator.dart';
 import 'package:hello_nitr/screens/sim/widgets/no_sim_card_widget.dart';
 import 'package:hello_nitr/screens/sim/widgets/sim_card_options.dart';
-import 'package:simnumber/siminfo.dart';
 import 'package:simnumber/sim_number.dart';
-import 'package:hello_nitr/controllers/sim_selection_controller.dart';
+import 'package:simnumber/siminfo.dart';
+import 'package:logging/logging.dart';
 
 class SimSelectionScreen extends StatefulWidget {
   @override
   _SimSelectionScreenState createState() => _SimSelectionScreenState();
 }
 
-class _SimSelectionScreenState extends State<SimSelectionScreen> {
-  SimSelectionController _simSelectionController = SimSelectionController();
+class _SimSelectionScreenState extends State<SimSelectionScreen>
+    with SingleTickerProviderStateMixin {
+  final SimSelectionController _simSelectionController = SimSelectionController();
+  final Logger _logger = Logger('SimSelectionScreen');
   SimInfo simInfo = SimInfo([]);
   String? _selectedSim;
   bool _isLoading = true;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+    _animationController.forward();
+
     SimNumber.listenPhonePermission((isPermissionGranted) {
       if (isPermissionGranted) {
         _loadSimCards();
@@ -36,28 +51,38 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
         });
       }
     });
+
+    _logger.info('SimSelectionScreen initialized');
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSimCards() async {
     try {
       simInfo = await _simSelectionController.getAvailableSimCards();
+      _logger.info("SIM cards loaded: ${simInfo.cards}");
       setState(() {
         _isLoading = false;
         if (simInfo.cards.isEmpty ||
             simInfo.cards.first.phoneNumber == null ||
             simInfo.cards.first.phoneNumber!.isEmpty) {
-          // Handle the case where no SIM card or phone number is available
+          _logger.warning("No SIM card or phone number available");
         } else {
-          _selectedSim =
-              simInfo.cards.first.phoneNumber; // Auto-select the first SIM card
+          _selectedSim = simInfo.cards.first.phoneNumber;
         }
       });
     } on PlatformException catch (e) {
+      _logger.severe("Failed to get SIM data: ${e.message}", e);
       _showErrorDialog("Failed to get SIM data: ${e.message}");
       setState(() {
         _isLoading = false;
       });
     } catch (e) {
+      _logger.severe("An unexpected error occurred: ${e.toString()}", e);
       _showErrorDialog("An unexpected error occurred: ${e.toString()}");
       setState(() {
         _isLoading = false;
@@ -67,88 +92,90 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      child: _isLoading
-          ? LoadingIndicator()
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Select the number verified with NITRis',
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: AppColors.primaryColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                simInfo.cards.isEmpty ||
-                        simInfo.cards.first.phoneNumber == null ||
-                        simInfo.cards.first.phoneNumber!.isEmpty
-                    ? NoSimCardWidget()
-                    : SimCardOptions(
-                        simInfo: simInfo,
-                        selectedSim: _selectedSim,
-                        onSimSelected: (sim) {
-                          setState(() {
-                            _selectedSim = sim.phoneNumber;
-                          });
-                        },
-                      ),
-                const SizedBox(height: 20),
-                Container(
-                  width: 140,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed:
-                        _selectedSim == null ? null : _onNextButtonPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _selectedSim == null
-                          ? Colors.grey
-                          : AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      elevation: 5,
+    return FadeTransition(
+      opacity: _animation,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: _isLoading
+            ? LoadingIndicator()
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Select the number verified with NITRis',
+                    style: TextStyle(
+                      fontSize: 17,
+                      color: AppColors.primaryColor,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'NEXT',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                  ),
+                  const SizedBox(height: 20),
+                  simInfo.cards.isEmpty ||
+                          simInfo.cards.first.phoneNumber == null ||
+                          simInfo.cards.first.phoneNumber!.isEmpty
+                      ? NoSimCardWidget()
+                      : SimCardOptions(
+                          simInfo: simInfo,
+                          selectedSim: _selectedSim,
+                          onSimSelected: (sim) {
+                            setState(() {
+                              _selectedSim = sim.phoneNumber;
+                            });
+                          },
+                        ),
+                  const SizedBox(height: 20),
+                  Container(
+                    width: 140,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: _selectedSim == null ? null : _onNextButtonPressed,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _selectedSim == null
+                            ? Colors.grey
+                            : AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 5,
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'NEXT',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ],
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: 18,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+      ),
     );
   }
 
   Future<void> _onNextButtonPressed() async {
     try {
       if (_selectedSim != null) {
-        LoginResponse? currentUser =
-            await LocalStorageService.getLoginResponse();
+        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
+        _logger.info("Selected SIM: $_selectedSim, Current user: ${currentUser?.mobile}");
 
         if (_simSelectionController.validateSimSelection(
             _selectedSim!, currentUser?.mobile ?? "")) {
@@ -166,11 +193,13 @@ class _SimSelectionScreenState extends State<SimSelectionScreen> {
         }
       }
     } catch (e) {
+      _logger.severe("An error occurred during SIM validation: ${e.toString()}", e);
       _showErrorDialog('An error occurred: ${e.toString()}');
     }
   }
 
   void _showErrorDialog(String message) {
+    _logger.warning("Showing error dialog: $message");
     showDialog(
       context: context,
       builder: (BuildContext context) {

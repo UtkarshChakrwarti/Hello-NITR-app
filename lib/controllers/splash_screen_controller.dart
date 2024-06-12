@@ -12,8 +12,6 @@ class SplashScreenController {
 
   Future<String?> checkLoginStatus(BuildContext context) async {
     try {
-      await Future.delayed(const Duration(seconds: 2));
-
       bool isLoggedIn = await LocalStorageService.checkIfUserIsLoggedIn();
       String? storedPin = await LocalStorageService.getPin();
 

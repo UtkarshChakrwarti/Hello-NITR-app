@@ -24,6 +24,7 @@ class LoginResponse {
   final bool? loggedIn;
   final String? deviceIMEI;
   final String? message;
+  DateTime? loginTime;
 
   LoginResponse({
     required this.loginSuccess,
@@ -51,6 +52,7 @@ class LoginResponse {
     this.loggedIn,
     this.deviceIMEI,
     this.message,
+    this.loginTime,
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
@@ -80,6 +82,7 @@ class LoginResponse {
       loggedIn: json['loggedIn'],
       deviceIMEI: json['deviceIMEI'],
       message: json['message'],
+      loginTime: DateTime.now(),
     );
   }
 
@@ -111,6 +114,7 @@ class LoginResponse {
       'loggedIn': loggedIn,
       'deviceIMEI': deviceIMEI,
       'message': message,
+      'loginTime': loginTime.toString(),
     };
   }
 }

@@ -8,7 +8,7 @@ class LoginProvider with ChangeNotifier {
   bool isFreshLoginAttempt = false;
   bool isAllowedToLogin = false;
   bool invalidUserNameOrPassword = false;
-  bool userLoggedIn = false;
+  bool expiredSession = false;
 
   Future<bool> login(
       String userId, String password, BuildContext context) async {
@@ -30,7 +30,7 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
   }
 
-    // Method to set isFreshLoginAttempt
+  // Method to set isFreshLoginAttempt
   void setFreshLoginAttempt(bool value) {
     isFreshLoginAttempt = value;
     notifyListeners();
@@ -48,9 +48,9 @@ class LoginProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Method to set userLoggedIn
-  void setUserLoggedIn(bool value) {
-    userLoggedIn = value;
+  // Method to set expiredSession
+  void setExpiredSession(bool value) {
+    expiredSession = value;
     notifyListeners();
   }
 }

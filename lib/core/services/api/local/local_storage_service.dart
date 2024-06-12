@@ -236,8 +236,26 @@ class LocalStorageService {
       String loginJson = jsonEncode(loginResponse.toJson());
       await _secureStorage.write(
           key: AppConstants.currentLoggedInUserKey, value: loginJson);
+      
     } catch (e) {
       _logger.severe('Error saving login response: $e');
+    }
+  }
+
+  //Get login time from secure storage
+  static Future<DateTime?> getLoginTime() async {
+    try {
+      String? loginJson =
+          await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
+      if (loginJson != null) {
+        LoginResponse loginResponse = LoginResponse.fromJson(jsonDecode(loginJson));
+        return loginResponse.loginTime;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      _logger.severe('Error retrieving login time: $e');
+      return null;
     }
   }
 
@@ -361,5 +379,7 @@ class LocalStorageService {
       photo: loginResponse.photo,
     );
   }
+
+
 
 }

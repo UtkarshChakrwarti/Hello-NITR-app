@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hello_nitr/providers/login_provider.dart';
+import 'package:hello_nitr/controllers/splash_screen_controller.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
-import 'package:logging/logging.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,12 +11,20 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen> {
-  final Logger _logger = Logger('SplashScreen');
+  final SplashScreenController _controller = SplashScreenController();
 
   @override
   void initState() {
     super.initState();
     _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    String? route = await _controller.checkLoginStatus(context);
+    if (!mounted) return;
+    if (route != null) {
+      Navigator.pushReplacementNamed(context, route);
+    }
   }
 
   @override
@@ -50,29 +55,5 @@ class SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _checkLoginStatus() async {
-    try {
-      await Future.delayed(const Duration(seconds: 2));
-
-      bool isLoggedIn =  LoginProvider().userLoggedIn;
-      String? storedPin = await LocalStorageService.getPin();
-
-      _logger.info('Login status: $isLoggedIn');
-      _logger.info('Stored PIN: $storedPin');
-
-      if (!mounted) return;
-
-      if (isLoggedIn && storedPin != null) {
-        // Navigator.pushReplacementNamed(context, '/pinUnlock');
-      } else {
-        Navigator.pushReplacementNamed(context, '/login');
-      }
-    } on PlatformException catch (e) {
-      _logger.severe('PlatformException occurred: $e');
-    } catch (e) {
-      _logger.severe('An error occurred: $e');
-    }
   }
 }

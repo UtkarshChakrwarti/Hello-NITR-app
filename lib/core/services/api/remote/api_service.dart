@@ -5,9 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:logging/logging.dart';
-
-// Uncomment the following line after uploading the app to the Play Store
-// import 'package:package_info_plus/package_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ApiService {
   final String baseUrl = AppConstants.baseUrl;
@@ -18,6 +16,19 @@ class ApiService {
     final Uri url =
         Uri.parse('$baseUrl/login?userid=$userId&password=$password');
     return await _postRequest(url);
+  }
+
+  // Validate the user's that they are still valid or not api will return true if user is valid else false
+  Future<bool> validateUser(String? empCode) async {
+    final Uri url = Uri.parse('$baseUrl/MyStatus?userid=$empCode');
+    final response = await _sendRequest('POST', url);
+
+    if (response.statusCode == 200) {
+      return jsonDecode(await response.stream.bytesToString());
+    } else {
+      _logger.severe('Failed to validate user: ${response.reasonPhrase}');
+      throw Exception('Failed to validate user');
+    }
   }
 
   Future<List<User>> fetchContacts() async {
@@ -62,39 +73,37 @@ class ApiService {
     }
   }
 
-
   Future<bool> checkForUpdate() async {
-    // Remove this line and uncomment after uploading the app to the Play Store
-    return true; //Random().nextBool();
+    try {
+      // Get the current app version from the platform package info
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      String currentAppVersion = packageInfo.version;
 
-    // try {
-    //   // Get the current app version from the platform package info
-    //   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    //   String currentAppVersion = packageInfo.version;
+      // Make an HTTP GET request to the Play Store URL
+      final Uri playStoreUri = Uri.parse(AppConstants.playStoreUrl);
+      final response = await http.get(playStoreUri);
 
-    //   // Make an HTTP GET request to the Play Store URL
-    //   final Uri playStoreUri = Uri.parse(AppConstants.playStoreUrl);
-    //   final response = await http.get(playStoreUri).timeout(timeoutDuration);
+      // If the response status code is 200 (OK), parse the response body
+      if (response.statusCode == 200) {
+        String responseBody = response.body;
 
-    //   // If the response status code is 200 (OK), parse the response body
-    //   if (response.statusCode == 200) {
-    //     String responseBody = response.body;
+        // Use a regular expression to find the current version on the Play Store page
+        RegExp versionRegExp = RegExp(r'Current Version.+?>([\d.]+)<');
+        String? playStoreVersion =
+            versionRegExp.firstMatch(responseBody)?.group(1);
 
-    //     // Use a regular expression to find the current version on the Play Store page
-    //     RegExp versionRegExp = RegExp(r'Current Version.+?>([\d.]+)<');
-    //     String? playStoreVersion = versionRegExp.firstMatch(responseBody)?.group(1);
-
-    //     // If the Play Store version is found, compare it with the current app version
-    //     if (playStoreVersion != null) {
-    //       return _isUpdateAvailable(currentAppVersion, playStoreVersion);
-    //     }
-    //   }
-    // } catch (error) {
-    //   // Log any errors that occur during the update check
-    //   _logger.severe('Error checking for update: $error');
-    // }
-    // // Return false if an update is not available or an error occurred
-    // return false;
+        // If the Play Store version is found, compare it with the current app version
+        if (playStoreVersion != null) {
+          return _isUpdateAvailable(currentAppVersion, playStoreVersion);
+        }
+      }
+    } catch (error) {
+      // Log any errors that occur during the update check
+      _logger.severe('Error checking for update');
+    }
+    // Return false if an update is not available or an error occurred
+    _logger.info('No update available or connection issues');
+    return false;
   }
 
   bool _isUpdateAvailable(String currentVersion, String playStoreVersion) {

@@ -22,7 +22,7 @@ class PinDisplay extends StatelessWidget {
               child: Center(
                 child: Icon(
                   Icons.circle,
-                  size: 12,
+                  size: 25,
                   color: pin.length > index
                       ? theme.primaryColor
                       : theme.primaryColor.withOpacity(0.2),

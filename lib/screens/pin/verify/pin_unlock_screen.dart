@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import 'package:hello_nitr/controllers/pin_unlock_screen_controller.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
+
 import 'package:hello_nitr/screens/pin/verify/widgets/dialogs.dart';
+import 'package:hello_nitr/screens/pin/verify/widgets/exit_confirmation_dialog.dart';
+
 import 'package:hello_nitr/screens/pin/verify/widgets/keypad.dart';
 import 'package:hello_nitr/screens/pin/verify/widgets/pin_display.dart';
 
@@ -15,7 +18,6 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
   final PinUnlockScreenController _pinUnlockScreenController =
       PinUnlockScreenController();
   String _pin = "";
-  bool _isAuthenticating = false;
   String _loggedInUserFirstName = "";
 
   @override
@@ -50,16 +52,8 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
 
   Future<void> _authenticateWithBiometrics() async {
     try {
-      setState(() {
-        _isAuthenticating = true;
-      });
-
       final authenticated =
           await _pinUnlockScreenController.authenticateWithBiometrics();
-
-      setState(() {
-        _isAuthenticating = false;
-      });
 
       if (authenticated) {
         _navigateToHome();
@@ -67,9 +61,6 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
         // Fallback to PIN unlock
       }
     } catch (e) {
-      setState(() {
-        _isAuthenticating = false;
-      });
       showErrorDialog(context, 'Biometric authentication failed.');
     }
   }
@@ -123,8 +114,7 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        SystemNavigator.pop();
-        return false;
+        return await showExitConfirmationDialog(context) ?? false;
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -138,18 +128,18 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
                 children: [
                   SizedBox(height: screenHeight * 0.02),
                   Text(
-                    'Enter Your Hello NITR PIN',
+                    'Welcome, $_loggedInUserFirstName',
                     style: TextStyle(
-                      fontSize: 18, // Smaller font size
+                      fontSize: 20, // Smaller font size
                       fontWeight: FontWeight.bold,
                       color: theme.primaryColor,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   Text(
-                    'Welcome, $_loggedInUserFirstName',
+                    'Enter Your Hello NITR PIN',
                     style: TextStyle(
-                      fontSize: 14, // Smaller font size
+                      fontSize: 18, // Smaller font size
                       color: theme.primaryColor,
                     ),
                     textAlign: TextAlign.center,
@@ -179,14 +169,9 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
                         Icon(Icons.logout, color: theme.primaryColor, size: 12),
                     label: Text(
                       'Logout',
-                      style: TextStyle(color: theme.primaryColor, fontSize: 12),
+                      style: TextStyle(color: theme.primaryColor, fontSize: 14),
                     ),
                   ),
-                  if (_isAuthenticating)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: CircularProgressIndicator(),
-                    ),
                 ],
               ),
             ),

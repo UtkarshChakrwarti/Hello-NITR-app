@@ -6,6 +6,7 @@ import 'package:hello_nitr/models/user.dart';
 class HomeProvider extends ChangeNotifier {
   final LoginController _loginController = LoginController();
   List<User> _contacts = [];
+  List<User> _filteredContacts = [];
   List<User> _searchContacts = [];
   List<User> _suggestedContacts = [];
   List<String> _departments = ['Select Department'];
@@ -25,6 +26,7 @@ class HomeProvider extends ChangeNotifier {
   int? _expandedContactIndex;
 
   List<User> get contacts => _contacts;
+  List<User> get filteredContacts => _filteredContacts;
   List<User> get searchContacts => _searchContacts;
   List<User> get suggestedContacts => _suggestedContacts;
   List<String> get departments => _departments;
@@ -52,6 +54,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
     try {
       _contacts = await LocalStorageService.getPaginatedContacts(_offset, _limit, ascending: _ascending);
+      _filteredContacts = List.from(_contacts);
       _offset = _contacts.length;
     } catch (e) {
       print("Error fetching contacts: $e");
@@ -78,6 +81,7 @@ class HomeProvider extends ChangeNotifier {
     try {
       List<User> moreContacts = await LocalStorageService.getPaginatedContacts(_offset, _limit, ascending: _ascending);
       _contacts.addAll(moreContacts);
+      _filteredContacts.addAll(moreContacts);
       _offset += moreContacts.length;
     } catch (e) {
       print("Error loading more contacts: $e");
@@ -104,12 +108,12 @@ class HomeProvider extends ChangeNotifier {
     }
   }
 
-  void updateSearchQuery(String query) {
+  void updateSearchQuery(String query, {bool filterCurrentList = false}) {
     searchQuery = query;
     _searchOffset = 0;
     _isSearchActive = query.isNotEmpty;
     _isFilterActive = false;
-    fetchSearchResults();
+    fetchSearchResults(filterCurrentList: filterCurrentList);
   }
 
   void selectDepartment(String? department) {
@@ -126,7 +130,7 @@ class HomeProvider extends ChangeNotifier {
     if (_isSearchActive) {
       fetchSearchResults();
     } else {
-      fetchFilteredResults();
+      updateSearchResultsForDepartment(department!);
     }
   }
 
@@ -144,12 +148,17 @@ class HomeProvider extends ChangeNotifier {
     fetchFilteredResults();
   }
 
-  Future<void> fetchSearchResults() async {
+  Future<void> fetchSearchResults({bool filterCurrentList = false}) async {
     _isLoadingSearchContacts = true;
     notifyListeners();
     try {
       if (searchQuery.isNotEmpty) {
-        if (_selectedDepartment != null && _selectedDepartment != 'Select Department') {
+        if (filterCurrentList && _filteredContacts.isNotEmpty) {
+          _searchContacts = _filteredContacts.where((contact) {
+            final fullName = "${contact.firstName} ${contact.lastName}".toLowerCase();
+            return fullName.contains(searchQuery.toLowerCase());
+          }).toList();
+        } else if (_selectedDepartment != null && _selectedDepartment != 'Select Department') {
           _searchContacts = await LocalStorageService.searchContactsByDepartment(
               searchQuery, _selectedDepartment!, _searchOffset, _limit, ascending: _ascending);
         } else {
@@ -158,7 +167,12 @@ class HomeProvider extends ChangeNotifier {
         }
         _searchOffset = _searchContacts.length;
       } else {
-        _searchContacts.clear();
+        if (_selectedDepartment != null && _selectedDepartment != 'Select Department') {
+          _searchContacts = await LocalStorageService.getPaginatedUsersByDepartment(
+              _selectedDepartment!, _searchOffset, _limit, ascending: _ascending);
+        } else {
+          _searchContacts.clear();
+        }
       }
     } catch (e) {
       print("Error fetching search results: $e");
@@ -180,6 +194,7 @@ class HomeProvider extends ChangeNotifier {
       } else {
         _contacts = await LocalStorageService.getPaginatedContacts(_offset, _limit, ascending: _ascending);
       }
+      _filteredContacts = List.from(_contacts);
       _offset = _contacts.length;
     } catch (e) {
       print("Error fetching filtered results: $e");
@@ -193,6 +208,7 @@ class HomeProvider extends ChangeNotifier {
     _ascending = !_ascending;
     _offset = 0;
     _contacts.clear();
+    _filteredContacts.clear();
     fetchContacts();
   }
 
@@ -231,5 +247,23 @@ class HomeProvider extends ChangeNotifier {
 
   void resetExpandedContactIndex() {
     _expandedContactIndex = null;
+  }
+
+  Future<void> updateSearchResultsForDepartment(String department) async {
+    _isLoadingSearchContacts = true;
+    notifyListeners();
+    try {
+      if (department != 'Select Department') {
+        _searchContacts = await LocalStorageService.getPaginatedUsersByDepartment(department, _searchOffset, _limit, ascending: _ascending);
+      } else {
+        _searchContacts = List.from(_suggestedContacts);
+      }
+      notifyListeners();
+    } catch (e) {
+      print("Error updating search results for department: $e");
+    } finally {
+      _isLoadingSearchContacts = false;
+      notifyListeners();
+    }
   }
 }

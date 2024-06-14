@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
@@ -209,7 +208,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           EdgeInsets.symmetric(vertical: 8.0),
                                     ),
                                     onChanged: (query) {
-                                      homeProvider.updateSearchQuery(query);
+                                      if (isDepartmentSearch) {
+                                        homeProvider.updateSearchQuery(query);
+                                      } else {
+                                        homeProvider.updateSearchQuery(query, filterCurrentList: true);
+                                      }
                                     },
                                   ),
                                 ),
@@ -222,8 +225,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               onPressed: () {
                                 searchController.clear();
                                 homeProvider.updateSearchQuery('');
-                                homeProvider
-                                    .selectDepartment('Select Department');
+                                if (isDepartmentSearch) {
+                                  homeProvider.updateSearchResultsForDepartment(homeProvider.selectedDepartment!);
+                                } else {
+                                  homeProvider.selectDepartment('Select Department');
+                                }
                               },
                             ),
                           ],
@@ -262,6 +268,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               }).toList(),
                               onChanged: (String? newValue) {
                                 homeProvider.selectDepartment(newValue);
+                                if (newValue != null) {
+                                  homeProvider.updateSearchResultsForDepartment(newValue);
+                                }
                               },
                             ),
                           ),
@@ -323,14 +332,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     physics: ClampingScrollPhysics(),
                     itemCount: isSearchVisible
                         ? homeProvider.searchQuery.isEmpty
-                            ? homeProvider.suggestedContacts.length + 1 +
-                                (homeProvider.isLoadingMoreContacts ? 1 : 0)
+                            ? homeProvider.selectedDepartment == 'Select Department'
+                                ? homeProvider.suggestedContacts.length + 1 +
+                                  (homeProvider.isLoadingMoreContacts ? 1 : 0)
+                                : homeProvider.searchContacts.length +
+                                  (homeProvider.isLoadingSearchContacts ? 1 : 0)
                             : homeProvider.searchContacts.length +
                                 (homeProvider.isLoadingSearchContacts ? 1 : 0)
-                        : homeProvider.contacts.length +
+                        : homeProvider.filteredContacts.length +
                             (homeProvider.isLoadingMoreContacts ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (isSearchVisible && homeProvider.searchQuery.isEmpty && index == 0) {
+                      if (isSearchVisible && homeProvider.searchQuery.isEmpty && homeProvider.selectedDepartment == 'Select Department' && index == 0) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
@@ -344,14 +356,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                       }
 
-                      int adjustedIndex = isSearchVisible && homeProvider.searchQuery.isEmpty ? index - 1 : index;
+                      int adjustedIndex = isSearchVisible && homeProvider.searchQuery.isEmpty && homeProvider.selectedDepartment == 'Select Department' ? index - 1 : index;
 
                       if (adjustedIndex ==
                           (isSearchVisible
                               ? homeProvider.searchQuery.isEmpty
-                                  ? homeProvider.suggestedContacts.length
+                                  ? homeProvider.selectedDepartment == 'Select Department'
+                                      ? homeProvider.suggestedContacts.length
+                                      : homeProvider.searchContacts.length
                                   : homeProvider.searchContacts.length
-                              : homeProvider.contacts.length)) {
+                              : homeProvider.filteredContacts.length)) {
                         return Center(
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -363,9 +377,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       var contact = isSearchVisible
                           ? homeProvider.searchQuery.isEmpty
-                              ? homeProvider.suggestedContacts[adjustedIndex]
+                              ? homeProvider.selectedDepartment == 'Select Department'
+                                  ? homeProvider.suggestedContacts[adjustedIndex]
+                                  : homeProvider.searchContacts[adjustedIndex]
                               : homeProvider.searchContacts[adjustedIndex]
-                          : homeProvider.contacts[adjustedIndex];
+                          : homeProvider.filteredContacts[adjustedIndex];
                       String fullName = contact.firstName! +
                           (contact.middleName == ""
                               ? ""

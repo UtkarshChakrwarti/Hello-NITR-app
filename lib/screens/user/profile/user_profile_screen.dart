@@ -11,10 +11,12 @@ import 'package:logging/logging.dart';
 class UserProfileScreen extends StatefulWidget {
   final VoidCallback onSearchCriteriaSelected;
   final Function(String) onFilterByEmployeeType;
+  final Future<void> Function() onLogout;
 
   UserProfileScreen({
     required this.onSearchCriteriaSelected,
     required this.onFilterByEmployeeType,
+    required this.onLogout,
   });
 
   @override

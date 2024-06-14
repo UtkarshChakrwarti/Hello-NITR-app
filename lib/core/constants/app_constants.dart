@@ -24,4 +24,6 @@ class AppConstants {
 
   static const int otpTimeOutSeconds = 30; // OTP timeout in seconds
 
+  static const suggestedContactsKey = 'suggested_contacts'; // Key for suggested contacts
+
 }

@@ -173,73 +173,75 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'OTP Verification',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryColor,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'OTP Verification',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'Please enter the 6 digit verification code sent to',
-                  style: TextStyle(fontSize: 16, color: Colors.black54),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '🇮🇳',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      widget.mobileNumber,
-                      style: TextStyle(fontSize: 16, color: AppColors.primaryColor),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                OtpInput(
-                  onChanged: (String code) {
-                    setState(() {
-                      _enteredOtp = code;
-                      _isOtpComplete = code.length == 6;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                if (!_isResendButtonActive)
+                  const SizedBox(height: 10),
                   Text(
-                    'Didn\'t receive the code?',
-                    style: TextStyle(fontSize: 14, color: Colors.black54),
+                    'Please enter the 6 digit verification code sent to',
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                    textAlign: TextAlign.center,
                   ),
-                ResendButton(
-                  isResendButtonActive: _isResendButtonActive,
-                  remainingSeconds: _remainingSeconds,
-                  onResend: () {
-                    setState(() {
-                      _isResendButtonActive = false;
-                      _remainingSeconds = AppConstants.otpTimeOutSeconds;
-                      _startOtpTimer();
-                      _fetchOtp();
-                      _logger.info('OTP re-sent');
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                VerifyButton(
-                  isOtpComplete: _isOtpComplete,
-                  onPressed: _isOtpComplete ? _verifyOtp : null,
-                ),
-              ],
+                  const SizedBox(height: 5),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '🇮🇳',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        widget.mobileNumber,
+                        style: TextStyle(fontSize: 16, color: AppColors.primaryColor),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  OtpInput(
+                    onChanged: (String code) {
+                      setState(() {
+                        _enteredOtp = code;
+                        _isOtpComplete = code.length == 6;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  if (!_isResendButtonActive)
+                    Text(
+                      'Didn\'t receive the code?',
+                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                  ResendButton(
+                    isResendButtonActive: _isResendButtonActive,
+                    remainingSeconds: _remainingSeconds,
+                    onResend: () {
+                      setState(() {
+                        _isResendButtonActive = false;
+                        _remainingSeconds = AppConstants.otpTimeOutSeconds;
+                        _startOtpTimer();
+                        _fetchOtp();
+                        _logger.info('OTP re-sent');
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  VerifyButton(
+                    isOtpComplete: _isOtpComplete,
+                    onPressed: _isOtpComplete ? _verifyOtp : null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

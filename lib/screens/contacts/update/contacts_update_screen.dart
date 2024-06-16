@@ -95,7 +95,7 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
   }
 
   Future<bool> _onWillPop() async {
-    //if contacts are not updated, dont allow back press
+    // If contacts are not updated, don't allow back press
     if (_isLoading) {
       return false;
     }
@@ -113,27 +113,29 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                StatusMessage(statusMessage: _statusMessage),
-                const SizedBox(height: 20),
-                if (_isLoading)
-                  LoadingWidget(
-                    progress: _progress,
-                    updatedContacts: _updatedContacts,
-                    totalContacts: _controller.totalContacts,
-                  )
-                else
-                  SuccessWidget(
-                    animation: _animation,
-                    updatedContacts: _updatedContacts,
-                    totalContacts: _controller.totalContacts,
-                    onPressed: () {
-                      navigateToPinOrHome(context);
-                    },
-                  ),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  StatusMessage(statusMessage: _statusMessage),
+                  const SizedBox(height: 20),
+                  if (_isLoading)
+                    LoadingWidget(
+                      progress: _progress,
+                      updatedContacts: _updatedContacts,
+                      totalContacts: _controller.totalContacts,
+                    )
+                  else
+                    SuccessWidget(
+                      animation: _animation,
+                      updatedContacts: _updatedContacts,
+                      totalContacts: _controller.totalContacts,
+                      onPressed: () {
+                        navigateToPinOrHome(context);
+                      },
+                    ),
+                ],
+              ),
             ),
           ),
         ),

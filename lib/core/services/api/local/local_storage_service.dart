@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
+import 'package:hello_nitr/core/utils/image_compressor.dart';
 import 'package:logging/logging.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -10,7 +11,7 @@ import 'dart:convert';
 class LocalStorageService {
   static Database? _database;
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
-  
+
   static final Logger _logger = Logger('LocalStorageService');
 
   // Get database instance or initialize if it doesn't exist
@@ -60,6 +61,21 @@ class LocalStorageService {
   // Save a user to the database
   static Future<void> saveUser(User user) async {
     final db = await database;
+    //Compressing the image field before saving
+    final compressedImage =
+        ImageCompressor.compressBase64Image(user.photo!, quality: 50);
+    //print the compressed image size and compression ratio
+
+    _logger.info('Compression Details:');
+    _logger.info('---------------------');
+    _logger.info('Original Size: ${compressedImage['originalSize']} bytes');
+    _logger.info('Compressed Size: ${compressedImage['compressedSize']} bytes');
+    _logger.info(
+        'Compression Ratio: ${compressedImage['compressionRatio'].toStringAsFixed(2)}%');
+    _logger.info('Size Difference: ${compressedImage['sizeDifference']} bytes');
+    _logger.info('---------------------');
+
+    user.photo = compressedImage['compressedBase64Image'];
     await db.insert(
       AppConstants.userTable,
       user.toJson(),
@@ -98,6 +114,23 @@ class LocalStorageService {
     final db = await database;
     final batch = db.batch();
     for (var user in contacts) {
+      //Compressing the image field before saving
+      final compressedImage =
+          ImageCompressor.compressBase64Image(user.photo!, quality: 50);
+      //print the compressed image size and compression ratio
+
+      _logger.info('Compression Details:');
+      _logger.info('---------------------');
+      _logger.info('Original Size: ${compressedImage['originalSize']} bytes');
+      _logger
+          .info('Compressed Size: ${compressedImage['compressedSize']} bytes');
+      _logger.info(
+          'Compression Ratio: ${compressedImage['compressionRatio'].toStringAsFixed(2)}%');
+      _logger
+          .info('Size Difference: ${compressedImage['sizeDifference']} bytes');
+      _logger.info('---------------------');
+
+      user.photo = compressedImage['compressedBase64Image'];
       batch.insert(
         AppConstants.userTable,
         user.toJson(),
@@ -236,7 +269,6 @@ class LocalStorageService {
       String loginJson = jsonEncode(loginResponse.toJson());
       await _secureStorage.write(
           key: AppConstants.currentLoggedInUserKey, value: loginJson);
-      
     } catch (e) {
       _logger.severe('Error saving login response: $e');
     }
@@ -248,7 +280,8 @@ class LocalStorageService {
       String? loginJson =
           await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
       if (loginJson != null) {
-        LoginResponse loginResponse = LoginResponse.fromJson(jsonDecode(loginJson));
+        LoginResponse loginResponse =
+            LoginResponse.fromJson(jsonDecode(loginJson));
         return loginResponse.loginTime;
       } else {
         return null;
@@ -339,21 +372,25 @@ class LocalStorageService {
   // Get Total number of users in the database
   static Future<int> getTotalUsers() async {
     final db = await database;
-    final result = await db.rawQuery('SELECT COUNT(*) FROM ${AppConstants.userTable}');
+    final result =
+        await db.rawQuery('SELECT COUNT(*) FROM ${AppConstants.userTable}');
     return Sqflite.firstIntValue(result)!;
   }
 
   // get total number of users by employee type
   static Future<int> getTotalUsersByEmployeeType(String employeeType) async {
     final db = await database;
-    final result = await db.rawQuery('SELECT COUNT(*) FROM ${AppConstants.userTable} WHERE employeeType = ?', [employeeType]);
+    final result = await db.rawQuery(
+        'SELECT COUNT(*) FROM ${AppConstants.userTable} WHERE employeeType = ?',
+        [employeeType]);
     return Sqflite.firstIntValue(result)!;
   }
 
   // get total number of departments
   static Future<int> getTotalDepartments() async {
     final db = await database;
-    final result = await db.rawQuery('SELECT COUNT(DISTINCT departmentName) FROM ${AppConstants.userTable}');
+    final result = await db.rawQuery(
+        'SELECT COUNT(DISTINCT departmentName) FROM ${AppConstants.userTable}');
     return Sqflite.firstIntValue(result)!;
   }
 

@@ -18,7 +18,7 @@ class User {
   final String? quarterNo;
   final String? employeeType;
   final String? roomNo;
-  final String? photo;
+  String? photo;
 
   // Constructor for the User class.
   User({

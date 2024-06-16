@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:hello_nitr/controllers/pin_unlock_screen_controller.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
@@ -22,9 +23,24 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
 
   @override
   void initState() {
+    _lockOrientationToPortrait();
     super.initState();
     _loadLoggedInUserFirstName();
     _checkBiometrics();
+  }
+
+  @override
+  void dispose() {
+    _resetOrientation();
+    super.dispose();
+  }
+
+  void _lockOrientationToPortrait() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  void _resetOrientation() {
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
   Future<void> _loadLoggedInUserFirstName() async {
@@ -158,7 +174,7 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
                     }),
                     style: OutlinedButton.styleFrom(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 7.0),
+                          const EdgeInsets.symmetric(horizontal: 12.0, vertical: 7.0),
                       backgroundColor: Colors.transparent,
                       side: BorderSide(color: theme.primaryColor),
                       shape: RoundedRectangleBorder(

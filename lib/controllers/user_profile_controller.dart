@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -23,6 +24,17 @@ class UserProfileController {
       await _apiService.deRegisterDevice(empCode);
     } catch (e, stackTrace) {
       _logger.severe('Error deregistering device', e, stackTrace);
+    }
+  }
+
+  Future<void> logout(BuildContext context) async {
+    try {
+      await LocalStorageService.logout();
+      _logger.info('User logged out');
+      Navigator.of(context).maybePop();
+      Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
+    } catch (e, stacktrace) {
+      _logger.severe("Logout failed", e, stacktrace);
     }
   }
 }

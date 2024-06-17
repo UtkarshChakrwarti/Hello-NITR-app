@@ -162,15 +162,23 @@ class LocalStorageService {
   }
 
   // Search contacts in the database
-  static Future<List<User>> searchContacts(String query, int offset, int limit,
+  static Future<List<User>> searchContacts(
+      String query, int offset, int limit, String? employeeType,
       {bool ascending = true}) async {
     final db = await database;
     final orderBy = ascending ? 'ASC' : 'DESC';
     final result = await db.query(
       AppConstants.userTable,
       where:
-          'firstName LIKE ? OR lastName LIKE ? OR mobile LIKE ? OR personalEmail LIKE ? OR email LIKE ?',
-      whereArgs: ['%$query%', '%$query%', '%$query%', '%$query%', '%$query%'],
+          'firstName LIKE ? OR lastName LIKE ? OR mobile LIKE ? OR personalEmail LIKE ? OR email LIKE ? AND employeeType = ?',
+      whereArgs: [
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        employeeType
+      ],
       offset: offset,
       limit: limit,
       orderBy: 'firstName $orderBy',
@@ -449,6 +457,4 @@ class LocalStorageService {
       return [];
     }
   }
-
-
 }

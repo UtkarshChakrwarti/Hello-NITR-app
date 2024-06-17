@@ -97,7 +97,7 @@ class HomeProvider extends ChangeNotifier {
     notifyListeners();
     try {
       List<User> moreSearchContacts = await LocalStorageService.searchContacts(
-          searchQuery, _searchOffset, _limit, ascending: _ascending);
+          searchQuery, _searchOffset, _limit, _selectedEmployeeType, ascending: _ascending);
       _searchContacts.addAll(moreSearchContacts);
       _searchOffset += moreSearchContacts.length;
     } catch (e) {
@@ -154,16 +154,14 @@ class HomeProvider extends ChangeNotifier {
     try {
       if (searchQuery.isNotEmpty) {
         if (filterCurrentList && _filteredContacts.isNotEmpty) {
-          _searchContacts = _filteredContacts.where((contact) {
-            final fullName = "${contact.firstName} ${contact.lastName}".toLowerCase();
-            return fullName.contains(searchQuery.toLowerCase());
-          }).toList();
+          _searchContacts = await LocalStorageService.searchContacts(
+              searchQuery, _searchOffset, _limit, _selectedEmployeeType, ascending: _ascending);
         } else if (_selectedDepartment != null && _selectedDepartment != 'Select Department') {
           _searchContacts = await LocalStorageService.searchContactsByDepartment(
               searchQuery, _selectedDepartment!, _searchOffset, _limit, ascending: _ascending);
         } else {
           _searchContacts = await LocalStorageService.searchContacts(
-              searchQuery, _searchOffset, _limit, ascending: _ascending);
+              searchQuery, _searchOffset, _limit, _selectedEmployeeType, ascending: _ascending);
         }
         _searchOffset = _searchContacts.length;
       } else {
@@ -209,7 +207,7 @@ class HomeProvider extends ChangeNotifier {
     _offset = 0;
     _contacts.clear();
     _filteredContacts.clear();
-    fetchContacts();
+    fetchFilteredResults();
   }
 
   void addRecentContact(User contact) async {

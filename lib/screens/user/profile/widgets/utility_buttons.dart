@@ -66,12 +66,11 @@ class UtilityButtons extends StatelessWidget {
                 iconSize: 22.0,
                 fontSize: 12.0,
                 onTap: () async {
-                  try {
-                    DialogsAndPrompts.showExitConfirmationDialog(context);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Logout failed: $e')),
-                    );
+                  final shouldExit =
+                      await DialogsAndPrompts.showExitConfirmationDialog(
+                          context);
+                  if (shouldExit != null && shouldExit) {
+                    await controller.logout(context);
                   }
                 },
               ),

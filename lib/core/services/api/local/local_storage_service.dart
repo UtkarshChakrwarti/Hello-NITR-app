@@ -134,7 +134,31 @@ class LocalStorageService {
 
     return Sqflite.firstIntValue(countQuery) ?? 0;
   }
+ // Search for users based on the query string in the database based on mobile, email, and firstname, lastname, middle name
+  // paginated search
+  static Future<List<User>> searchUsers(
+    
+    int offset,
+    int limit,
+    String query,
+  ) async {
+    final db = await database;
 
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppConstants.userTable,
+      where:
+          'mobile LIKE ? OR email LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR middleName LIKE ? OR email LIKE ? OR personalEmail LIKE ? OR workPhone LIKE ? OR residencePhone LIKE ? OR quarterAlpha LIKE ? OR quarterNo LIKE ? OR roomNo LIKE ?',
+      whereArgs: List.generate(5, (_) => '%$query%'),
+      limit: limit,
+      offset: offset,
+      //order by firstName in ascending order
+      orderBy: 'firstName ASC',
+    );
+
+    return List.generate(maps.length, (i) {
+      return User.fromJson(maps[i]);
+    });
+  }
   // Save login response to secure storage
   static Future<void> saveLoginResponse(LoginResponse loginResponse) async {
     try {

@@ -9,6 +9,7 @@ import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
+import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -186,6 +187,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       _pagingController.refresh();
       _fetchContactCount(); // Fetch contact count when changing the filter
     });
+    // Close the drawer
+    Navigator.of(context).pop();
   }
 
   void _toggleSortOrder() {
@@ -212,24 +215,46 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
-              // Handle search action
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchScreen(),
+                ),
+              );
             },
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor,
+              ),
+              child: Text(
+                'Filter Contacts',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: _buildFilterButton('All Employee'),
+            ),
+            ListTile(
+              title: _buildFilterButton('Faculty'),
+            ),
+            ListTile(
+              title: _buildFilterButton('Officer'),
+            ),
+          ],
+        ),
+      ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildFilterButton('All Employee'),
-                _buildFilterButton('Faculty'),
-                _buildFilterButton('Officer'),
-              ],
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Align(

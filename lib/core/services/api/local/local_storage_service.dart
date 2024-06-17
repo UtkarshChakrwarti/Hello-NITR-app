@@ -114,6 +114,27 @@ class LocalStorageService {
     });
   }
 
+// Get the count of users based on the filter
+  static Future<int> getUserCount(String filter) async {
+    final db = await database;
+
+    // Build the where clause and arguments based on the filter
+    String? whereClause;
+    List<dynamic>? whereArgs;
+
+    if (filter != 'All Employee') {
+      whereClause = 'employeeType = ?';
+      whereArgs = [filter];
+    }
+
+    final countQuery = await db.rawQuery(
+      'SELECT COUNT(*) FROM ${AppConstants.userTable} ${whereClause != null ? 'WHERE $whereClause' : ''}',
+      whereArgs,
+    );
+
+    return Sqflite.firstIntValue(countQuery) ?? 0;
+  }
+
   // Save login response to secure storage
   static Future<void> saveLoginResponse(LoginResponse loginResponse) async {
     try {

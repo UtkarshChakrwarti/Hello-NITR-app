@@ -29,13 +29,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int? _expandedIndex;
   String _currentFilter = 'All Employee';
   bool _isAscending = true;
-  final Map<int, Widget> _profileImagesCache = {};
+  int _contactCount = 0;
+  final Map<String, Widget> _profileImagesCache =
+      {}; // Corrected to use String as key
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener(_fetchPage);
     _setupLogging();
+    _fetchContactCount();
   }
 
   void _setupLogging() {
@@ -56,18 +59,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         final nextPageKey = pageKey + newItems.length;
         _pagingController.appendPage(newItems, nextPageKey);
       }
-      _cacheProfileImages(newItems, pageKey);
+      _cacheProfileImages(newItems);
     } catch (error) {
       _pagingController.error = error;
     }
   }
 
-  void _cacheProfileImages(List<User> users, int pageKey) {
-    for (int i = 0; i < users.length; i++) {
-      int index = pageKey + i;
-      _profileImagesCache[index] =
-          _buildAvatar(users[i].photo, users[i].firstName);
-      _logger.info('Image cached for user at index $index');
+  Future<void> _fetchContactCount() async {
+    try {
+      final count = await HomeProvider.fetchContactCount(_currentFilter);
+      setState(() {
+        _contactCount = count;
+      });
+    } catch (error) {
+      _logger.severe('Failed to fetch contact count: $error');
+    }
+  }
+
+  void _cacheProfileImages(List<User> users) {
+    for (User user in users) {
+      if (user.empCode != null &&
+          !_profileImagesCache.containsKey(user.empCode)) {
+        _profileImagesCache[user.empCode!] =
+            _buildAvatar(user.photo, user.firstName);
+        _logger.info('Image cached for user ${user.empCode}');
+      }
     }
   }
 
@@ -167,15 +183,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _applyFilter(String filter) {
     setState(() {
       _currentFilter = filter;
-      _profileImagesCache.clear(); // Clear the cache when changing the filter
       _pagingController.refresh();
+      _fetchContactCount(); // Fetch contact count when changing the filter
     });
   }
 
   void _toggleSortOrder() {
     setState(() {
       _isAscending = !_isAscending;
-      _profileImagesCache.clear(); // Clear the cache when changing the sorting order
       _pagingController.refresh();
     });
   }
@@ -184,10 +199,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hello NITR'),
+        title: Text(
+          'Hello NITR',
+          style: TextStyle(color: AppColors.primaryColor),
+        ),
         actions: [
           IconButton(
-            icon: Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
+            icon:
+                Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
             onPressed: _toggleSortOrder,
           ),
           IconButton(
@@ -216,10 +235,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Showing: $_currentFilter',
+                '$_currentFilter ($_contactCount)',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: AppColors.primaryColor,
                 ),
               ),
             ),
@@ -294,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           ListTile(
                             contentPadding:
                                 EdgeInsets.symmetric(horizontal: 0.0),
-                            leading: _profileImagesCache[index] ??
+                            leading: _profileImagesCache[item.empCode] ??
                                 _buildAvatar(item.photo, item.firstName),
                             title: Text(
                               fullName,
@@ -332,7 +352,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildFilterButton(String label) {
     return ElevatedButton(
-      onPressed: () => _applyFilter(label),
+      onPressed: () => {
+        _applyFilter(label),
+        //clear the expanded index when changing the filter
+        setState(() {
+          _expandedIndex = null;
+        })
+      },
       style: ElevatedButton.styleFrom(
         foregroundColor: _currentFilter == label ? Colors.white : Colors.black,
         backgroundColor:

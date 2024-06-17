@@ -14,4 +14,14 @@ class HomeProvider {
       throw error;
     }
   }
+
+  static Future<int> fetchContactCount(String filter) async {
+    try {
+      // Fetch the contact count from the API based on the filter
+      final count = await LocalStorageService.getUserCount(filter);
+      return count;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

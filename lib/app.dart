@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/custom_error/custom_error.dart';

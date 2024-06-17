@@ -7,7 +7,6 @@ class IconButtonWidget extends StatelessWidget {
   final double iconSize;
   final double fontSize;
   final VoidCallback onTap;
-  final int count;
 
   IconButtonWidget({
     required this.icon,
@@ -15,7 +14,6 @@ class IconButtonWidget extends StatelessWidget {
     required this.iconSize,
     required this.fontSize,
     required this.onTap,
-    required this.count,
   });
 
   @override
@@ -46,21 +44,6 @@ class IconButtonWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
             ),
-            if (count > 0)
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Text(
-                  count.toString(),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 10.0,
-                  ),
-                ),
-              ),
           ],
         ),
       ),

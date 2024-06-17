@@ -31,7 +31,6 @@ class UtilityButtons extends StatelessWidget {
                 onTap: () {
                   Navigator.pushReplacementNamed(context, '/contactsUpdate');
                 },
-                count: 0,
               ),
               IconButtonWidget(
                 icon: Icons.privacy_tip,
@@ -43,7 +42,6 @@ class UtilityButtons extends StatelessWidget {
                     builder: (context) => TermsAndConditionsScreen(),
                   ));
                 },
-                count: 0,
               ),
             ],
           ),
@@ -61,7 +59,6 @@ class UtilityButtons extends StatelessWidget {
                     showDeRegisterDeviceDialog(context, user!.empCode!);
                   });
                 },
-                count: 0,
               ),
               IconButtonWidget(
                 icon: Icons.logout,
@@ -77,7 +74,6 @@ class UtilityButtons extends StatelessWidget {
                     );
                   }
                 },
-                count: 0,
               ),
             ],
           ),

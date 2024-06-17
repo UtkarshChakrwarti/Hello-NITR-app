@@ -418,12 +418,12 @@ class LocalStorageService {
   }
 
   // Save suggested contacts to secure storage
-  static Future<void> saveSuggestedContacts(List<User> contacts) async {
+  static Future<void> saveRecentContacts(List<User> contacts) async {
     try {
       List<String> contactJsonList =
           contacts.map((contact) => jsonEncode(contact.toJson())).toList();
       await _secureStorage.write(
-          key: AppConstants.suggestedContactsKey,
+          key: AppConstants.recentContactsKey,
           value: jsonEncode(contactJsonList));
     } catch (e) {
       _logger.severe('Error saving suggested contacts: $e');
@@ -431,10 +431,10 @@ class LocalStorageService {
   }
 
   // Load suggested contacts from secure storage
-  static Future<List<User>> loadSuggestedContacts() async {
+  static Future<List<User>> loadRecentContacts() async {
     try {
       String? contactJsonList =
-          await _secureStorage.read(key: AppConstants.suggestedContactsKey);
+          await _secureStorage.read(key: AppConstants.recentContactsKey);
       if (contactJsonList != null) {
         List<String> contactList =
             List<String>.from(jsonDecode(contactJsonList));
@@ -449,4 +449,6 @@ class LocalStorageService {
       return [];
     }
   }
+
+
 }

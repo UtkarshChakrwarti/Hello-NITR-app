@@ -6,7 +6,6 @@ import 'package:hello_nitr/screens/user/profile/widgets/icon_button.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/section_title.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/user_profile_header.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/utility_buttons.dart';
-import 'package:logging/logging.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final VoidCallback onSearchCriteriaSelected;
@@ -25,31 +24,10 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final UserProfileController _controller = UserProfileController();
-  final Logger _logger = Logger('UserProfileScreen');
-
-  Map<String, int> contactCounts = {
-    "All Employees": 0,
-    "Faculties": 0,
-    "Officers": 0,
-    "Departments": 0,
-  };
 
   @override
   void initState() {
     super.initState();
-    _fetchContactCounts();
-  }
-
-  Future<void> _fetchContactCounts() async {
-    try {
-      _logger.info('Fetching contact counts');
-      Map<String, int> counts = await _controller.fetchContactCounts();
-      setState(() {
-        contactCounts = counts;
-      });
-    } catch (e, stackTrace) {
-      _logger.severe('Error fetching contact counts', e, stackTrace);
-    }
   }
 
   @override
@@ -93,23 +71,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButtonWidget(
-                  icon: Icons.people,
-                  label: "All Employees",
-                  iconSize: 22.0,
-                  fontSize: 11.0,
-                  onTap: () {
-                    widget.onFilterByEmployeeType('');
-                  },
-                  count: contactCounts["All Employees"]!),
+                icon: Icons.people,
+                label: "All Employees",
+                iconSize: 22.0,
+                fontSize: 11.0,
+                onTap: () {
+                  widget.onFilterByEmployeeType('');
+                },
+              ),
               IconButtonWidget(
-                  icon: Icons.school,
-                  label: "Faculties",
-                  iconSize: 22.0,
-                  fontSize: 11.0,
-                  onTap: () {
-                    widget.onFilterByEmployeeType('Faculty');
-                  },
-                  count: contactCounts["Faculties"]!),
+                icon: Icons.school,
+                label: "Faculties",
+                iconSize: 22.0,
+                fontSize: 11.0,
+                onTap: () {
+                  widget.onFilterByEmployeeType('Faculty');
+                },
+              ),
             ],
           ),
           SizedBox(height: 8.0),
@@ -117,21 +95,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButtonWidget(
-                  icon: Icons.work,
-                  label: "Officers",
-                  iconSize: 22.0,
-                  fontSize: 11.0,
-                  onTap: () {
-                    widget.onFilterByEmployeeType('Officer');
-                  },
-                  count: contactCounts["Officers"]!),
+                icon: Icons.work,
+                label: "Officers",
+                iconSize: 22.0,
+                fontSize: 11.0,
+                onTap: () {
+                  widget.onFilterByEmployeeType('Officer');
+                },
+              ),
               IconButtonWidget(
-                  icon: Icons.group,
-                  label: "Departments",
-                  iconSize: 22.0,
-                  fontSize: 11.0,
-                  onTap: widget.onSearchCriteriaSelected,
-                  count: contactCounts["Departments"]!),
+                icon: Icons.group,
+                label: "Departments",
+                iconSize: 22.0,
+                fontSize: 11.0,
+                onTap: widget.onSearchCriteriaSelected,
+              ),
             ],
           ),
         ],

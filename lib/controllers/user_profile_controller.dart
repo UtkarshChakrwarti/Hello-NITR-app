@@ -7,28 +7,6 @@ class UserProfileController {
   final ApiService _apiService = ApiService();
   final Logger _logger = Logger('UserProfileController');
 
-  Future<Map<String, int>> fetchContactCounts() async {
-    try {
-      _logger.info('Fetching contact counts');
-      int allEmployeesCount = await LocalStorageService.getTotalUsers();
-      int facultiesCount =
-          await LocalStorageService.getTotalUsersByEmployeeType('Faculty');
-      int officersCount =
-          await LocalStorageService.getTotalUsersByEmployeeType('Officer');
-      int departmentsCount = await LocalStorageService.getTotalDepartments();
-
-      return {
-        "All Employees": allEmployeesCount,
-        "Faculties": facultiesCount,
-        "Officers": officersCount,
-        "Departments": departmentsCount,
-      };
-    } catch (e, stackTrace) {
-      _logger.severe('Error fetching contact counts', e, stackTrace);
-      return {};
-    }
-  }
-
   Future<User?> getCurrentUser() async {
     try {
       _logger.info('Fetching current user');

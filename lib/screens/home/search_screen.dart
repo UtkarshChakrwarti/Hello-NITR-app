@@ -15,12 +15,10 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen>
-    with TickerProviderStateMixin {
+class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMixin {
   static const _pageSize = 10;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
-  final PagingController<int, User> _pagingController =
-      PagingController(firstPageKey: 0);
+  final PagingController<int, User> _pagingController = PagingController(firstPageKey: 0);
   final Duration animationDuration = Duration(milliseconds: 300);
   final Logger _logger = Logger('SearchScreen');
 
@@ -52,8 +50,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems =
-          await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
+      final newItems = await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -70,10 +67,8 @@ class _SearchScreenState extends State<SearchScreen>
 
   void _cacheProfileImages(List<User> users) {
     for (User user in users) {
-      if (user.empCode != null &&
-          !_profileImagesCache.containsKey(user.empCode)) {
-        _profileImagesCache[user.empCode!] =
-            _buildAvatar(user.photo, user.firstName);
+      if (user.empCode != null && !_profileImagesCache.containsKey(user.empCode)) {
+        _profileImagesCache[user.empCode!] = _buildAvatar(user.photo, user.firstName);
         _logger.info('Image cached for user ${user.empCode}');
       }
     }
@@ -95,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen>
 
   Widget _buildExpandedMenu(User contact) {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         color: _selectedBackgroundColor,
         borderRadius: BorderRadius.circular(12.0),
@@ -153,15 +148,15 @@ class _SearchScreenState extends State<SearchScreen>
     return _buildCircleAvatar(
       child: Text(
         firstName?.isNotEmpty == true ? firstName![0] : '',
-        style: TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
+        style: const TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
       ),
     );
   }
 
   Widget _buildCircleAvatar({ImageProvider? backgroundImage, Widget? child}) {
     return Container(
-      padding: EdgeInsets.all(1),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(1),
+      decoration: const BoxDecoration(
         color: AppColors.primaryColor,
         shape: BoxShape.circle,
       ),
@@ -186,7 +181,7 @@ class _SearchScreenState extends State<SearchScreen>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
         title: TextField(
@@ -198,7 +193,7 @@ class _SearchScreenState extends State<SearchScreen>
             hintStyle: TextStyle(color: Colors.grey[400]),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.clear),
+                    icon: const Icon(Icons.clear),
                     onPressed: () {
                       setState(() {
                         _searchQuery = '';
@@ -210,7 +205,7 @@ class _SearchScreenState extends State<SearchScreen>
                   )
                 : null,
           ),
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
+          style: const TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
           onChanged: _onSearchChanged,
         ),
       ),
@@ -218,100 +213,19 @@ class _SearchScreenState extends State<SearchScreen>
         pagingController: _pagingController,
         builderDelegate: PagedChildBuilderDelegate<User>(
           itemBuilder: (context, item, index) {
-            final bool isExpanded = _expandedIndex == index;
-            final String fullName =
-                "${item.firstName ?? ''}${item.middleName != null ? ' ${item.middleName}' : ''} ${item.lastName ?? ''}";
-            return Dismissible(
-              key: ValueKey(item.empCode),
-              direction: DismissDirection.horizontal,
-              confirmDismiss: (direction) async {
-                if (direction == DismissDirection.startToEnd) {
-                  print('Call ${item.firstName}');
-                } else if (direction == DismissDirection.endToStart) {
-                  print('Open profile of ${item.firstName}');
-                }
-                return false;
-              },
-              dismissThresholds: {
-                DismissDirection.startToEnd: 0.33,
-                DismissDirection.endToStart: 0.33,
-              },
-              background: Container(
-                color: AppColors.primaryColor,
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 20.0),
-                child: Row(
-                  children: [
-                    Icon(CupertinoIcons.phone_solid, color: Colors.white),
-                    SizedBox(width: 8.0),
-                    Text('Make Call', style: TextStyle(color: Colors.white)),
-                  ],
-                ),
-              ),
-              secondaryBackground: Container(
-                color: AppColors.primaryColor,
-                alignment: Alignment.centerRight,
-                padding: EdgeInsets.only(right: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text('View Profile', style: TextStyle(color: Colors.white)),
-                    SizedBox(width: 8.0),
-                    Icon(CupertinoIcons.person_crop_circle_fill,
-                        color: Colors.white),
-                  ],
-                ),
-              ),
-              child: AnimatedContainer(
-                duration: animationDuration,
-                curve: Curves.easeInOut,
-                margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-                padding: EdgeInsets.symmetric(
-                    horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
-                decoration: BoxDecoration(
-                  color: isExpanded ? _selectedBackgroundColor : Colors.white,
-                  borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
-                ),
-                child: Column(
-                  children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                      leading: _profileImagesCache[item.empCode] ??
-                          _buildAvatar(item.photo, item.firstName),
-                      title: Text(
-                        fullName,
-                        style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(
-                        item.email ?? '',
-                        style: TextStyle(fontSize: 14, fontFamily: 'Roboto'),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      onTap: () => _handleContactTap(index),
-                    ),
-                    AnimatedSize(
-                      duration: animationDuration,
-                      curve: Curves.easeInOut,
-                      child:
-                          isExpanded ? _buildExpandedMenu(item) : Container(),
-                    ),
-                  ],
-                ),
-              ),
-            );
+            return _buildContactItem(context, item, index);
           },
           firstPageErrorIndicatorBuilder: (context) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.error_outline, size: 64, color: Colors.red),
-                SizedBox(height: 8),
-                Text('Something went wrong'),
-                SizedBox(height: 8),
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 8),
+                const Text('Something went wrong'),
+                const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () => _pagingController.refresh(),
-                  child: Text('Try Again'),
+                  child: const Text('Try Again'),
                 ),
               ],
             ),
@@ -320,13 +234,89 @@ class _SearchScreenState extends State<SearchScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.search_off, size: 64, color: Colors.grey),
-                SizedBox(height: 8),
-                Text('No results found'),
+                const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                const SizedBox(height: 8),
+                const Text('No results found'),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildContactItem(BuildContext context, User item, int index) {
+    final bool isExpanded = _expandedIndex == index;
+    final String fullName =
+        "${item.firstName ?? ''}${item.middleName != null ? ' ${item.middleName}' : ''} ${item.lastName ?? ''}";
+
+    return Dismissible(
+      key: ValueKey(item.empCode),
+      direction: DismissDirection.horizontal,
+      confirmDismiss: (direction) async {
+        if (direction == DismissDirection.startToEnd) {
+          print('Call ${item.firstName}');
+        } else if (direction == DismissDirection.endToStart) {
+          print('Open profile of ${item.firstName}');
+        }
+        return false;
+      },
+      dismissThresholds: const {
+        DismissDirection.startToEnd: 0.33,
+        DismissDirection.endToStart: 0.33,
+      },
+      background: _buildSwipeBackground(Icons.phone, 'Make Call'),
+      secondaryBackground: _buildSwipeBackground(Icons.person, 'View Profile'),
+      child: AnimatedContainer(
+        duration: animationDuration,
+        curve: Curves.easeInOut,
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+        padding: EdgeInsets.symmetric(
+            horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
+        decoration: BoxDecoration(
+          color: isExpanded ? _selectedBackgroundColor : Colors.white,
+          borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
+        ),
+        child: Column(
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: _profileImagesCache[item.empCode] ??
+                  _buildAvatar(item.photo, item.firstName),
+              title: Text(
+                fullName,
+                style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                item.email ?? '',
+                style: const TextStyle(fontSize: 14, fontFamily: 'Roboto'),
+                overflow: TextOverflow.ellipsis,
+              ),
+              onTap: () => _handleContactTap(index),
+            ),
+            AnimatedSize(
+              duration: animationDuration,
+              curve: Curves.easeInOut,
+              child: isExpanded ? _buildExpandedMenu(item) : Container(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSwipeBackground(IconData icon, String label) {
+    return Container(
+      color: AppColors.primaryColor,
+      alignment: Alignment.centerLeft,
+      padding: const EdgeInsets.only(left: 20.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white),
+          const SizedBox(width: 8.0),
+          Text(label, style: const TextStyle(color: Colors.white)),
+        ],
       ),
     );
   }

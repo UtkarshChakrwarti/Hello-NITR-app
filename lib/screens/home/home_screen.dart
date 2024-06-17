@@ -18,7 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   static const _pageSize = 10;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
-  final PagingController<int, User> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, User> _pagingController =
+      PagingController(firstPageKey: 0);
   final Duration animationDuration = Duration(milliseconds: 300);
   final Logger _logger = Logger('HomeScreen');
 
@@ -26,6 +27,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   static const Color _selectedBackgroundColor = Color(0xFFFDEEE8);
 
   int? _expandedIndex;
+  String _currentFilter = 'All Employee';
+  bool _isAscending = true;
   final Map<int, Widget> _profileImagesCache = {};
 
   @override
@@ -44,7 +47,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems = await HomeProvider.fetchContacts(pageKey, _pageSize);
+      final newItems = await HomeProvider.fetchContacts(
+          pageKey, _pageSize, _currentFilter, _isAscending);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -61,10 +65,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _cacheProfileImages(List<User> users, int pageKey) {
     for (int i = 0; i < users.length; i++) {
       int index = pageKey + i;
-      if (!_profileImagesCache.containsKey(index)) {
-        _profileImagesCache[index] = _buildAvatar(users[i].photo, users[i].firstName);
-        _logger.info('Image cached for user at index $index');
-      }
+      _profileImagesCache[index] =
+          _buildAvatar(users[i].photo, users[i].firstName);
+      _logger.info('Image cached for user at index $index');
     }
   }
 
@@ -97,10 +100,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 // Handle call action
               }),
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                // Handle whatsapp action
+                // Handle WhatsApp action
               }),
               _buildIconButton(Icons.chat, () {
-                // Handle msg action
+                // Handle message action
               }),
               _buildIconButton(Icons.mail, () {
                 // Handle mail action
@@ -125,21 +128,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget _buildAvatar(String? photoUrl, String? firstName) {
     if (photoUrl != null && photoUrl.isNotEmpty) {
       if (_utilityFunctions.isValidBase64(photoUrl)) {
-        // Handle base64 encoded image
         _logger.info('Loading base64 image for $firstName');
         return _buildCircleAvatar(
           backgroundImage: MemoryImage(base64Decode(photoUrl)),
         );
       } else if (Uri.tryParse(photoUrl)?.hasAbsolutePath ?? false) {
-        // Handle network image
         _logger.info('Loading network image for $firstName');
         return _buildCircleAvatar(
           backgroundImage: CachedNetworkImageProvider(photoUrl),
         );
       }
     }
-
-    // Fallback to initials
     _logger.info('Loading initials for $firstName');
     return _buildCircleAvatar(
       child: Text(
@@ -151,18 +150,34 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget _buildCircleAvatar({ImageProvider? backgroundImage, Widget? child}) {
     return Container(
-      padding: EdgeInsets.all(2), // Border width
+      padding: EdgeInsets.all(1),
       decoration: BoxDecoration(
-        color: AppColors.primaryColor, // Border color
+        color: AppColors.primaryColor,
         shape: BoxShape.circle,
       ),
       child: CircleAvatar(
-        radius: 24, // Define a fixed size
-        backgroundColor: Colors.white,
+        radius: 24,
+        backgroundColor: AppColors.secondaryColor,
         backgroundImage: backgroundImage,
         child: child,
       ),
     );
+  }
+
+  void _applyFilter(String filter) {
+    setState(() {
+      _currentFilter = filter;
+      _profileImagesCache.clear(); // Clear the cache when changing the filter
+      _pagingController.refresh();
+    });
+  }
+
+  void _toggleSortOrder() {
+    setState(() {
+      _isAscending = !_isAscending;
+      _profileImagesCache.clear(); // Clear the cache when changing the sorting order
+      _pagingController.refresh();
+    });
   }
 
   @override
@@ -172,6 +187,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         title: Text('Hello NITR'),
         actions: [
           IconButton(
+            icon: Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
+            onPressed: _toggleSortOrder,
+          ),
+          IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
               // Handle search action
@@ -179,50 +198,147 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      body: PagedListView<int, User>(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<User>(
-          itemBuilder: (context, item, index) {
-            final bool isExpanded = _expandedIndex == index;
-            final String fullName = "${item.firstName ?? ''} ${item.lastName ?? ''}";
-            return AnimatedContainer(
-              duration: animationDuration,
-              curve: Curves.easeInOut,
-              margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
-              decoration: BoxDecoration(
-                color: isExpanded ? _selectedBackgroundColor : Colors.white,
-                borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
-                
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildFilterButton('All Employee'),
+                _buildFilterButton('Faculty'),
+                _buildFilterButton('Officer'),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Showing: $_currentFilter',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: Column(
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
-                    leading: _profileImagesCache[index] ?? _buildAvatar(item.photo, item.firstName),
-                    title: Text(
-                      fullName,
-                      style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
-                      overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Expanded(
+            child: PagedListView<int, User>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<User>(
+                itemBuilder: (context, item, index) {
+                  final bool isExpanded = _expandedIndex == index;
+                  final String fullName =
+                      "${item.firstName ?? ''}${item.middleName != null ? ' ${item.middleName}' : ''} ${item.lastName ?? ''}";
+                  return Dismissible(
+                    key: ValueKey(item.empCode),
+                    direction: DismissDirection.horizontal,
+                    confirmDismiss: (direction) async {
+                      if (direction == DismissDirection.startToEnd) {
+                        print('Call ${item.firstName}');
+                      } else if (direction == DismissDirection.endToStart) {
+                        print('Open profile of ${item.firstName}');
+                      }
+                      return false;
+                    },
+                    dismissThresholds: {
+                      DismissDirection.startToEnd: 0.33,
+                      DismissDirection.endToStart: 0.33,
+                    },
+                    background: Container(
+                      color: AppColors.primaryColor,
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.only(left: 20.0),
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.phone_solid, color: Colors.white),
+                          SizedBox(width: 8.0),
+                          Text('Make Call',
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      ),
                     ),
-                    subtitle: Text(
-                      item.email ?? '',
-                      style: TextStyle(fontSize: 14, fontFamily: 'Roboto'),
-                      overflow: TextOverflow.ellipsis,
+                    secondaryBackground: Container(
+                      color: AppColors.primaryColor,
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text('View Profile',
+                              style: TextStyle(color: Colors.white)),
+                          SizedBox(width: 8.0),
+                          Icon(CupertinoIcons.person_crop_circle_fill,
+                              color: Colors.white),
+                        ],
+                      ),
                     ),
-                    onTap: () => _handleContactTap(index),
-                  ),
-                  AnimatedSize(
-                    duration: animationDuration,
-                    curve: Curves.easeInOut,
-                    child: isExpanded ? _buildExpandedMenu(item) : Container(),
-                  ),
-                ],
+                    child: AnimatedContainer(
+                      duration: animationDuration,
+                      curve: Curves.easeInOut,
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
+                      decoration: BoxDecoration(
+                        color: isExpanded
+                            ? _selectedBackgroundColor
+                            : Colors.white,
+                        borderRadius:
+                            BorderRadius.circular(isExpanded ? 16.0 : 0.0),
+                      ),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 0.0),
+                            leading: _profileImagesCache[index] ??
+                                _buildAvatar(item.photo, item.firstName),
+                            title: Text(
+                              fullName,
+                              style:
+                                  TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              item.email ?? '',
+                              style:
+                                  TextStyle(fontSize: 14, fontFamily: 'Roboto'),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            onTap: () => _handleContactTap(index),
+                          ),
+                          AnimatedSize(
+                            duration: animationDuration,
+                            curve: Curves.easeInOut,
+                            child: isExpanded
+                                ? _buildExpandedMenu(item)
+                                : Container(),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildFilterButton(String label) {
+    return ElevatedButton(
+      onPressed: () => _applyFilter(label),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: _currentFilter == label ? Colors.white : Colors.black,
+        backgroundColor:
+            _currentFilter == label ? AppColors.primaryColor : Colors.grey[200],
+      ),
+      child: Text(label),
     );
   }
 }

@@ -83,15 +83,32 @@ class LocalStorageService {
     );
   }
 
-  // Get Paginated Users from the database with offset and limit as parameters
-  static Future<List<User>> getUsers(int offset, int limit) async {
+// Updated LocalStorageService to accept filter and sorting order
+
+  static Future<List<User>> getUsers(
+      int offset, int limit, String filter, bool isAscending) async {
     final db = await database;
+
+    // Build the where clause and arguments based on the filter
+    String? whereClause;
+    List<dynamic>? whereArgs;
+
+    if (filter != 'All Employee') {
+      whereClause = 'employeeType = ?';
+      whereArgs = [filter];
+    }
+
+    final orderBy = 'firstName ${isAscending ? 'ASC' : 'DESC'}';
+
     final List<Map<String, dynamic>> maps = await db.query(
       AppConstants.userTable,
       limit: limit,
       offset: offset,
-      orderBy: 'firstName',
+      orderBy: orderBy,
+      where: whereClause,
+      whereArgs: whereArgs,
     );
+
     return List.generate(maps.length, (i) {
       return User.fromJson(maps[i]);
     });

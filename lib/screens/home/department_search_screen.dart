@@ -9,37 +9,40 @@ import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
-import 'search_screen.dart';
-import 'department_search_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class DepartmentSearchScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _DepartmentSearchScreenState createState() => _DepartmentSearchScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with TickerProviderStateMixin {
   static const _pageSize = 10;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
-  final PagingController<int, User> _pagingController =
-      PagingController(firstPageKey: 0);
+  final PagingController<int, User> _pagingController = PagingController(firstPageKey: 0);
   final Duration animationDuration = Duration(milliseconds: 300);
-  final Logger _logger = Logger('HomeScreen');
+  final Logger _logger = Logger('DepartmentSearchScreen');
 
   static const Color _iconColor = AppColors.primaryColor;
   static const Color _selectedBackgroundColor = Color(0xFFFDEEE8);
 
   int? _expandedIndex;
-  String _currentFilter = 'All Employee';
-  bool _isAscending = true;
-  int _contactCount = 0;
+  String _searchQuery = '';
+  String _selectedDepartment = '';
   final Map<String, Widget> _profileImagesCache = {};
+  final FocusNode _searchFocusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
+
+  List<String> _departments = [];
 
   @override
   void initState() {
     super.initState();
     _pagingController.addPageRequestListener(_fetchPage);
     _setupLogging();
-    _fetchContactCount();
+    _fetchDepartments();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_searchFocusNode);
+    });
   }
 
   void _setupLogging() {
@@ -51,8 +54,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems = await HomeProvider.fetchContacts(
-          pageKey, _pageSize, _currentFilter, _isAscending);
+      List<User> newItems;
+      if (_selectedDepartment.isEmpty) {
+        newItems = await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
+      } else {
+        newItems = await HomeProvider.searchUsersByDepartment(
+            pageKey, _pageSize, _searchQuery, _selectedDepartment);
+      }
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -62,18 +70,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       }
       _cacheProfileImages(newItems);
     } catch (error) {
+      _logger.severe('Failed to fetch page: $error');
       _pagingController.error = error;
     }
   }
 
-  Future<void> _fetchContactCount() async {
+  Future<void> _fetchDepartments() async {
     try {
-      final count = await HomeProvider.fetchContactCount(_currentFilter);
+      final departments = await HomeProvider.getDepartments();
       setState(() {
-        _contactCount = count;
+        _departments = departments;
       });
     } catch (error) {
-      _logger.severe('Failed to fetch contact count: $error');
+      _logger.severe('Failed to fetch departments: $error');
     }
   }
 
@@ -89,6 +98,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void dispose() {
     _pagingController.dispose();
+    _searchFocusNode.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -179,19 +190,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
   }
 
-  void _applyFilter(String filter) {
+  void _onSearchChanged(String query) {
     setState(() {
-      _currentFilter = filter;
+      _searchQuery = query;
       _pagingController.refresh();
-      _fetchContactCount(); // Fetch contact count when changing the filter
     });
-    // Close the drawer
-    Navigator.of(context).pop();
   }
 
-  void _toggleSortOrder() {
+  void _onDepartmentChanged(String? department) {
     setState(() {
-      _isAscending = !_isAscending;
+      _selectedDepartment = department ?? '';
       _pagingController.refresh();
     });
   }
@@ -200,87 +208,57 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Hello NITR',
-          style: TextStyle(color: AppColors.primaryColor),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
-            onPressed: _toggleSortOrder,
+        title: TextField(
+          focusNode: _searchFocusNode,
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: 'Search Contacts by Department',
+            border: InputBorder.none,
+            hintStyle: TextStyle(color: Colors.grey[400]),
+            suffixIcon: _searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _searchQuery = '';
+                        _pagingController.refresh();
+                        _searchController.clear();
+                        FocusScope.of(context).requestFocus(_searchFocusNode);
+                      });
+                    },
+                  )
+                : null,
           ),
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchScreen(),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-              ),
-              child: Text(
-                'Filter Contacts',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: _buildFilterButton('All Employee'),
-            ),
-            ListTile(
-              title: _buildFilterButton('Faculty'),
-            ),
-            ListTile(
-              title: _buildFilterButton('Officer'),
-            ),
-            ListTile(
-              title: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DepartmentSearchScreen(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: Text('Search by Departments'),
-              ),
-            ),
-          ],
+          style: TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
+          onChanged: _onSearchChanged,
         ),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '$_currentFilter ($_contactCount)',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
-                ),
+            child: DropdownButton<String>(
+              value: _selectedDepartment.isEmpty ? null : _selectedDepartment,
+              hint: Text("Select Department"),
+              isExpanded: true,
+              items: _departments.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: _onDepartmentChanged,
+              dropdownColor: Colors.white,
+              style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+              underline: Container(
+                height: 2,
+                color: AppColors.primaryColor,
               ),
+              icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryColor),
             ),
           ),
           Expanded(
@@ -337,34 +315,27 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: AnimatedContainer(
                       duration: animationDuration,
                       curve: Curves.easeInOut,
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+                      margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
                       padding: EdgeInsets.symmetric(
                           horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
                       decoration: BoxDecoration(
-                        color: isExpanded
-                            ? _selectedBackgroundColor
-                            : Colors.white,
-                        borderRadius:
-                            BorderRadius.circular(isExpanded ? 16.0 : 0.0),
+                        color: isExpanded ? _selectedBackgroundColor : Colors.white,
+                        borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
                       ),
                       child: Column(
                         children: [
                           ListTile(
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 0.0),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 0.0),
                             leading: _profileImagesCache[item.empCode] ??
                                 _buildAvatar(item.photo, item.firstName),
                             title: Text(
                               fullName,
-                              style:
-                                  TextStyle(fontSize: 16, fontFamily: 'Roboto'),
+                              style: TextStyle(fontSize: 16, fontFamily: 'Roboto'),
                               overflow: TextOverflow.ellipsis,
                             ),
                             subtitle: Text(
                               item.email ?? '',
-                              style:
-                                  TextStyle(fontSize: 14, fontFamily: 'Roboto'),
+                              style: TextStyle(fontSize: 14, fontFamily: 'Roboto'),
                               overflow: TextOverflow.ellipsis,
                             ),
                             onTap: () => _handleContactTap(index),
@@ -372,38 +343,43 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                           AnimatedSize(
                             duration: animationDuration,
                             curve: Curves.easeInOut,
-                            child: isExpanded
-                                ? _buildExpandedMenu(item)
-                                : Container(),
+                            child: isExpanded ? _buildExpandedMenu(item) : Container(),
                           ),
                         ],
                       ),
                     ),
                   );
                 },
+                firstPageErrorIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      SizedBox(height: 8),
+                      Text('Something went wrong'),
+                      SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => _pagingController.refresh(),
+                        child: Text('Try Again'),
+                      ),
+                    ],
+                  ),
+                ),
+                noItemsFoundIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.search_off, size: 64, color: Colors.grey),
+                      SizedBox(height: 8),
+                      Text('No results found'),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildFilterButton(String label) {
-    return ElevatedButton(
-      onPressed: () => {
-        _applyFilter(label),
-        //clear the expanded index when changing the filter
-        setState(() {
-          _expandedIndex = null;
-        })
-      },
-      style: ElevatedButton.styleFrom(
-        foregroundColor: _currentFilter == label ? Colors.white : Colors.black,
-        backgroundColor:
-            _currentFilter == label ? AppColors.primaryColor : Colors.grey[200],
-      ),
-      child: Text(label),
     );
   }
 }

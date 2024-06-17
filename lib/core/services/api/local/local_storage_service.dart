@@ -134,10 +134,11 @@ class LocalStorageService {
 
     return Sqflite.firstIntValue(countQuery) ?? 0;
   }
- // Search for users based on the query string in the database based on mobile, email, and firstname, lastname, middle name
+
+  // Search for users based on the query string in the database based
+  // on mobile, email, and firstname, lastname, middle name
   // paginated search
   static Future<List<User>> searchUsers(
-    
     int offset,
     int limit,
     String query,
@@ -147,8 +148,23 @@ class LocalStorageService {
     final List<Map<String, dynamic>> maps = await db.query(
       AppConstants.userTable,
       where:
-          'mobile LIKE ? OR email LIKE ? OR firstName LIKE ? OR lastName LIKE ? OR middleName LIKE ? OR email LIKE ? OR personalEmail LIKE ? OR workPhone LIKE ? OR residencePhone LIKE ? OR quarterAlpha LIKE ? OR quarterNo LIKE ? OR roomNo LIKE ?',
-      whereArgs: List.generate(5, (_) => '%$query%'),
+          '''mobile LIKE ?
+            OR firstName LIKE ?
+             OR lastName LIKE ?
+              OR middleName LIKE ?
+               OR email LIKE ? 
+               OR personalEmail LIKE ?
+                OR workPhone LIKE ?
+                 ''',
+      whereArgs: [
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%',
+        '%$query%'
+      ],
       limit: limit,
       offset: offset,
       //order by firstName in ascending order
@@ -159,6 +175,42 @@ class LocalStorageService {
       return User.fromJson(maps[i]);
     });
   }
+
+  
+  static Future<List<User>> searchUsersByDepartment(
+      String query, String department, int offset, int limit,
+      {bool ascending = true}) async {
+    final db = await database;
+    final orderBy = ascending ? 'ASC' : 'DESC';
+    final result = await db.rawQuery('''
+    SELECT * FROM ${AppConstants.userTable}
+    WHERE (firstName || ' ' || IFNULL(middleName, '') || ' ' || lastName LIKE ? 
+           OR mobile LIKE ? 
+           OR email LIKE ?)
+      AND departmentName = ?
+    ORDER BY firstName $orderBy
+    LIMIT ? OFFSET ?
+  ''', ['%$query%', '%$query%', '%$query%', department, limit, offset]);
+
+    return result.map((json) => User.fromJson(json)).toList();
+  }
+
+  // Get the list of departments from the database
+
+  static Future<List<String>> getDepartments() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppConstants.userTable,
+      columns: ['departmentName'],
+      distinct: true,
+    );
+
+    return List.generate(maps.length, (i) {
+      return maps[i]['departmentName'];
+    });
+  }
+
   // Save login response to secure storage
   static Future<void> saveLoginResponse(LoginResponse loginResponse) async {
     try {

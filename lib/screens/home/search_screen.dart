@@ -63,6 +63,7 @@ class _SearchScreenState extends State<SearchScreen>
       }
       _cacheProfileImages(newItems);
     } catch (error) {
+      _logger.severe('Failed to fetch page: $error');
       _pagingController.error = error;
     }
   }
@@ -209,7 +210,7 @@ class _SearchScreenState extends State<SearchScreen>
                   )
                 : null,
           ),
-          style: TextStyle(color: AppColors.primaryColor, fontSize: 18.0),
+          style: TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
           onChanged: _onSearchChanged,
         ),
       ),
@@ -300,6 +301,31 @@ class _SearchScreenState extends State<SearchScreen>
               ),
             );
           },
+          firstPageErrorIndicatorBuilder: (context) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.error_outline, size: 64, color: Colors.red),
+                SizedBox(height: 8),
+                Text('Something went wrong'),
+                SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () => _pagingController.refresh(),
+                  child: Text('Try Again'),
+                ),
+              ],
+            ),
+          ),
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search_off, size: 64, color: Colors.grey),
+                SizedBox(height: 8),
+                Text('No results found'),
+              ],
+            ),
+          ),
         ),
       ),
     );

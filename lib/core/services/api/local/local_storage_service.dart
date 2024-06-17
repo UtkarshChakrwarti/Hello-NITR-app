@@ -83,6 +83,20 @@ class LocalStorageService {
     );
   }
 
+  // Get Paginated Users from the database with offset and limit as parameters
+  static Future<List<User>> getUsers(int offset, int limit) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppConstants.userTable,
+      limit: limit,
+      offset: offset,
+      orderBy: 'firstName',
+    );
+    return List.generate(maps.length, (i) {
+      return User.fromJson(maps[i]);
+    });
+  }
+
   // Save login response to secure storage
   static Future<void> saveLoginResponse(LoginResponse loginResponse) async {
     try {

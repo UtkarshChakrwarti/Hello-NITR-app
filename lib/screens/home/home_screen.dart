@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
@@ -116,16 +117,16 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildIconButton(CupertinoIcons.phone_solid, () {
-                LinkLauncher.makeCall(contact.mobile??'');
+                LinkLauncher.makeCall(contact.mobile ?? '');
               }),
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                LinkLauncher.sendWpMsg(contact.mobile??'');
+                LinkLauncher.sendWpMsg(contact.mobile ?? '');
               }),
               _buildIconButton(Icons.chat, () {
-                 LinkLauncher.sendMsg(contact.mobile??'');
+                LinkLauncher.sendMsg(contact.mobile ?? '');
               }),
               _buildIconButton(Icons.mail, () {
-                LinkLauncher.sendEmail(contact.email??'');
+                LinkLauncher.sendEmail(contact.email ?? '');
               }),
               _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {
                 // Handle profile action
@@ -208,62 +209,68 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Hello NITR',
-          style: TextStyle(color: AppColors.primaryColor),
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Hello NITR',
+            style: TextStyle(color: AppColors.primaryColor),
+          ),
+          actions: [
+            IconButton(
+              icon:
+                  Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
+              onPressed: _toggleSortOrder,
+            ),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon:
-                Icon(_isAscending ? Icons.arrow_downward : Icons.arrow_upward),
-            onPressed: _toggleSortOrder,
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchScreen(),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: UserProfileScreen(
-        currentFilter: _currentFilter,
-        onFilterSelected: _applyFilter,
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '$_currentFilter ($_contactCount)',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
+        drawer: UserProfileScreen(
+          currentFilter: _currentFilter,
+          onFilterSelected: _applyFilter,
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  '$_currentFilter ($_contactCount)',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                  ),
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: PagedListView<int, User>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<User>(
-                itemBuilder: (context, item, index) {
-                  return _buildContactItem(context, item, index);
-                },
+            Expanded(
+              child: PagedListView<int, User>(
+                pagingController: _pagingController,
+                builderDelegate: PagedChildBuilderDelegate<User>(
+                  itemBuilder: (context, item, index) {
+                    return _buildContactItem(context, item, index);
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -279,7 +286,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           print('Make call to ${item.firstName}');
-          LinkLauncher.makeCall(item.mobile??'');
+          LinkLauncher.makeCall(item.mobile ?? '');
 
         } else if (direction == DismissDirection.endToStart) {
           print('Open profile of ${item.firstName}');

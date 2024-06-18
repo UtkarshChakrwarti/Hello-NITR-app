@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
@@ -139,7 +140,6 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
           focusNode: _searchFocusNode,
           controller: _searchController,
           decoration: InputDecoration(
-            //remove default underline
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
             hintText: 'Search Contacts by Department',
@@ -169,27 +169,45 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButton<String>(
-              value: _selectedDepartment.isEmpty ? null : _selectedDepartment,
-              hint: const Text("Select Department"),
-              isExpanded: true,
-              items: _departments.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: _onDepartmentChanged,
-              dropdownColor: Colors.white,
-              style:
-                  const TextStyle(color: AppColors.primaryColor, fontSize: 16),
-              underline: Container(
-                height: 2,
-                color: AppColors.primaryColor,
+            padding: const EdgeInsets.all(16.0),
+            child: DropdownSearch<String>(
+              items: _departments,
+              dropdownDecoratorProps: DropDownDecoratorProps(
+                dropdownSearchDecoration: InputDecoration(
+                  hintText: "Select Department",
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 12.0),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 2,
+                    ),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 2,
+                    ),
+                  ),
+                ),
               ),
-              icon: const Icon(Icons.arrow_drop_down,
-                  color: AppColors.primaryColor),
+              onChanged: _onDepartmentChanged,
+              selectedItem:
+                  _selectedDepartment.isEmpty ? null : _selectedDepartment,
+              popupProps: PopupProps.menu(
+                showSearchBox: true,
+                searchFieldProps: TextFieldProps(
+                  decoration: InputDecoration(
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.primaryColor),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.primaryColor),
+                    ),
+                    hintText: "Search Department",
+                  ),
+                ),
+              ),
             ),
           ),
           Expanded(

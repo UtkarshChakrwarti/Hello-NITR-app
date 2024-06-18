@@ -20,13 +20,11 @@ class UserProfileHeader extends StatelessWidget {
     final double avatarRadius = mediaQuery.size.width * 0.12;
     final double headerHeight = mediaQuery.size.height * 0.25;
 
-    String fullName = user.firstName! +
-        (user.middleName != null && user.middleName!.isNotEmpty
-            ? " ${user.middleName}"
-            : "") +
-        (user.lastName != null && user.lastName!.isNotEmpty
-            ? " ${user.lastName}"
-            : "");
+    final String fullName = [
+      user.firstName,
+      user.middleName,
+      user.lastName
+    ].where((name) => name != null && name.isNotEmpty).join(' ');
 
     return Container(
       height: headerHeight,

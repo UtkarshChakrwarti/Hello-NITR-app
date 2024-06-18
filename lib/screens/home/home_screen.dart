@@ -140,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 color: AppColors.primaryColor,
                 fontSize: 30,
                 fontFamily: 'Roboto',
-                fontWeight: FontWeight.w400),
+                fontWeight: FontWeight.w500),
           ),
           actions: [
             IconButton(

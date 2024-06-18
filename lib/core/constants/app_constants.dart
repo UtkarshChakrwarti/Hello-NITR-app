@@ -24,6 +24,6 @@ class AppConstants {
 
   static const int otpTimeOutSeconds = 30; // OTP timeout in seconds
 
-  static const recentContactsKey = 'recent_contacts'; // Key for suggested contacts
+  static int imageQuality = 50; // Set image quality for compression (0-100)
 
 }

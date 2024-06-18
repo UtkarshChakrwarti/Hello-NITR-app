@@ -63,7 +63,7 @@ class LocalStorageService {
     final db = await database;
     //Compressing the image field before saving
     final compressedImage =
-        ImageCompressor.compressBase64Image(user.photo!, quality: 50);
+        ImageCompressor.compressBase64Image(user.photo!, quality: AppConstants.imageQuality);
     //print the compressed image size and compression ratio
 
     _logger.info('Compression Details:');

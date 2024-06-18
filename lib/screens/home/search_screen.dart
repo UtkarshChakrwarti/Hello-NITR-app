@@ -1,15 +1,13 @@
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
 import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
+import 'package:hello_nitr/screens/home/widgets/avatar.dart';
+import 'package:hello_nitr/screens/home/widgets/contact_list.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -17,21 +15,19 @@ class SearchScreen extends StatefulWidget {
   _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMixin {
+class _SearchScreenState extends State<SearchScreen>
+    with TickerProviderStateMixin {
   static const _pageSize = 10;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
-  final PagingController<int, User> _pagingController = PagingController(firstPageKey: 0);
-  final Duration animationDuration = Duration(milliseconds: 300);
+  final PagingController<int, User> _pagingController =
+      PagingController(firstPageKey: 0);
   final Logger _logger = Logger('SearchScreen');
-
-  static const Color _iconColor = AppColors.primaryColor;
-  static const Color _selectedBackgroundColor = Color(0xFFFDEEE8);
+  final FocusNode _searchFocusNode = FocusNode();
+  final TextEditingController _searchController = TextEditingController();
 
   int? _expandedIndex;
   String _searchQuery = '';
   final Map<String, Widget> _profileImagesCache = {};
-  final FocusNode _searchFocusNode = FocusNode();
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -39,7 +35,6 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     _pagingController.addPageRequestListener(_fetchPage);
     _setupLogging();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_searchFocusNode);
     });
   }
 
@@ -52,7 +47,8 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems = await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
+      final newItems =
+          await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -69,8 +65,13 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
 
   void _cacheProfileImages(List<User> users) {
     for (User user in users) {
-      if (user.empCode != null && !_profileImagesCache.containsKey(user.empCode)) {
-        _profileImagesCache[user.empCode!] = _buildAvatar(user.photo, user.firstName);
+      if (user.empCode != null &&
+          !_profileImagesCache.containsKey(user.empCode)) {
+        _profileImagesCache[user.empCode!] = Avatar(
+          photoUrl: user.photo,
+          firstName: user.firstName,
+          utilityFunctions: _utilityFunctions,
+        );
         _logger.info('Image cached for user ${user.empCode}');
       }
     }
@@ -90,96 +91,18 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
     });
   }
 
-  Widget _buildExpandedMenu(User contact) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: _selectedBackgroundColor,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Column(
-        children: [
-          Divider(thickness: 1, color: _iconColor.withOpacity(0.5)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [_buildIconButton(CupertinoIcons.phone_solid, () {
-                LinkLauncher.makeCall(contact.mobile??'');
-              }),
-              _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                LinkLauncher.sendWpMsg(contact.mobile??'');
-              }),
-              _buildIconButton(Icons.chat, () {
-                 LinkLauncher.sendMsg(contact.mobile??'');
-              }),
-              _buildIconButton(Icons.mail, () {
-                LinkLauncher.sendEmail(contact.email??'');
-              }),
-              _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {
-                // Handle profile action
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ContactProfileScreen(contact),
-                  ),
-                );
-              }),],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
-    return IconButton(
-      icon: Icon(icon, color: _iconColor, size: 30.0),
-      onPressed: onPressed,
-    );
-  }
-
-  Widget _buildAvatar(String? photoUrl, String? firstName) {
-    if (photoUrl != null && photoUrl.isNotEmpty) {
-      if (_utilityFunctions.isValidBase64(photoUrl)) {
-        _logger.info('Loading base64 image for $firstName');
-        return _buildCircleAvatar(
-          backgroundImage: MemoryImage(base64Decode(photoUrl)),
-        );
-      } else if (Uri.tryParse(photoUrl)?.hasAbsolutePath ?? false) {
-        _logger.info('Loading network image for $firstName');
-        return _buildCircleAvatar(
-          backgroundImage: CachedNetworkImageProvider(photoUrl),
-        );
-      }
-    }
-    _logger.info('Loading initials for $firstName');
-    return _buildCircleAvatar(
-      child: Text(
-        firstName?.isNotEmpty == true ? firstName![0] : '',
-        style: const TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
-      ),
-    );
-  }
-
-  Widget _buildCircleAvatar({ImageProvider? backgroundImage, Widget? child}) {
-    return Container(
-      padding: const EdgeInsets.all(1),
-      decoration: const BoxDecoration(
-        color: AppColors.primaryColor,
-        shape: BoxShape.circle,
-      ),
-      child: CircleAvatar(
-        radius: 24,
-        backgroundColor: AppColors.secondaryColor,
-        backgroundImage: backgroundImage,
-        child: child,
-      ),
-    );
-  }
-
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
       _pagingController.refresh();
     });
+  }
+
+  Future<void> _initialize() async {
+    await Future.delayed(
+      const Duration(milliseconds: 300),
+      () => _searchFocusNode.requestFocus(),
+    );
   }
 
   @override
@@ -215,121 +138,73 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
           onChanged: _onSearchChanged,
         ),
       ),
-      body: PagedListView<int, User>(
-        pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<User>(
-          itemBuilder: (context, item, index) {
-            return _buildContactItem(context, item, index);
-          },
-          firstPageErrorIndicatorBuilder: (context) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.error_outline, size: 64, color: Colors.red),
-                const SizedBox(height: 8),
-                const Text('Something went wrong'),
-                const SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: () => _pagingController.refresh(),
-                  child: const Text('Try Again'),
+      body: FutureBuilder(
+        future: _initialize(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return PagedListView<int, User>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<User>(
+                itemBuilder: (context, item, index) {
+                  return ContactListItem(
+                    contact: item,
+                    isExpanded: _expandedIndex == index,
+                    onTap: () => _handleContactTap(index),
+                    onDismissed: () {},
+                    onCall: () {
+                      LinkLauncher.makeCall(item.mobile ?? '');
+                    },
+                    onViewProfile: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ContactProfileScreen(item),
+                        ),
+                      );
+                    },
+                    avatar: _profileImagesCache[item.empCode] ??
+                        Avatar(
+                          photoUrl: item.photo,
+                          firstName: item.firstName,
+                          utilityFunctions: _utilityFunctions,
+                        ),
+                  );
+                },
+                firstPageErrorIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.error_outline,
+                          size: 64, color: Colors.red),
+                      const SizedBox(height: 8),
+                      const Text('Something went wrong'),
+                      const SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => _pagingController.refresh(),
+                        child: const Text('Try Again'),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
-          noItemsFoundIndicatorBuilder: (context) => Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.search_off, size: 64, color: Colors.grey),
-                const SizedBox(height: 8),
-                const Text('No results found'),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildContactItem(BuildContext context, User item, int index) {
-    final bool isExpanded = _expandedIndex == index;
-    final String fullName =
-        "${item.firstName ?? ''}${item.middleName != null ? ' ${item.middleName}' : ''} ${item.lastName ?? ''}";
-
-    return Dismissible(
-      key: ValueKey(item.empCode),
-      direction: DismissDirection.horizontal,
-      confirmDismiss: (direction) async {
-        if (direction == DismissDirection.startToEnd) {
-          print('Call ${item.firstName}');
-          LinkLauncher.makeCall(item.mobile??'');
-        } else if (direction == DismissDirection.endToStart) {
-          print('Open profile of ${item.firstName}');
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ContactProfileScreen(item),
-            ),
-          );
-        }
-        return false;
-      },
-      dismissThresholds: const {
-        DismissDirection.startToEnd: 0.33,
-        DismissDirection.endToStart: 0.33,
-      },
-      background: _buildSwipeBackground(Icons.phone, 'Make Call'),
-      secondaryBackground: _buildSwipeBackground(Icons.person, 'View Profile'),
-      child: AnimatedContainer(
-        duration: animationDuration,
-        curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-        padding: EdgeInsets.symmetric(
-            horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
-        decoration: BoxDecoration(
-          color: isExpanded ? _selectedBackgroundColor : Colors.white,
-          borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
-        ),
-        child: Column(
-          children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: _profileImagesCache[item.empCode] ??
-                  _buildAvatar(item.photo, item.firstName),
-              title: Text(
-                fullName,
-                style: const TextStyle(fontSize: 16, fontFamily: 'Roboto'),
-                overflow: TextOverflow.ellipsis,
+                noItemsFoundIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.search_off,
+                          size: 64, color: Colors.grey),
+                      const SizedBox(height: 8),
+                      const Text('No results found'),
+                    ],
+                  ),
+                ),
               ),
-              subtitle: Text(
-                item.email ?? '',
-                style: const TextStyle(fontSize: 14, fontFamily: 'Roboto'),
-                overflow: TextOverflow.ellipsis,
-              ),
-              onTap: () => _handleContactTap(index),
-            ),
-            AnimatedSize(
-              duration: animationDuration,
-              curve: Curves.easeInOut,
-              child: isExpanded ? _buildExpandedMenu(item) : Container(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSwipeBackground(IconData icon, String label) {
-    return Container(
-      color: AppColors.primaryColor,
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.only(left: 20.0),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(width: 8.0),
-          Text(label, style: const TextStyle(color: Colors.white)),
-        ],
+            );
+          }
+        },
       ),
     );
   }

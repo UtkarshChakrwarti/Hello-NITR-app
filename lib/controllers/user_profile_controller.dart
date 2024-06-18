@@ -31,7 +31,6 @@ class UserProfileController {
     try {
       await LocalStorageService.logout();
       _logger.info('User logged out');
-      Navigator.of(context).maybePop();
       Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
     } catch (e, stacktrace) {
       _logger.severe("Logout failed", e, stacktrace);

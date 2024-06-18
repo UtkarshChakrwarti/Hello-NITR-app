@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Hello NITR',
             style: TextStyle(
                 color: AppColors.primaryColor,
-                fontSize: 24,
+                fontSize: 22,
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.w500),
           ),

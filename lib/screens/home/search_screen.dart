@@ -34,8 +34,7 @@ class _SearchScreenState extends State<SearchScreen>
     super.initState();
     _pagingController.addPageRequestListener(_fetchPage);
     _setupLogging();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-    });
+    WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
   void _setupLogging() {
@@ -111,29 +110,38 @@ class _SearchScreenState extends State<SearchScreen>
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          iconSize: 30,
           onPressed: () => Navigator.pop(context),
         ),
         title: TextField(
           focusNode: _searchFocusNode,
           controller: _searchController,
           decoration: InputDecoration(
+            //remove default underline
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
             hintText: 'Search users',
-            hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400], fontWeight: FontWeight.normal),
+            hintStyle: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[400],
+                fontWeight: FontWeight.normal),
             border: InputBorder.none,
             suffixIcon: _searchQuery.isNotEmpty
-          ? IconButton(
-              icon: const Icon(Icons.clear),
-              color: AppColors.primaryColor,
-              onPressed: () {
-                setState(() {
-            _searchQuery = '';
-            _pagingController.refresh();
-            _searchController.clear();
-            FocusScope.of(context).requestFocus(_searchFocusNode);
-                });
-              },
-            )
-          : null,
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    iconSize: 30,
+                    color: AppColors.primaryColor,
+                    onPressed: () {
+                      setState(() {
+                        _searchQuery = '';
+                        _pagingController.refresh();
+                        _searchController.clear();
+                        FocusScope.of(context).requestFocus(_searchFocusNode);
+                      });
+                    },
+                  )
+                : null,
+
           ),
           style: const TextStyle(fontSize: 20.0),
           onChanged: _onSearchChanged,

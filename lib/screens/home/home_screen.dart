@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
@@ -114,14 +115,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         appBar: AppBar(
           title: const Text(
             'Hello NITR',
-            style: TextStyle(color: AppColors.primaryColor),
+            style: TextStyle(color: AppColors.primaryColor, fontSize: 20),
           ),
           actions: [
-            IconButton(
-              icon: Icon(
-                  _isAscending ? Icons.arrow_downward : Icons.arrow_upward),
-              onPressed: _toggleSortOrder,
-            ),
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
@@ -133,6 +129,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 );
               },
             ),
+            IconButton(
+              icon: Icon(
+                  _isAscending ? CupertinoIcons.sort_up: CupertinoIcons.sort_down),
+              onPressed: _toggleSortOrder,
+            ),
+            
           ],
         ),
         drawer: Drawer(

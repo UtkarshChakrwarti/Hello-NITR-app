@@ -132,19 +132,25 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, size: 30),
           onPressed: () => Navigator.pop(context),
         ),
         title: TextField(
           focusNode: _searchFocusNode,
           controller: _searchController,
           decoration: InputDecoration(
+            //remove default underline
+            enabledBorder: InputBorder.none,
+            focusedBorder: InputBorder.none,
             hintText: 'Search Contacts by Department',
-            border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.grey[400]),
+            hintStyle: TextStyle(
+                fontSize: 18,
+                color: Colors.grey[500],
+                fontWeight: FontWeight.normal),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear,
+                        size: 30, color: AppColors.primaryColor),
                     onPressed: () {
                       setState(() {
                         _searchQuery = '';
@@ -156,7 +162,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
                   )
                 : null,
           ),
-          style: const TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
+          style: const TextStyle(fontSize: 20.0),
           onChanged: _onSearchChanged,
         ),
       ),
@@ -214,28 +220,12 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
                             utilityFunctions: _utilityFunctions),
                   );
                 },
-                firstPageErrorIndicatorBuilder: (context) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline,
-                          size: 64, color: Colors.red),
-                      const SizedBox(height: 8),
-                      const Text('Something went wrong'),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () => _pagingController.refresh(),
-                        child: const Text('Try Again'),
-                      ),
-                    ],
-                  ),
-                ),
                 noItemsFoundIndicatorBuilder: (context) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.search_off,
-                          size: 64, color: Colors.grey),
+                          size: 64, color: AppColors.primaryColor),
                       const SizedBox(height: 8),
                       const Text('No results found'),
                     ],

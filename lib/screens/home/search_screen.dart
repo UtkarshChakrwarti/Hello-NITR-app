@@ -123,7 +123,7 @@ class _SearchScreenState extends State<SearchScreen>
             hintText: 'Search users',
             hintStyle: TextStyle(
                 fontSize: 18,
-                color: Colors.grey[400],
+                color: Colors.grey[500],
                 fontWeight: FontWeight.normal),
             border: InputBorder.none,
             suffixIcon: _searchQuery.isNotEmpty

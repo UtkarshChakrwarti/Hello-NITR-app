@@ -25,8 +25,11 @@ class ContactListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final String fullName =
-        "${contact.firstName ?? ''}${contact.middleName != null ? ' ${contact.middleName}' : ''} ${contact.lastName ?? ''}";
+    final String fullName = [
+      contact.firstName,
+      contact.middleName,
+      contact.lastName
+    ].where((name) => name != null && name.isNotEmpty).join(' ');
 
     return Dismissible(
       key: ValueKey(contact.empCode),

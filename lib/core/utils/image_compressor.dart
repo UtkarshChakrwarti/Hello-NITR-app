@@ -12,8 +12,8 @@ class ImageCompressor {
   /// compression ratio, and size difference.
   ///
   /// Returns an empty map if an error occurs, such as an invalid base64 string.
-  static Map<String, dynamic> compressBase64Image(String base64Image,
-      {int quality = 70}) {
+  static Map<String, dynamic> compressBase64Image(
+      String base64Image, int quality) {
     try {
       // Decode the base64 image to get the original image bytes
       final originalImageBytes = base64Decode(base64Image);

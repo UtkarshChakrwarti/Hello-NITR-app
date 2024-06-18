@@ -43,7 +43,7 @@ class UserProfileHeader extends StatelessWidget {
             ),
             Positioned.fill(
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                 child: Container(
                   color: AppColors.primaryColor.withOpacity(0.8),
                 ),

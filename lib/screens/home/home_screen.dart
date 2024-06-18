@@ -138,8 +138,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Hello NITR',
             style: TextStyle(
                 color: AppColors.primaryColor,
-                fontSize: 30,
-                fontFamily: 'Roboto',
+                fontSize: 20,
+                fontFamily: 'Sans-serif',
                 fontWeight: FontWeight.w500),
           ),
           actions: [
@@ -173,16 +173,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              //padding top and left
+              padding: const EdgeInsets.only(top: 4.0, left: 20.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   '$_filterName ($_contactCount)',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'Roboto',
-                    color: AppColors.primaryColor,
+                  style:  TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Sans-serif',
+                    color: AppColors.primaryColor.withOpacity(0.8),
                   ),
                 ),
               ),

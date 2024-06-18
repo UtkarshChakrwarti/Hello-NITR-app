@@ -172,10 +172,10 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
             padding: const EdgeInsets.all(16.0),
             child: DropdownSearch<String>(
               items: _departments,
-              dropdownDecoratorProps: DropDownDecoratorProps(
+              dropdownDecoratorProps: const DropDownDecoratorProps(
                 dropdownSearchDecoration: InputDecoration(
                   hintText: "Select Department",
-                  contentPadding: const EdgeInsets.symmetric(
+                  contentPadding: EdgeInsets.symmetric(
                       vertical: 10.0, horizontal: 12.0),
                   border: UnderlineInputBorder(
                     borderSide: BorderSide(
@@ -194,7 +194,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
               onChanged: _onDepartmentChanged,
               selectedItem:
                   _selectedDepartment.isEmpty ? null : _selectedDepartment,
-              popupProps: PopupProps.menu(
+              popupProps: const PopupProps.menu(
                 showSearchBox: true,
                 searchFieldProps: TextFieldProps(
                   decoration: InputDecoration(

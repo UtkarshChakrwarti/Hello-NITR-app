@@ -3,14 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:hello_nitr/core/utils/utility_functions.dart';
+import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
+import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
+import 'package:hello_nitr/screens/user/profile/user_profile_screen.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'search_screen.dart';
-import 'department_search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -114,19 +116,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildIconButton(CupertinoIcons.phone_solid, () {
-                // Handle call action
+                LinkLauncher.makeCall(contact.mobile??'');
               }),
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                // Handle WhatsApp action
+                LinkLauncher.sendWpMsg(contact.mobile??'');
               }),
               _buildIconButton(Icons.chat, () {
-                // Handle message action
+                 LinkLauncher.sendMsg(contact.mobile??'');
               }),
               _buildIconButton(Icons.mail, () {
-                // Handle mail action
+                LinkLauncher.sendEmail(contact.email??'');
               }),
               _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {
-                // Handle info action
+                // Handle profile action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactProfileScreen(contact),
+                  ),
+                );
               }),
             ],
           ),
@@ -225,65 +233,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-              ),
-              child: Text(
-                'Filter Contacts',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: FilterButton(
-                label: 'All Employee',
-                currentFilter: _currentFilter,
-                onFilterSelected: _applyFilter,
-              ),
-            ),
-            ListTile(
-              title: FilterButton(
-                label: 'Faculty',
-                currentFilter: _currentFilter,
-                onFilterSelected: _applyFilter,
-              ),
-            ),
-            ListTile(
-              title: FilterButton(
-                label: 'Officer',
-                currentFilter: _currentFilter,
-                onFilterSelected: _applyFilter,
-              ),
-            ),
-            ListTile(
-              title: ElevatedButton(
-                onPressed: () {
-                  // Close the drawer
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DepartmentSearchScreen(),
-                    ),
-                  );
-                  
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryColor,
-                  foregroundColor: Colors.white,
-                ),
-                child: const Text('Search by Departments'),
-              ),
-            ),
-          ],
-        ),
+      drawer: UserProfileScreen(
+        currentFilter: _currentFilter,
+        onFilterSelected: _applyFilter,
       ),
       body: Column(
         children: [
@@ -326,9 +278,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       direction: DismissDirection.horizontal,
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
-          print('Call ${item.firstName}');
+          print('Make call to ${item.firstName}');
+          LinkLauncher.makeCall(item.mobile??'');
+
         } else if (direction == DismissDirection.endToStart) {
           print('Open profile of ${item.firstName}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ContactProfileScreen(item),
+            ),
+          );
         }
         return false;
       },
@@ -389,35 +349,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           Text(label, style: const TextStyle(color: Colors.white)),
         ],
       ),
-    );
-  }
-}
-
-class FilterButton extends StatelessWidget {
-  final String label;
-  final String currentFilter;
-  final Function(String) onFilterSelected;
-
-  const FilterButton({
-    required this.label,
-    required this.currentFilter,
-    required this.onFilterSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => {
-        onFilterSelected(label),
-        //clear the expanded index when changing the filter
-        (context as Element).markNeedsBuild()
-      },
-      style: ElevatedButton.styleFrom(
-        foregroundColor: currentFilter == label ? Colors.white : Colors.black,
-        backgroundColor:
-            currentFilter == label ? AppColors.primaryColor : Colors.grey[200],
-      ),
-      child: Text(label),
     );
   }
 }

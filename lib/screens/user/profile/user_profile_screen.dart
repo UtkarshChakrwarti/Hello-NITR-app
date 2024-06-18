@@ -6,32 +6,21 @@ import 'package:hello_nitr/screens/user/profile/widgets/icon_button.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/section_title.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/user_profile_header.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/utility_buttons.dart';
+import 'package:hello_nitr/screens/home/department_search_screen.dart';
 
-class UserProfileScreen extends StatefulWidget {
-  final VoidCallback onSearchCriteriaSelected;
-  final Function(String) onFilterByEmployeeType;
-  final Future<void> Function() onLogout;
+class UserProfileScreen extends StatelessWidget {
+  final String currentFilter;
+  final Function(String) onFilterSelected;
 
-  UserProfileScreen({
-    required this.onSearchCriteriaSelected,
-    required this.onFilterByEmployeeType,
-    required this.onLogout,
+  const UserProfileScreen({
+    required this.currentFilter,
+    required this.onFilterSelected,
   });
 
   @override
-  _UserProfileScreenState createState() => _UserProfileScreenState();
-}
-
-class _UserProfileScreenState extends State<UserProfileScreen> {
-  final UserProfileController _controller = UserProfileController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final UserProfileController _controller = UserProfileController();
+
     return FutureBuilder<User?>(
       future: _controller.getCurrentUser(),
       builder: (context, snapshot) {
@@ -51,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 SectionTitle("Personal Details", 16.0),
                 CompactPersonalDetails(user),
                 SectionTitle("Filter by", 16.0),
-                _buildFilterButtons(),
+                _buildFilterButtons(context),
                 Divider(color: Colors.grey[300]),
                 UtilityButtons(_controller),
               ],
@@ -62,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _buildFilterButtons() {
+  Widget _buildFilterButtons(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
@@ -76,7 +65,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 iconSize: 22.0,
                 fontSize: 11.0,
                 onTap: () {
-                  widget.onFilterByEmployeeType('');
+                  onFilterSelected('All Employee');
                 },
               ),
               IconButtonWidget(
@@ -85,7 +74,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 iconSize: 22.0,
                 fontSize: 11.0,
                 onTap: () {
-                  widget.onFilterByEmployeeType('Faculty');
+                  onFilterSelected('Faculty');
                 },
               ),
             ],
@@ -100,7 +89,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 iconSize: 22.0,
                 fontSize: 11.0,
                 onTap: () {
-                  widget.onFilterByEmployeeType('Officer');
+                  onFilterSelected('Officer');
                 },
               ),
               IconButtonWidget(
@@ -108,7 +97,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 label: "Departments",
                 iconSize: 22.0,
                 fontSize: 11.0,
-                onTap: widget.onSearchCriteriaSelected,
+                onTap: () {
+                  // Close the drawer
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DepartmentSearchScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -117,3 +115,5 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 }
+
+

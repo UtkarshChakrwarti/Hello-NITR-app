@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
+import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
@@ -15,10 +17,12 @@ class DepartmentSearchScreen extends StatefulWidget {
   _DepartmentSearchScreenState createState() => _DepartmentSearchScreenState();
 }
 
-class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with TickerProviderStateMixin {
+class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
+    with TickerProviderStateMixin {
   static const _pageSize = 10;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
-  final PagingController<int, User> _pagingController = PagingController(firstPageKey: 0);
+  final PagingController<int, User> _pagingController =
+      PagingController(firstPageKey: 0);
   final Duration animationDuration = Duration(milliseconds: 300);
   final Logger _logger = Logger('DepartmentSearchScreen');
 
@@ -56,10 +60,11 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
     try {
       List<User> newItems;
       if (_selectedDepartment.isEmpty) {
-        newItems = await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
+        newItems =
+            await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
       } else {
         newItems = await HomeProvider.searchUsersByDepartment(
-          pageKey, _pageSize, _searchQuery, _selectedDepartment);
+            pageKey, _pageSize, _searchQuery, _selectedDepartment);
       }
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
@@ -88,8 +93,10 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
 
   void _cacheProfileImages(List<User> users) {
     for (User user in users) {
-      if (user.empCode != null && !_profileImagesCache.containsKey(user.empCode)) {
-        _profileImagesCache[user.empCode!] = _buildAvatar(user.photo, user.firstName);
+      if (user.empCode != null &&
+          !_profileImagesCache.containsKey(user.empCode)) {
+        _profileImagesCache[user.empCode!] =
+            _buildAvatar(user.photo, user.firstName);
         _logger.info('Image cached for user ${user.empCode}');
       }
     }
@@ -123,19 +130,25 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildIconButton(CupertinoIcons.phone_solid, () {
-                // Handle call action
+                LinkLauncher.makeCall(contact.mobile ?? '');
               }),
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                // Handle WhatsApp action
+                LinkLauncher.sendWpMsg(contact.mobile ?? '');
               }),
               _buildIconButton(Icons.chat, () {
-                // Handle message action
+                LinkLauncher.sendMsg(contact.mobile ?? '');
               }),
               _buildIconButton(Icons.mail, () {
-                // Handle mail action
+                LinkLauncher.sendEmail(contact.email ?? '');
               }),
               _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {
-                // Handle info action
+                // Handle profile action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactProfileScreen(contact),
+                  ),
+                );
               }),
             ],
           ),
@@ -169,7 +182,8 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
     return _buildCircleAvatar(
       child: Text(
         firstName?.isNotEmpty == true ? firstName![0] : '',
-        style: const TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
+        style: const TextStyle(
+            color: AppColors.primaryColor, fontFamily: 'Roboto'),
       ),
     );
   }
@@ -253,12 +267,14 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
               }).toList(),
               onChanged: _onDepartmentChanged,
               dropdownColor: Colors.white,
-              style: const TextStyle(color: AppColors.primaryColor, fontSize: 16),
+              style:
+                  const TextStyle(color: AppColors.primaryColor, fontSize: 16),
               underline: Container(
                 height: 2,
                 color: AppColors.primaryColor,
               ),
-              icon: const Icon(Icons.arrow_drop_down, color: AppColors.primaryColor),
+              icon: const Icon(Icons.arrow_drop_down,
+                  color: AppColors.primaryColor),
             ),
           ),
           Expanded(
@@ -272,7 +288,8 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                      const Icon(Icons.error_outline,
+                          size: 64, color: Colors.red),
                       const SizedBox(height: 8),
                       const Text('Something went wrong'),
                       const SizedBox(height: 8),
@@ -287,7 +304,8 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.search_off, size: 64, color: Colors.grey),
+                      const Icon(Icons.search_off,
+                          size: 64, color: Colors.grey),
                       const SizedBox(height: 8),
                       const Text('No results found'),
                     ],
@@ -312,8 +330,15 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen> with Ti
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           print('Call ${item.firstName}');
+          LinkLauncher.makeCall(item.mobile ?? '');
         } else if (direction == DismissDirection.endToStart) {
           print('Open profile of ${item.firstName}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ContactProfileScreen(item),
+            ),
+          );
         }
         return false;
       },

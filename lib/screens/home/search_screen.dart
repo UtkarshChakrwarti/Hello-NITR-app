@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
+import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:logging/logging.dart';
@@ -100,23 +102,27 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
           Divider(thickness: 1, color: _iconColor.withOpacity(0.5)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildIconButton(CupertinoIcons.phone_solid, () {
-                // Handle call action
+            children: [_buildIconButton(CupertinoIcons.phone_solid, () {
+                LinkLauncher.makeCall(contact.mobile??'');
               }),
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
-                // Handle WhatsApp action
+                LinkLauncher.sendWpMsg(contact.mobile??'');
               }),
               _buildIconButton(Icons.chat, () {
-                // Handle message action
+                 LinkLauncher.sendMsg(contact.mobile??'');
               }),
               _buildIconButton(Icons.mail, () {
-                // Handle mail action
+                LinkLauncher.sendEmail(contact.email??'');
               }),
               _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {
-                // Handle info action
-              }),
-            ],
+                // Handle profile action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactProfileScreen(contact),
+                  ),
+                );
+              }),],
           ),
         ],
       ),
@@ -256,8 +262,15 @@ class _SearchScreenState extends State<SearchScreen> with TickerProviderStateMix
       confirmDismiss: (direction) async {
         if (direction == DismissDirection.startToEnd) {
           print('Call ${item.firstName}');
+          LinkLauncher.makeCall(item.mobile??'');
         } else if (direction == DismissDirection.endToStart) {
           print('Open profile of ${item.firstName}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ContactProfileScreen(item),
+            ),
+          );
         }
         return false;
       },

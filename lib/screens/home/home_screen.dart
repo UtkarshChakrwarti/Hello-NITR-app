@@ -91,6 +91,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  //show custom filter names based on the current filter
+  String get _filterName {
+    switch (_currentFilter) {
+      case 'All Employee':
+        return 'All Employees';
+      case 'Faculty':
+        return 'Faculties';
+      case 'Officer':
+        return 'Officers';
+      default:
+        return _currentFilter;
+    }
+  }
+
   @override
   void dispose() {
     _pagingController.dispose();
@@ -146,14 +160,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(10.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '$_currentFilter ($_contactCount)',
+                  '$_filterName ($_contactCount)',
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'Roboto',
                     color: AppColors.primaryColor,
                   ),
                 ),

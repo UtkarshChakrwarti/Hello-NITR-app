@@ -127,13 +127,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.menu),
+            iconSize: 30,
+            onPressed: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
+          ),
           title: const Text(
             'Hello NITR',
-            style: TextStyle(color: AppColors.primaryColor, fontSize: 20),
+            style: TextStyle(
+                color: AppColors.primaryColor,
+                fontSize: 24,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.w500),
           ),
           actions: [
             IconButton(
               icon: const Icon(Icons.search),
+              iconSize: 30,
               onPressed: () {
                 Navigator.push(
                   context,
@@ -144,11 +156,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               },
             ),
             IconButton(
-              icon: Icon(
-                  _isAscending ? CupertinoIcons.sort_up: CupertinoIcons.sort_down),
+              iconSize: 30,
+              icon: Icon(_isAscending
+                  ? CupertinoIcons.sort_up
+                  : CupertinoIcons.sort_down),
               onPressed: _toggleSortOrder,
             ),
-            
           ],
         ),
         drawer: Drawer(

@@ -117,24 +117,25 @@ class _SearchScreenState extends State<SearchScreen>
           focusNode: _searchFocusNode,
           controller: _searchController,
           decoration: InputDecoration(
-            hintText: 'Search...',
+            hintText: 'Search users',
+            hintStyle: TextStyle(fontSize: 20, color: Colors.grey[400], fontWeight: FontWeight.normal),
             border: InputBorder.none,
-            hintStyle: TextStyle(color: Colors.grey[400]),
             suffixIcon: _searchQuery.isNotEmpty
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        _searchQuery = '';
-                        _pagingController.refresh();
-                        _searchController.clear();
-                        FocusScope.of(context).requestFocus(_searchFocusNode);
-                      });
-                    },
-                  )
-                : null,
+          ? IconButton(
+              icon: const Icon(Icons.clear),
+              color: AppColors.primaryColor,
+              onPressed: () {
+                setState(() {
+            _searchQuery = '';
+            _pagingController.refresh();
+            _searchController.clear();
+            FocusScope.of(context).requestFocus(_searchFocusNode);
+                });
+              },
+            )
+          : null,
           ),
-          style: const TextStyle(color: AppColors.primaryColor, fontSize: 20.0),
+          style: const TextStyle(fontSize: 20.0),
           onChanged: _onSearchChanged,
         ),
       ),
@@ -174,28 +175,12 @@ class _SearchScreenState extends State<SearchScreen>
                         ),
                   );
                 },
-                firstPageErrorIndicatorBuilder: (context) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.error_outline,
-                          size: 64, color: Colors.red),
-                      const SizedBox(height: 8),
-                      const Text('Something went wrong'),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () => _pagingController.refresh(),
-                        child: const Text('Try Again'),
-                      ),
-                    ],
-                  ),
-                ),
                 noItemsFoundIndicatorBuilder: (context) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.search_off,
-                          size: 64, color: Colors.grey),
+                          size: 64, color: AppColors.primaryColor),
                       const SizedBox(height: 8),
                       const Text('No results found'),
                     ],

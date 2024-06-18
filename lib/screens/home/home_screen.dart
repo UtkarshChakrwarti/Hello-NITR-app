@@ -37,6 +37,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   int _contactCount = 0;
   final Map<String, Widget> _profileImagesCache = {};
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -215,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         return false;
       },
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: const Text(
             'Hello NITR',
@@ -239,9 +242,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-        drawer: UserProfileScreen(
-          currentFilter: _currentFilter,
-          onFilterSelected: _applyFilter,
+        drawer: Drawer(
+          child: UserProfileScreen(
+            currentFilter: _currentFilter,
+            onFilterSelected: _applyFilter,
+          ),
         ),
         body: Column(
           children: [

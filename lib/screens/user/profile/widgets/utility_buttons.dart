@@ -51,7 +51,7 @@ class UtilityButtons extends StatelessWidget {
             children: [
               IconButtonWidget(
                 icon: CupertinoIcons.device_phone_portrait,
-                label: "De-Register",
+                label: "Deregister",
                 iconSize: 22.0,
                 fontSize: 12.0,
                 onTap: () {

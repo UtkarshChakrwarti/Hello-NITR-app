@@ -113,7 +113,7 @@ class DialogsAndPrompts {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Text(
-                  'This will log you out from this device. If you want to log in from another device, make sure to use De-Register.',
+                  'WARNING: This will log you out from this device. You will be unable to login from another device unless you deregister from this device',
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,

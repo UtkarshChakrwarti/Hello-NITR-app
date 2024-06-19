@@ -46,8 +46,9 @@ class ContactListItem extends StatelessWidget {
         DismissDirection.startToEnd: 0.33,
         DismissDirection.endToStart: 0.33,
       },
-      background: _buildSwipeBackground(Icons.phone, 'Make Call'),
-      secondaryBackground: _buildSwipeBackground(Icons.person, 'View Profile'),
+      background: _buildSwipeBackgroundLeft(Icons.phone, 'Make Call'),
+      secondaryBackground:
+          _buildSwipeBackgroundRight(Icons.person, 'View Profile'),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -86,16 +87,43 @@ class ContactListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildSwipeBackground(IconData icon, String label) {
+  Widget _buildSwipeBackgroundLeft(IconData icon, String label) {
     return Container(
       color: AppColors.primaryColor,
       alignment: Alignment.centerLeft,
       padding: const EdgeInsets.only(left: 20.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(width: 8.0),
-          Text(label, style: const TextStyle(color: Colors.white)),
+          Row(
+            children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 8.0),
+              Text(label, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
+          const SizedBox(width: 20.0), // Ensures spacing for alignment
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSwipeBackgroundRight(IconData icon, String label) {
+    return Container(
+      color: AppColors.primaryColor,
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.only(right: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const SizedBox(width: 20.0), // Ensures spacing for alignment
+          Row(
+            children: [
+              Text(label, style: const TextStyle(color: Colors.white)),
+              const SizedBox(width: 8.0),
+              Icon(icon, color: Colors.white),
+            ],
+          ),
         ],
       ),
     );

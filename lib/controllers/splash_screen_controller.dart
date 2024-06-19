@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
-import 'package:hello_nitr/providers/login_provider.dart';
+//import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
 
 class SplashScreenController {
   final Logger _logger = Logger('SplashScreen');
-  final LoginProvider _loginProvider = LoginProvider();
+  //final LoginProvider _loginProvider = LoginProvider();
 
   Future<String?> checkLoginStatus(BuildContext context) async {
     try {
@@ -23,15 +23,16 @@ class SplashScreenController {
       _logger.info('User Name: ${loginResponse?.firstName}');
 
       //check if the logged in status duration has expired
-      if (await logoutOnExpiry()) {
-        await LocalStorageService.logout();
-        _logger.info(
-            'User logged out because the logged in status duration has expired.');
-        _loginProvider.setExpiredSession(true);
-        _logger.info('Redirecting to login screen.');
-        _logger.info('Session expired ${_loginProvider.expiredSession}');
-        return '/login';
-      }
+      // For Future use if needed
+      // if (await logoutOnExpiry()) {
+      //   await LocalStorageService.logout();
+      //   _logger.info(
+      //       'User logged out because the logged in status duration has expired.');
+      //   _loginProvider.setExpiredSession(true);
+      //   _logger.info('Redirecting to login screen.');
+      //   _logger.info('Session expired ${_loginProvider.expiredSession}');
+      //   return '/login';
+      // }
 
       //check if the user is logged in and the user is valid
       if (isLoggedIn) {

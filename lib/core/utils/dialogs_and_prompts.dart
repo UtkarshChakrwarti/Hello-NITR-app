@@ -82,7 +82,6 @@ class DialogsAndPrompts {
     );
   }
 
-  
   static Future<bool?> showLogoutConfirmationDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,
@@ -101,8 +100,29 @@ class DialogsAndPrompts {
                       fontWeight: FontWeight.bold)),
             ],
           ),
-          content: const Text('Are you sure you want to Logout?',
-              style: TextStyle(fontSize: 16)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Are you sure you want to Logout?',
+                  style: TextStyle(fontSize: 16)),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.redAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  'This will log you out from this device. If you want to log in from another device, make sure to use De-Register.',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
           actions: [
             TextButton(
               child: const Text('No',
@@ -127,7 +147,6 @@ class DialogsAndPrompts {
       },
     );
   }
-
 
   static void showLoginFromDifferentDeviceDialog(BuildContext context) {
     showDialog(

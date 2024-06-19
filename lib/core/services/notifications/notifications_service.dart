@@ -1,7 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
-import 'package:hello_nitr/core/services/api/remote/api_service.dart';
+//import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
@@ -19,7 +19,7 @@ class NotificationService {
 
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher_monochrome');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
@@ -103,8 +103,8 @@ class NotificationService {
     try {
 
       // Check for app update
-      ApiService apiService = ApiService();
-      bool isUpdateAvailable = await apiService.checkForUpdate();
+      //ApiService apiService = ApiService();
+      bool isUpdateAvailable =  true;  //await apiService.checkForUpdate();
 
       if (isUpdateAvailable) {
         await showNotification(

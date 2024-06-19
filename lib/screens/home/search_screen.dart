@@ -34,7 +34,9 @@ class _SearchScreenState extends State<SearchScreen>
     super.initState();
     _pagingController.addPageRequestListener(_fetchPage);
     _setupLogging();
-    WidgetsBinding.instance.addPostFrameCallback((_) {});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_searchFocusNode);
+    });
   }
 
   void _setupLogging() {
@@ -77,13 +79,13 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   @override
-  void dispose() {
+  void dispose() {  
     _pagingController.dispose();
     _searchFocusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
-
+  
   void _handleContactTap(int index) {
     setState(() {
       _expandedIndex = (_expandedIndex == index) ? null : index;
@@ -95,13 +97,6 @@ class _SearchScreenState extends State<SearchScreen>
       _searchQuery = query;
       _pagingController.refresh();
     });
-  }
-
-  Future<void> _initialize() async {
-    await Future.delayed(
-      const Duration(milliseconds: 300),
-      () => _searchFocusNode.requestFocus(),
-    );
   }
 
   @override
@@ -117,7 +112,6 @@ class _SearchScreenState extends State<SearchScreen>
           focusNode: _searchFocusNode,
           controller: _searchController,
           decoration: InputDecoration(
-            //remove default underline
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
             hintText: 'Search users',
@@ -141,63 +135,51 @@ class _SearchScreenState extends State<SearchScreen>
                     },
                   )
                 : null,
-
           ),
           style: const TextStyle(fontSize: 20.0),
           onChanged: _onSearchChanged,
         ),
       ),
-      body: FutureBuilder(
-        future: _initialize(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return PagedListView<int, User>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<User>(
-                itemBuilder: (context, item, index) {
-                  return ContactListItem(
-                    contact: item,
-                    isExpanded: _expandedIndex == index,
-                    onTap: () => _handleContactTap(index),
-                    onDismissed: () {},
-                    onCall: () {
-                      LinkLauncher.makeCall(item.mobile ?? '');
-                    },
-                    onViewProfile: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ContactProfileScreen(item),
-                        ),
-                      );
-                    },
-                    avatar: _profileImagesCache[item.empCode] ??
-                        Avatar(
-                          photoUrl: item.photo,
-                          firstName: item.firstName,
-                          utilityFunctions: _utilityFunctions,
-                        ),
-                  );
-                },
-                noItemsFoundIndicatorBuilder: (context) => Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.search_off,
-                          size: 64, color: AppColors.primaryColor),
-                      const SizedBox(height: 8),
-                      const Text('No results found'),
-                    ],
+      body: PagedListView<int, User>(
+        pagingController: _pagingController,
+        builderDelegate: PagedChildBuilderDelegate<User>(
+          itemBuilder: (context, item, index) {
+            return ContactListItem(
+              contact: item,
+              isExpanded: _expandedIndex == index,
+              onTap: () => _handleContactTap(index),
+              onDismissed: () {},
+              onCall: () {
+                LinkLauncher.makeCall(item.mobile ?? '');
+              },
+              onViewProfile: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ContactProfileScreen(item),
                   ),
-                ),
-              ),
+                );
+              },
+              avatar: _profileImagesCache[item.empCode] ??
+                  Avatar(
+                    photoUrl: item.photo,
+                    firstName: item.firstName,
+                    utilityFunctions: _utilityFunctions,
+                  ),
             );
-          }
-        },
+          },
+          noItemsFoundIndicatorBuilder: (context) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.search_off,
+                    size: 64, color: AppColors.primaryColor),
+                const SizedBox(height: 8),
+                const Text('No results found'),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

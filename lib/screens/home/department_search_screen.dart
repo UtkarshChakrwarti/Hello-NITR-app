@@ -205,6 +205,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
                       borderSide: BorderSide(color: AppColors.primaryColor),
                     ),
                     hintText: "Search Department",
+                    prefixIcon: Icon(Icons.search, color: AppColors.primaryColor),
                   ),
                 ),
               ),

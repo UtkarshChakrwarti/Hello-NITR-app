@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:hello_nitr/controllers/pin_unlock_screen_controller.dart';
+import 'package:hello_nitr/controllers/user_profile_controller.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
+import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
 
 import 'package:hello_nitr/screens/pin/verify/widgets/dialogs.dart';
 import 'package:hello_nitr/screens/pin/verify/widgets/exit_confirmation_dialog.dart';
@@ -18,6 +20,7 @@ class PinUnlockScreen extends StatefulWidget {
 class _PinUnlockScreenState extends State<PinUnlockScreen> {
   final PinUnlockScreenController _pinUnlockScreenController =
       PinUnlockScreenController();
+  late final UserProfileController controller;
   String _pin = "";
   String _loggedInUserFirstName = "";
 
@@ -169,9 +172,14 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
                     onFingerprintPressed: _authenticateWithBiometrics,
                   ),
                   OutlinedButton.icon(
-                    onPressed: () => showLogoutDialog(context, () {
-                      PinUnlockScreenController().logout(context);
-                    }),
+                    onPressed: () => 
+                   DialogsAndPrompts.showLogoutConfirmationDialog(
+                          context).then((shouldExit) async {
+                  if (shouldExit != null && shouldExit) {
+                    await controller.logout(context);
+                  }}
+                    
+                    ),
                     style: OutlinedButton.styleFrom(
                       padding:
                           const EdgeInsets.symmetric(horizontal: 12.0, vertical: 7.0),

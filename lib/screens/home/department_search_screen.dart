@@ -142,7 +142,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
           decoration: InputDecoration(
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
-            hintText: 'Search Contacts by Department',
+            hintText: 'Search users by department',
             hintStyle: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[500],

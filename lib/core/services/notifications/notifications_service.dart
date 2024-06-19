@@ -70,7 +70,7 @@ class NotificationService {
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
-      icon: '@mipmap/ic_launcher_monochrome', // Custom icon
+      icon: '@mipmap/ic_launcher', // Custom icon
       largeIcon: const DrawableResourceAndroidBitmap(
           '@drawable/ic_update'), // Large icon
       color: AppColors.primaryColor, // Notification color

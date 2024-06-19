@@ -31,10 +31,10 @@ class ExpandedMenu extends StatelessWidget {
               _buildIconButton(FontAwesomeIcons.whatsapp, () {
                 LinkLauncher.sendWpMsg(contact.mobile ?? '');
               }),
-              _buildIconButton(Icons.chat, () {
+              _buildIconButton(CupertinoIcons.chat_bubble_text_fill , () {
                 LinkLauncher.sendMsg(contact.mobile ?? '');
               }),
-              _buildIconButton(Icons.mail, () {
+              _buildIconButton(CupertinoIcons.mail_solid, () {
                 LinkLauncher.sendEmail(contact.email ?? '');
               }),
               _buildIconButton(CupertinoIcons.person_crop_circle_fill, () {

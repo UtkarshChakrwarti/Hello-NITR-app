@@ -67,7 +67,7 @@ class UtilityButtons extends StatelessWidget {
                 fontSize: 12.0,
                 onTap: () async {
                   final shouldExit =
-                      await DialogsAndPrompts.showExitConfirmationDialog(
+                      await DialogsAndPrompts.showLogoutConfirmationDialog(
                           context);
                   if (shouldExit != null && shouldExit) {
                     await controller.logout(context);

@@ -1,9 +1,9 @@
 class AppConstants {
-  // Security key for encryption
+  // Security key for encryption and otp generation )
   static const String securityKey = "wW6BOreU82Aab4V"; // Key for encryption
 
   // API URLs (example, update with real URLs)
-  static const String baseUrl = 'https://nitrkl.ac.in/WebApi';
+  static const String baseUrl = 'https://arogyakavach.nitrkl.ac.in/WebApi';
 
   // For checking Update App using Play Store URL
   static const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.example.hellonitr&hl=en&gl=US';
@@ -19,10 +19,10 @@ class AppConstants {
   static const String userTable = 'users';
 
   // Session keys
-  static const String pinKey = 'pin_key'; // Key for user PIN
-  static const String currentLoggedInUserKey ='current_user_key';// Key for current user data
+  static const String pinKey = 'pin_key'; // Key for user PIN use any key for encryption
+  static const String currentLoggedInUserKey ='current_user_key';// Key for current user data use any key for encryption
 
-  static const int otpTimeOutSeconds = 30; // OTP timeout in seconds
+  static const int otpTimeOutSeconds = 60; // OTP timeout in seconds
 
   static int imageQuality = 50; // Set image quality for compression (0-100)
 

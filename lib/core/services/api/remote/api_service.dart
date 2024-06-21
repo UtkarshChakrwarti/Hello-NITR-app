@@ -155,4 +155,16 @@ class ApiService {
       throw Exception('Failed to login');
     }
   }
+
+  // Send OTP to the user's mobile number
+  Future<void> sendOtp(String mobileNumber, String otp) async {
+    final Uri url = Uri.parse('$baseUrl/otp?otp=$otp&mobileno=$mobileNumber');
+    final response = await _sendRequest('POST', url);
+
+    if (response.statusCode == 200) {
+      _logger.info(await response.stream.bytesToString());
+    } else {
+      _logger.severe('Failed to send OTP: ${response.reasonPhrase}');
+    }
+  }
 }

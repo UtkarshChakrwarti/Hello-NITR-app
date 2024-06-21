@@ -9,6 +9,7 @@
         "siminfo",
         "simnumber",
         "sqflite",
+        "TOTP",
         "udid"
     ]
 }

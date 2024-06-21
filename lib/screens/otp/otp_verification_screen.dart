@@ -21,8 +21,10 @@ class OtpVerificationScreen extends StatefulWidget {
   _OtpVerificationScreenState createState() => _OtpVerificationScreenState();
 }
 
-class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final OtpVerificationController _otpVerificationController = OtpVerificationController();
+class _OtpVerificationScreenState extends State<OtpVerificationScreen>
+    with SingleTickerProviderStateMixin {
+  final OtpVerificationController _otpVerificationController =
+      OtpVerificationController();
   late LoginProvider loginProvider;
   final Logger _logger = Logger('OtpVerificationScreen');
 
@@ -30,8 +32,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   late Timer _timer;
   int _remainingSeconds = AppConstants.otpTimeOutSeconds;
   String _enteredOtp = "";
-  String _actualOtp = "";
   bool _isOtpComplete = false;
+  bool _showCheckButton = false;
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  String _verificationMessage = 'OTP Verified';
 
   @override
   void initState() {
@@ -39,13 +44,23 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     loginProvider = context.read<LoginProvider>();
     _logger.info('OtpVerificationScreen initialized');
     _startOtpTimer();
-    _fetchOtp();
+    _sendOtp();
+
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _scaleAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    );
   }
 
   @override
   void dispose() {
     _logger.info('OtpVerificationScreen disposed');
     _timer.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -65,10 +80,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     });
   }
 
-  void _fetchOtp() async {
+  void _sendOtp() async {
     try {
-      _actualOtp = await _otpVerificationController.fetchOtp();
-      _logger.info('OTP fetched successfully');
+      await _otpVerificationController.sendOtp(widget.mobileNumber);
+      _logger.info('OTP sent successfully on ${widget.mobileNumber}');
     } catch (e) {
       _logger.severe('Failed to fetch OTP: $e');
       _showErrorDialog('Failed to fetch OTP. Please try again.');
@@ -77,30 +92,50 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   void _verifyOtp() async {
     try {
-      bool isSuccess = await _otpVerificationController.verifyOtp(_enteredOtp, _actualOtp);
+      bool isSuccess = await _otpVerificationController.verifyOtp(_enteredOtp);
       if (isSuccess) {
+        setState(() {
+          _showCheckButton = true;
+        });
+        _animationController.forward();
         _logger.info('OTP verified successfully');
         if (loginProvider.isFreshLoginAttempt == true) {
           try {
             await _otpVerificationController.updateDeviceId();
             _logger.info('Device ID updated successfully');
+            setState(() {
+              _verificationMessage =
+                  'OTP successfully Verified\nDevice Registered Successfully';
+            });
           } catch (e) {
             _logger.severe('Failed to update device ID: $e');
             _showErrorDialog('Failed to update device ID. Please try again.');
           }
+        } else {
+          setState(() {
+            _verificationMessage =
+                'OTP successfully Verified\nDevice Already Registered';
+          });
         }
-        _logger.info('No Device Update Needed : Navigating to ContactsUpdateScreen');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ContactsUpdateScreen()),
-        );
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            _showCheckButton = false;
+          });
+          _logger.info(
+              'No Device Update Needed: Navigating to ContactsUpdateScreen');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ContactsUpdateScreen()),
+          );
+        });
       } else {
         _logger.warning('Invalid OTP entered');
         _showErrorDialog('Invalid OTP');
       }
     } catch (e) {
       _logger.severe('Error during OTP verification: $e');
-      _showErrorDialog('An error occurred while verifying the OTP. Please try again.');
+      _showErrorDialog(
+          'An error occurred while verifying the OTP. Please try again.');
     }
   }
 
@@ -131,13 +166,16 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           builder: (context) {
             return AlertDialog(
               backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0)),
               title: const Row(
                 children: [
                   Icon(Icons.info, color: AppColors.primaryColor),
                   SizedBox(width: 10),
                   Text('Confirm',
-                      style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.bold)),
                 ],
               ),
               content: const Text(
@@ -147,14 +185,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
                   child: const Text('No',
-                      style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.bold)),
                 ),
                 TextButton(
                   onPressed: () async {
                     await _logoutAndNavigateToLogin();
                   },
                   child: const Text('Yes',
-                      style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontWeight: FontWeight.bold)),
                 ),
               ],
             );
@@ -170,80 +212,119 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 50.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'OTP Verification',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Please enter the 6 digit verification code sent to',
-                    style: TextStyle(fontSize: 16, color: Colors.black54),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 5),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0, vertical: 50.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        '🇮🇳',
-                        style: TextStyle(fontSize: 20),
+                      const Text(
+                        'OTP Verification',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryColor,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      const SizedBox(width: 5),
+                      const SizedBox(height: 10),
                       Text(
-                        widget.mobileNumber,
-                        style: TextStyle(fontSize: 16, color: AppColors.primaryColor),
+                        'Please enter the 6 digit verification code sent to',
+                        style: TextStyle(fontSize: 16, color: Colors.black54),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '🇮🇳',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            widget.mobileNumber,
+                            style: TextStyle(
+                                fontSize: 16, color: AppColors.primaryColor),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      OtpInput(
+                        onChanged: (String code) {
+                          setState(() {
+                            _enteredOtp = code;
+                            _isOtpComplete = code.length == 6;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      if (!_isResendButtonActive)
+                        Text(
+                          'Didn\'t receive the code?',
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                      ResendButton(
+                        isResendButtonActive: _isResendButtonActive,
+                        remainingSeconds: _remainingSeconds,
+                        onResend: () {
+                          setState(() {
+                            _isResendButtonActive = false;
+                            _remainingSeconds = AppConstants.otpTimeOutSeconds;
+                            _startOtpTimer();
+                            _sendOtp();
+                            _logger.info('OTP re-sent');
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      VerifyButton(
+                        isOtpComplete: _isOtpComplete,
+                        onPressed: _isOtpComplete ? _verifyOtp : null,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  OtpInput(
-                    onChanged: (String code) {
-                      setState(() {
-                        _enteredOtp = code;
-                        _isOtpComplete = code.length == 6;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  if (!_isResendButtonActive)
-                    Text(
-                      'Didn\'t receive the code?',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                  ResendButton(
-                    isResendButtonActive: _isResendButtonActive,
-                    remainingSeconds: _remainingSeconds,
-                    onResend: () {
-                      setState(() {
-                        _isResendButtonActive = false;
-                        _remainingSeconds = AppConstants.otpTimeOutSeconds;
-                        _startOtpTimer();
-                        _fetchOtp();
-                        _logger.info('OTP re-sent');
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  VerifyButton(
-                    isOtpComplete: _isOtpComplete,
-                    onPressed: _isOtpComplete ? _verifyOtp : null,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            if (_showCheckButton)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.white,
+                  child: Center(
+                    child: ScaleTransition(
+                      scale: _scaleAnimation,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 40),
+                          Icon(
+                            Icons.check_circle,
+                            color: AppColors.primaryColor,
+                            size: 48.0,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            _verificationMessage,
+                            style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

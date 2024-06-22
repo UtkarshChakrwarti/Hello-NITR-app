@@ -176,6 +176,53 @@ class LocalStorageService {
     });
   }
 
+  static Future<List<User>> searchUsersFiltered(
+  int offset,
+  int limit,
+  String query,
+  String filter,
+) async {
+  final db = await database;
+
+  String whereClause = '''
+    (mobile LIKE ?
+    OR firstName LIKE ?
+    OR lastName LIKE ?
+    OR middleName LIKE ?
+    OR email LIKE ? 
+    OR personalEmail LIKE ?
+    OR workPhone LIKE ?)
+  ''';
+
+  List<dynamic> whereArgs = [
+    '%$query%',
+    '%$query%',
+    '%$query%',
+    '%$query%',
+    '%$query%',
+    '%$query%',
+    '%$query%'
+  ];
+
+  // Add filter condition if it's not 'All Employee'
+  if (filter != 'All Employee') {
+    whereClause += ' AND employeeType = ?';
+    whereArgs.add(filter);
+  }
+
+  final List<Map<String, dynamic>> maps = await db.query(
+    AppConstants.userTable,
+    where: whereClause,
+    whereArgs: whereArgs,
+    limit: limit,
+    offset: offset,
+    orderBy: 'firstName ASC',
+  );
+
+  return List.generate(maps.length, (i) {
+      return User.fromJson(maps[i]);
+    });
+}
   
   static Future<List<User>> searchUsersByDepartment(
       String query, String department, int offset, int limit,

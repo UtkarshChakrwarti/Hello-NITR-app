@@ -11,6 +11,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:logging/logging.dart';
 
 class SearchScreen extends StatefulWidget {
+  final String currentFilter;
+  const SearchScreen({Key? key, required this.currentFilter}) : super(key: key);
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -48,8 +50,8 @@ class _SearchScreenState extends State<SearchScreen>
 
   Future<void> _fetchPage(int pageKey) async {
     try {
-      final newItems =
-          await HomeProvider.searchUsers(pageKey, _pageSize, _searchQuery);
+      final newItems = await HomeProvider.searchUsersFiltered(
+          pageKey, _pageSize, _searchQuery, widget.currentFilter);
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -79,13 +81,13 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   @override
-  void dispose() {  
+  void dispose() {
     _pagingController.dispose();
     _searchFocusNode.dispose();
     _searchController.dispose();
     super.dispose();
   }
-  
+
   void _handleContactTap(int index) {
     setState(() {
       _expandedIndex = (_expandedIndex == index) ? null : index;
@@ -97,6 +99,20 @@ class _SearchScreenState extends State<SearchScreen>
       _searchQuery = query;
       _pagingController.refresh();
     });
+  }
+
+   //show custom filter names based on the current filter
+  String get _filterName {
+    switch (widget.currentFilter) {
+      case 'All Employee':
+        return 'All Employees';
+      case 'Faculty':
+        return 'Faculties';
+      case 'Officer':
+        return 'Officers';
+      default:
+        return widget.currentFilter;
+    }
   }
 
   @override
@@ -114,7 +130,8 @@ class _SearchScreenState extends State<SearchScreen>
           decoration: InputDecoration(
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
-            hintText: 'Search users',
+            hintText:
+                'Search in ${_filterName.toLowerCase()}',
             hintStyle: TextStyle(
                 fontSize: 18,
                 color: Colors.grey[500],

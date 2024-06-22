@@ -43,6 +43,18 @@ class HomeProvider {
     }
   }
 
+  static Future<List<User>> searchUsersFiltered(int offset, int limit, String query, String filter) async {
+    try {
+      _logger.info('Searching users with offset: $offset, limit: $limit, query: $query, filter: $filter');
+      final users = await LocalStorageService.searchUsersFiltered(offset, limit, query, filter);
+      _logger.info('Found ${users.length} users.');
+      return users;
+    } catch (error) {
+      _logger.severe('Failed to search users: $error');
+      rethrow;
+    }
+  }
+
   static Future<List<User>> searchUsersByDepartment(int offset, int limit, String query, String department) async {
     try {
       _logger.info('Searching users by department with offset: $offset, limit: $limit, query: $query, department: $department');

@@ -12,7 +12,6 @@ import 'dart:convert';
 class LocalStorageService {
   static Database? _database;
   static const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
-
   static final Logger _logger = Logger('LocalStorageService');
 
   // Get database instance or initialize if it doesn't exist
@@ -62,17 +61,14 @@ class LocalStorageService {
   // Save a user to the database
   static Future<void> saveUser(User user) async {
     final db = await database;
-    //Compressing the image field before saving
-    final compressedImage =
-        ImageCompressor.compressBase64Image(user.photo!,  AppConstants.imageQuality);
-    //print the compressed image size and compression ratio
 
+    // Compress the image field before saving
+    final compressedImage = ImageCompressor.compressBase64Image(user.photo!, AppConstants.imageQuality);
     _logger.info('Compression Details:');
     _logger.info('---------------------');
     _logger.info('Original Size: ${compressedImage['originalSize']} bytes');
     _logger.info('Compressed Size: ${compressedImage['compressedSize']} bytes');
-    _logger.info(
-        'Compression Ratio: ${compressedImage['compressionRatio'].toStringAsFixed(2)}%');
+    _logger.info('Compression Ratio: ${compressedImage['compressionRatio'].toStringAsFixed(2)}%');
     _logger.info('Size Difference: ${compressedImage['sizeDifference']} bytes');
     _logger.info('---------------------');
 
@@ -84,8 +80,7 @@ class LocalStorageService {
     );
   }
 
-// Updated LocalStorageService to accept filter and sorting order
-
+  // Get users with filter and sorting order
   static Future<List<User>> getUsers(
       int offset, int limit, String filter, bool isAscending) async {
     final db = await database;
@@ -115,7 +110,7 @@ class LocalStorageService {
     });
   }
 
-// Get the count of users based on the filter
+  // Get the count of users based on the filter
   static Future<int> getUserCount(String filter) async {
     final db = await database;
 
@@ -136,9 +131,7 @@ class LocalStorageService {
     return Sqflite.firstIntValue(countQuery) ?? 0;
   }
 
-  // Search for users based on the query string in the database based
-  // on mobile, email, and firstname, lastname, middle name
-  // paginated search
+  // Search for users based on the query string
   static Future<List<User>> searchUsers(
     int offset,
     int limit,
@@ -168,7 +161,6 @@ class LocalStorageService {
       ],
       limit: limit,
       offset: offset,
-      //order by firstName in ascending order
       orderBy: 'firstName ASC',
     );
 
@@ -177,74 +169,79 @@ class LocalStorageService {
     });
   }
 
+  // Search users with filter
   static Future<List<User>> searchUsersFiltered(
-  int offset,
-  int limit,
-  String query,
-  String filter,
-) async {
-  final db = await database;
+    int offset,
+    int limit,
+    String query,
+    String filter,
+  ) async {
+    final db = await database;
 
-  String whereClause = '''
-    (mobile LIKE ?
-    OR firstName LIKE ?
-    OR lastName LIKE ?
-    OR middleName LIKE ?
-    OR email LIKE ? 
-    OR personalEmail LIKE ?
-    OR workPhone LIKE ?)
-  ''';
+    String whereClause = '''
+      (mobile LIKE ?
+      OR firstName LIKE ?
+      OR lastName LIKE ?
+      OR middleName LIKE ?
+      OR email LIKE ? 
+      OR personalEmail LIKE ?
+      OR workPhone LIKE ?)
+    ''';
 
-  List<dynamic> whereArgs = [
-    '%$query%',
-    '%$query%',
-    '%$query%',
-    '%$query%',
-    '%$query%',
-    '%$query%',
-    '%$query%'
-  ];
+    List<dynamic> whereArgs = [
+      '%$query%',
+      '%$query%',
+      '%$query%',
+      '%$query%',
+      '%$query%',
+      '%$query%',
+      '%$query%'
+    ];
 
-  // Add filter condition if it's not 'All Employee'
-  if (filter != 'All Employee') {
-    whereClause += ' AND employeeType = ?';
-    whereArgs.add(filter);
-  }
+    // Add filter condition if it's not 'All Employee'
+    if (filter != 'All Employee') {
+      whereClause += ' AND employeeType = ?';
+      whereArgs.add(filter);
+    }
 
-  final List<Map<String, dynamic>> maps = await db.query(
-    AppConstants.userTable,
-    where: whereClause,
-    whereArgs: whereArgs,
-    limit: limit,
-    offset: offset,
-    orderBy: 'firstName ASC',
-  );
+    final List<Map<String, dynamic>> maps = await db.query(
+      AppConstants.userTable,
+      where: whereClause,
+      whereArgs: whereArgs,
+      limit: limit,
+      offset: offset,
+      orderBy: 'firstName ASC',
+    );
 
-  return List.generate(maps.length, (i) {
+    return List.generate(maps.length, (i) {
       return User.fromJson(maps[i]);
     });
-}
-  
+  }
+
+  // Search users by department
   static Future<List<User>> searchUsersByDepartment(
-      String query, String department, int offset, int limit,
-      {bool ascending = true}) async {
+    String query,
+    String department,
+    int offset,
+    int limit, {
+    bool ascending = true,
+  }) async {
     final db = await database;
     final orderBy = ascending ? 'ASC' : 'DESC';
     final result = await db.rawQuery('''
-    SELECT * FROM ${AppConstants.userTable}
-    WHERE (firstName || ' ' || IFNULL(middleName, '') || ' ' || lastName LIKE ? 
-           OR mobile LIKE ? 
-           OR email LIKE ?)
-      AND departmentName = ?
-    ORDER BY firstName $orderBy
-    LIMIT ? OFFSET ?
-  ''', ['%$query%', '%$query%', '%$query%', department, limit, offset]);
+      SELECT * FROM ${AppConstants.userTable}
+      WHERE (firstName || ' ' || IFNULL(middleName, '') || ' ' || lastName LIKE ? 
+             OR mobile LIKE ? 
+             OR email LIKE ?)
+        AND departmentName = ?
+      ORDER BY firstName $orderBy
+      LIMIT ? OFFSET ?
+    ''', ['%$query%', '%$query%', '%$query%', department, limit, offset]);
 
     return result.map((json) => User.fromJson(json)).toList();
   }
 
   // Get the list of departments from the database
-
   static Future<List<String>> getDepartments() async {
     final db = await database;
 
@@ -271,14 +268,12 @@ class LocalStorageService {
     }
   }
 
-  //Get login time from secure storage
+  // Get login time from secure storage
   static Future<DateTime?> getLoginTime() async {
     try {
-      String? loginJson =
-          await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
+      String? loginJson = await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
       if (loginJson != null) {
-        LoginResponse loginResponse =
-            LoginResponse.fromJson(jsonDecode(loginJson));
+        LoginResponse loginResponse = LoginResponse.fromJson(jsonDecode(loginJson));
         return loginResponse.loginTime;
       } else {
         return null;
@@ -293,8 +288,7 @@ class LocalStorageService {
   // Get login response from secure storage
   static Future<LoginResponse?> getLoginResponse() async {
     try {
-      String? loginJson =
-          await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
+      String? loginJson = await _secureStorage.read(key: AppConstants.currentLoggedInUserKey);
       if (loginJson != null) {
         return LoginResponse.fromJson(jsonDecode(loginJson));
       } else {

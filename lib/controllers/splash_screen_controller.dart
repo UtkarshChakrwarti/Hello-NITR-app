@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
-//import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class SplashScreenController {
   final Logger _logger = Logger('SplashScreen');
-  //final LoginProvider _loginProvider = LoginProvider();
 
   Future<String?> checkLoginStatus(BuildContext context) async {
     try {
@@ -19,58 +17,41 @@ class SplashScreenController {
       _logger.info('Login status: $isLoggedIn');
       _logger.info('Stored PIN: $storedPin');
 
-      LoginResponse? loginResponse =
-          await LocalStorageService.getLoginResponse();
+      LoginResponse? loginResponse = await LocalStorageService.getLoginResponse();
       _logger.info('User Name: ${loginResponse?.firstName}');
 
-      //check if the logged in status duration has expired
-      // For Future use if needed
-      // if (await logoutOnExpiry()) {
-      //   await LocalStorageService.logout();
-      //   _logger.info(
-      //       'User logged out because the logged in status duration has expired.');
-      //   _loginProvider.setExpiredSession(true);
-      //   _logger.info('Redirecting to login screen.');
-      //   _logger.info('Session expired ${_loginProvider.expiredSession}');
-      //   return '/login';
-      // }
-
-      //check if the user is logged in and the user is valid
       if (isLoggedIn) {
         try {
-          bool isValid =
-              await ApiService().validateUser(loginResponse?.empCode);
+          bool isValid = await ApiService().validateUser(loginResponse?.empCode);
           _logger.info('User is valid: $isValid');
           if (!isValid) {
             await LocalStorageService.logout();
-            _logger
-                .info('User logged out because the user is not valid anymore.');
+            _logger.info('User logged out because the user is not valid anymore.');
             return '/login';
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
           _logger.severe('Unable to check User Status : Connectivity issues');
-
+          Sentry.captureException(e, stackTrace: stackTrace);
         }
         if (storedPin != null) {
-          _logger
-              .info('User is still valid, Redirecting to PIN unlock screen.');
+          _logger.info('User is still valid, Redirecting to PIN unlock screen.');
           return '/pinUnlock';
         } else {
           await LocalStorageService.logout();
-          _logger.info(
-              'User is still valid or currently app offline but User\'s Pin is not set, Redirecting to login screen.');
+          _logger.info('User is still valid or currently app offline but User\'s Pin is not set, Redirecting to login screen.');
           return '/login';
         }
       } else {
         _logger.info('User is not logged in. Redirecting to login screen.');
         return '/login';
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (e, stackTrace) {
       _logger.severe('PlatformException occurred: $e');
-      Sentry.captureException(e);
+      Sentry.captureException(e, stackTrace: stackTrace);
       return null;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe('An error occurred: $e');
+      Sentry.captureException(e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -88,9 +69,9 @@ class SplashScreenController {
           }
         }
       }
-    } catch (e, stacktrace) {
+    } catch (e, stackTrace) {
       _logger.severe('An error occurred: $e');
-      Sentry.captureException(e, stackTrace: stacktrace);
+      Sentry.captureException(e, stackTrace: stackTrace);
     }
 
     return false;

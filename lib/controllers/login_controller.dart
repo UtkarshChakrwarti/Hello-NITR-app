@@ -36,22 +36,23 @@ class LoginController {
         );
 
         if (response.loggedIn == true) {
-          // User Already Logged In somewhere else so check if this is the same device or not 
-          // uncomment the below code to check if the user is logging in from the same device or not
-          // final String udid = await DeviceUtil().getDeviceID();
-          // if (udid != response.deviceIMEI) {
-          //   // Different device
-          //   loginProvider.setAllowedToLogin(false);
-          //   loginProvider.setInvalidUserNameOrPassword(false);
-          //   _logger.warning(
-          //     'User logged in from a different device thus not allowed to login from this device.',
-          //   );
-          //   _logger.warning(
-          //     'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}',
-          //   );
-          //   _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
-          //   return false;
-          // }
+          // User Already Logged In somewhere else so check if this is the same device or not
+
+          final String udid = await DeviceUtil().getDeviceID();
+          if (udid != response.deviceIMEI) {
+            // Different device
+            loginProvider.setAllowedToLogin(false);
+            loginProvider.setInvalidUserNameOrPassword(false);
+            _logger.warning(
+              'User logged in from a different device thus not allowed to login from this device.',
+            );
+            _logger.warning(
+              'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}',
+            );
+            _logger.info(
+                'Is Allowed to login : ${loginProvider.isAllowedToLogin}');
+            return false;
+          }
 
           // Same device
           loginProvider.setAllowedToLogin(true);
@@ -60,14 +61,16 @@ class LoginController {
           _logger.info(
             'User logged in from the same device thus allowed to login from this device.',
           );
-          _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
+          _logger
+              .info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
           return true;
         }
 
         loginProvider.setFreshLoginAttempt(true);
         loginProvider.setAllowedToLogin(true);
         loginProvider.setInvalidUserNameOrPassword(false);
-        _logger.info('Is Fresh Login Attempt : ${loginProvider.isFreshLoginAttempt}');
+        _logger.info(
+            'Is Fresh Login Attempt : ${loginProvider.isFreshLoginAttempt}');
         _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
         _logger.info('User logged in');
 
@@ -79,7 +82,7 @@ class LoginController {
       }
     } catch (e, stacktrace) {
       _logger.severe("Login failed", e, stacktrace);
-       Sentry.captureException(e, stackTrace: stacktrace);
+      Sentry.captureException(e, stackTrace: stacktrace);
       return false;
     }
   }

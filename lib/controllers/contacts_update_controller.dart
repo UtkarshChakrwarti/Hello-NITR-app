@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -7,10 +8,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 class ContactsUpdateController {
   final Logger _logger = Logger('ContactsUpdateController');
-  final StreamController<double> _progressController =
-      StreamController<double>.broadcast();
-  final StreamController<String> _statusController =
-      StreamController<String>.broadcast();
+  final StreamController<double> _progressController = StreamController<double>.broadcast();
+  final StreamController<String> _statusController = StreamController<String>.broadcast();
   final _apiService = ApiService();
   int totalContacts = 0;
 
@@ -38,21 +37,19 @@ class ContactsUpdateController {
       // Step 3: Update the contacts in the local database with progress updates
       for (int i = 0; i < totalContacts; i++) {
         await LocalStorageService.saveUser(serverUsers[i]);
-        _logger.info(
-            'Updated contact: ${serverUsers[i].firstName} ${serverUsers[i].lastName}');
+        _logger.info('Updated contact: ${serverUsers[i].firstName} ${serverUsers[i].lastName}');
         _progressController.add((i + 1) / totalContacts);
       }
 
       _logger.info('Contacts updated successfully');
-      _progressController.close();
-      _statusController.close();
-    } catch (e) {
+      _statusController.add('Contacts updated successfully');
+    } catch (e, stackTrace) {
       _logger.severe('Error updating contacts: $e');
-      _statusController.addError(
-          'An error occurred while updating contacts. Please try again.');
-      _progressController.close();
-      _statusController.close();
-       Sentry.captureException(e);
+      _statusController.addError('An error occurred while updating contacts. Please try again.');
+      Sentry.captureException(e, stackTrace: stackTrace);
+    } finally {
+      await _progressController.close();
+      await _statusController.close();
     }
   }
 
@@ -60,8 +57,9 @@ class ContactsUpdateController {
     try {
       _logger.info('Fetching contacts from server');
       return await _apiService.fetchContacts();
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe('Error fetching contacts: $e');
+      Sentry.captureException(e, stackTrace: stackTrace);
       throw e;
     }
   }

@@ -14,9 +14,9 @@ class PinUnlockScreenController {
   Future<bool> canCheckBiometrics() async {
     try {
       return await _localAuth.canCheckBiometrics;
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe("Error checking biometrics: $e");
-      Sentry.captureException(e);
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -30,9 +30,9 @@ class PinUnlockScreenController {
           stickyAuth: true,
         ),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe("Error during biometric authentication: $e");
-      Sentry.captureException(e);
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
@@ -40,13 +40,20 @@ class PinUnlockScreenController {
   Future<bool> validatePin(String pin) async {
     try {
       return await _pinCreationController.validatePin(pin);
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe("Error validating PIN: $e");
+      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }
 
   void logout(BuildContext context) {
-    _loginProvider.logout(context);
+    try {
+      _loginProvider.logout(context);
+      _logger.info('User logged out successfully');
+    } catch (e, stackTrace) {
+      _logger.severe("Logout failed: $e");
+      Sentry.captureException(e, stackTrace: stackTrace);
+    }
   }
 }

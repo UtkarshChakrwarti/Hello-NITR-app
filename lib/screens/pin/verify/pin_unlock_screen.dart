@@ -20,14 +20,15 @@ class PinUnlockScreen extends StatefulWidget {
 class _PinUnlockScreenState extends State<PinUnlockScreen> {
   final PinUnlockScreenController _pinUnlockScreenController =
       PinUnlockScreenController();
-  late final UserProfileController controller;
+  late final UserProfileController _userProfileController;
   String _pin = "";
   String _loggedInUserFirstName = "";
 
   @override
   void initState() {
-    _lockOrientationToPortrait();
     super.initState();
+    _lockOrientationToPortrait();
+    _userProfileController = UserProfileController();
     _loadLoggedInUserFirstName();
     _checkBiometrics();
   }
@@ -172,17 +173,16 @@ class _PinUnlockScreenState extends State<PinUnlockScreen> {
                     onFingerprintPressed: _authenticateWithBiometrics,
                   ),
                   OutlinedButton.icon(
-                    onPressed: () => 
-                   DialogsAndPrompts.showLogoutConfirmationDialog(
-                          context).then((shouldExit) async {
-                  if (shouldExit != null && shouldExit) {
-                    await controller.logout(context);
-                  }}
-                    
-                    ),
+                    onPressed: () =>
+                        DialogsAndPrompts.showLogoutConfirmationDialog(context)
+                            .then((shouldExit) async {
+                      if (shouldExit != null && shouldExit) {
+                        await _userProfileController.logout(context);
+                      }
+                    }),
                     style: OutlinedButton.styleFrom(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 12.0, vertical: 7.0),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 7.0),
                       backgroundColor: Colors.transparent,
                       side: BorderSide(color: theme.primaryColor),
                       shape: RoundedRectangleBorder(

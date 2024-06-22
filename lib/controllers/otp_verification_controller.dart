@@ -30,31 +30,37 @@ class OtpVerificationController {
     return otp;
   }
 
-  /// Sends the generated OTP to the specified mobile number.
+  // Sends the generated OTP to the specified mobile number.
   Future<void> sendOtp(String mobileNumber) async {
     try {
       generatedOtp = _generateOtp();
       await _apiService.sendOtp(mobileNumber, generatedOtp);
       _logger.info("OTP sent to $mobileNumber");
-    } catch (e ,stackTrace) {
+    } catch (e, stackTrace) {
       _logger.severe("Failed to send OTP: $e");
       Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 
-  /// OTP verification with expiration check.
+  // OTP verification with expiration check.
   Future<bool> verifyOtp(String enteredOtp) async {
     final currentTime = DateTime.now();
     final otpValidityDuration = Duration(seconds: 600); // OTP valid for 10 minutes (600 seconds)
     if (currentTime.isBefore(otpGenerationTime.add(otpValidityDuration))) {
-      return enteredOtp == generatedOtp;
+      if (enteredOtp == generatedOtp) {
+        _logger.info('OTP verified successfully');
+        return true;
+      } else {
+        _logger.warning('Invalid OTP entered');
+        return false;
+      }
     } else {
       _logger.warning('OTP expired');
       return false;
     }
   }
 
-  /// Logs out the user and navigates to the login screen.
+  // Logs out the user and navigates to the login screen.
   Future<void> logout(context) async {
     try {
       await _loginProvider.logout(context);
@@ -71,9 +77,9 @@ class OtpVerificationController {
       LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
       await _apiService.updateDeviceId(currentUser!.empCode, udid);
       _logger.info('Device ID updated successfully');
-    } catch (e) {
+    } catch (e, stackTrace) {
       _logger.severe("Device ID update failed: $e");
-      Sentry.captureException(e);
+      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 }

@@ -8,6 +8,7 @@ class SimSelectionController {
 
   Future<SimInfo> getAvailableSimCards() async {
     try {
+      _logger.info("Fetching available SIM cards");
       return await SimNumber.getSimData();
     } catch (e, stackTrace) {
       _logger.severe("Error getting SIM data: $e");
@@ -16,24 +17,20 @@ class SimSelectionController {
     }
   }
 
-  // Selected SIM is valid or not also match de
   bool validateSimSelection(String selectedSim, String registeredMobile) {
     _logger.info(
         'Validating SIM selection: selectedSim=$selectedSim, registeredMobile=$registeredMobile');
 
-    return true; // make this line as comment and uncomment the code below to enable the service
+    selectedSim = selectedSim.substring(selectedSim.length - 10);
+    registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
 
-    // // First check selected sim is from India or not
-    // if (!selectedSim.startsWith("+91") && !selectedSim.startsWith("91")) {
-    //   _logger.warning("Selected SIM is not from India");
-    //   return false;
-    // }
+    bool isValid = selectedSim == registeredMobile;
+    if (isValid) {
+      _logger.info("SIM selection validated successfully");
+    } else {
+      _logger.warning("SIM selection validation failed");
+    }
 
-    // // Then check selected sim is same as registered mobile number
-    // // For simplicity, we are checking only last 10 digits
-    // selectedSim = selectedSim.substring(selectedSim.length - 10);
-    // registeredMobile = registeredMobile.substring(registeredMobile.length - 10);
-
-    // return selectedSim == registeredMobile;
+    return isValid;
   }
 }

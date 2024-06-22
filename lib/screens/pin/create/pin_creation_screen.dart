@@ -191,7 +191,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                     onPressed: _onSubmit,
                     child: const Text(
                       'CONTINUE',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(fontSize: 15, color: Colors.white),
                     ),
                   ),
                 ),

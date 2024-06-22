@@ -32,18 +32,22 @@ class CustomError extends StatelessWidget {
                   ? errorDetails.summary.toString()
                   : 'Oops! Something went wrong!',
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: kDebugMode ? Colors.red : Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 21),
+              style: TextStyle(
+                color: kDebugMode ? Colors.red : Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 21,
+              ),
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               kDebugMode
                   ? 'https://docs.flutter.dev/testing/errors'
                   : "We encountered an error and we've notified our engineering team about it. Sorry for the inconvenience caused.",
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.primaryColor, fontSize: 14),
+              style: const TextStyle(
+                color: AppColors.primaryColor,
+                fontSize: 14,
+              ),
             ),
           ],
         ),

@@ -78,6 +78,22 @@ class ApiService {
     }
   }
 
+  // Send OTP to the user's mobile number
+  Future<void> sendOtp(String mobileNumber, String otp) async {
+    //get last 10 digits of the mobile number
+    mobileNumber = mobileNumber.substring(mobileNumber.length - 10);
+    final Uri url = Uri.parse('$baseUrl/otp?otp=$otp&mobileno=$mobileNumber');
+    Sentry.captureMessage('Sending OTP to $mobileNumber');
+    final response = await _sendRequest('POST', url);
+
+    if (response.statusCode == 200) {
+      _logger.info(await response.stream.bytesToString());
+    } else {
+      Sentry.captureException(Exception('Failed to send OTP'));
+      _logger.severe('Failed to send OTP: ${response.reasonPhrase}');
+    }
+  }
+
   Future<bool> checkForUpdate() async {
     try {
       // Get the current app version from the platform package info
@@ -163,16 +179,5 @@ class ApiService {
     }
   }
 
-  // Send OTP to the user's mobile number
-  Future<void> sendOtp(String mobileNumber, String otp) async {
-    final Uri url = Uri.parse('$baseUrl/otp?otp=$otp&mobileno=$mobileNumber');
-    final response = await _sendRequest('POST', url);
 
-    if (response.statusCode == 200) {
-      _logger.info(await response.stream.bytesToString());
-    } else {
-      Sentry.captureException(Exception('Failed to send OTP'));
-      _logger.severe('Failed to send OTP: ${response.reasonPhrase}');
-    }
-  }
 }

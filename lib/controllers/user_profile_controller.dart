@@ -24,6 +24,7 @@ class UserProfileController {
     try {
       _logger.info('Deregistering device for empCode: $empCode');
       await _apiService.deRegisterDevice(empCode);
+      _logger.info('Device deregistered successfully');
     } catch (e, stackTrace) {
       _logger.severe('Error deregistering device', e, stackTrace);
       Sentry.captureException(e, stackTrace: stackTrace);

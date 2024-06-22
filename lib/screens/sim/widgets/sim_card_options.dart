@@ -39,7 +39,9 @@ class SimCardOptions extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  sim.phoneNumber?.substring(sim.phoneNumber!.length - 10) ?? '',
+                  sim.phoneNumber != null && sim.phoneNumber!.length >= 10
+                      ? sim.phoneNumber!.substring(sim.phoneNumber!.length - 10)
+                      : '',
                   style: const TextStyle(fontSize: 15, color: AppColors.primaryColor),
                 ),
                 const SizedBox(height: 5),

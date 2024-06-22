@@ -68,7 +68,13 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        return await showExitConfirmationDialog(context) ?? false;
+        //clear the text fields when back button is pressed
+        bool clearFields = await showExitConfirmationDialog(context) ?? false;
+        if (clearFields) {
+          _usernameController.clear();
+          _passwordController.clear();
+        }
+        return clearFields;
       },
       child: Scaffold(
         backgroundColor: Colors.white,

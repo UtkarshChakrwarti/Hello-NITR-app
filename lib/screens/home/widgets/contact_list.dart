@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -46,9 +47,9 @@ class ContactListItem extends StatelessWidget {
         DismissDirection.startToEnd: 0.33,
         DismissDirection.endToStart: 0.33,
       },
-      background: _buildSwipeBackgroundLeft(Icons.phone, 'Make Call'),
+      background: _buildSwipeBackgroundLeft(CupertinoIcons.phone_solid, 'Make Call'),
       secondaryBackground:
-          _buildSwipeBackgroundRight(Icons.person, 'View Profile'),
+          _buildSwipeBackgroundRight(CupertinoIcons.person_crop_circle_fill, 'View Profile'),
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,

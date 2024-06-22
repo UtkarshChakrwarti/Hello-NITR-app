@@ -1,17 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
-//import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
-
-//Uncomment the following code to use package_info_plus:
-
-// import 'package:package_info_plus/package_info_plus.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-// import 'package:hello_nitr/core/constants/app_constants.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -38,6 +30,9 @@ class NotificationService {
           }
         },
       );
+
+      // Request notification permissions
+      await requestNotificationPermissions();
     } catch (e) {
       print('Error initializing notifications: $e');
     }
@@ -70,17 +65,15 @@ class NotificationService {
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
-      icon: '@mipmap/ic_launcher', // Custom icon
-      largeIcon: const DrawableResourceAndroidBitmap(
-          '@drawable/ic_update'), // Large icon
-      color: AppColors.primaryColor, // Notification color
+      icon: '@mipmap/ic_launcher',
+      largeIcon: DrawableResourceAndroidBitmap('@drawable/ic_update'), // Update the large icon reference
+      color: AppColors.primaryColor,
       styleInformation: BigTextStyleInformation(
-        // Big text style
         body,
         contentTitle: title,
       ),
-      enableVibration: true, // Enable vibration
-      playSound: true, // Play sound
+      enableVibration: true,
+      playSound: true,
     );
 
     final NotificationDetails platformChannelSpecifics =
@@ -101,10 +94,8 @@ class NotificationService {
 
   Future<void> scheduleUpdateNotification() async {
     try {
-
       // Check for app update
-      //ApiService apiService = ApiService();
-      bool isUpdateAvailable =  true;  //await apiService.checkForUpdate();
+      bool isUpdateAvailable = true; // Replace with actual update check logic
 
       if (isUpdateAvailable) {
         await showNotification(

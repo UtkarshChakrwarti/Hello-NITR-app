@@ -36,21 +36,22 @@ class LoginController {
         );
 
         if (response.loggedIn == true) {
-          // User Already Logged In somewhere else so check if this is the same device or not
-          final String udid = await DeviceUtil().getDeviceID();
-          if (udid != response.deviceIMEI) {
-            // Different device
-            loginProvider.setAllowedToLogin(false);
-            loginProvider.setInvalidUserNameOrPassword(false);
-            _logger.warning(
-              'User logged in from a different device thus not allowed to login from this device.',
-            );
-            _logger.warning(
-              'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}',
-            );
-            _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
-            return false;
-          }
+          // User Already Logged In somewhere else so check if this is the same device or not 
+          // uncomment the below code to check if the user is logging in from the same device or not
+          // final String udid = await DeviceUtil().getDeviceID();
+          // if (udid != response.deviceIMEI) {
+          //   // Different device
+          //   loginProvider.setAllowedToLogin(false);
+          //   loginProvider.setInvalidUserNameOrPassword(false);
+          //   _logger.warning(
+          //     'User logged in from a different device thus not allowed to login from this device.',
+          //   );
+          //   _logger.warning(
+          //     'Device IMEI: $udid, Device IMEI from API: ${response.deviceIMEI}',
+          //   );
+          //   _logger.info('Is Allowed to login : ${loginProvider.isAllowedToLogin}');
+          //   return false;
+          // }
 
           // Same device
           loginProvider.setAllowedToLogin(true);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:logging/logging.dart';
 
@@ -15,6 +16,7 @@ class LinkLauncher {
         throw 'Could not launch $url';
       }
     } catch (e) {
+      Sentry.captureException(e);
       _logger.severe('Error launching URL: $url', e);
     }
   }
@@ -26,9 +28,11 @@ class LinkLauncher {
         await launch(url);
         _logger.info('Initiated call to: $phoneNumber');
       } else {
+        Sentry.captureException('Could not launch $url');
         throw 'Could not launch $url';
       }
     } catch (e) {
+      Sentry.captureException(e);
       _logger.severe('Error making call to: $phoneNumber', e);
     }
   }
@@ -38,11 +42,13 @@ class LinkLauncher {
     try {
       if (await canLaunch(url)) {
         await launch(url);
+        Sentry.captureMessage('Sent WhatsApp message to: $phoneNumber');
         _logger.info('Sent WhatsApp message to: $phoneNumber');
       } else {
         throw 'Could not launch $url';
       }
     } catch (e) {
+      Sentry.captureException(e);
       _logger.severe('Error sending WhatsApp message to: $phoneNumber', e);
     }
   }
@@ -57,6 +63,7 @@ class LinkLauncher {
         throw 'Could not launch $url';
       }
     } catch (e) {
+      Sentry.captureException(e);
       _logger.severe('Error sending SMS to: $phoneNumber', e);
     }
   }
@@ -71,6 +78,7 @@ class LinkLauncher {
         throw 'Could not launch $url';
       }
     } catch (e) {
+      Sentry.captureException(e);
       _logger.severe('Error sending email to: $email', e);
     }
   }

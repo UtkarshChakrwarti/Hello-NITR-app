@@ -6,6 +6,7 @@ import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:logging/logging.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class ApiService {
   final String baseUrl = AppConstants.baseUrl;
@@ -27,6 +28,7 @@ class ApiService {
       return jsonDecode(await response.stream.bytesToString());
     } else {
       _logger.severe('Failed to validate user: ${response.reasonPhrase}');
+      Sentry.captureException(Exception('Failed to validate user'));
       throw Exception('Failed to validate user');
     }
   }
@@ -42,6 +44,7 @@ class ApiService {
       return jsonData.map((item) => User.fromJson(item)).toList();
     } else {
       _logger.severe('Failed to load contacts: ${response.reasonPhrase}');
+      Sentry.captureException(Exception('Failed to load contacts'));
       throw Exception('Failed to load contacts');
     }
   }
@@ -57,6 +60,7 @@ class ApiService {
       return true;
     } else {
       _logger.severe(response.reasonPhrase);
+      Sentry.captureException(Exception('Failed to update device ID'));
       return false;
     }
   }
@@ -69,7 +73,8 @@ class ApiService {
     if (response.statusCode == 200) {
       _logger.info(await response.stream.bytesToString());
     } else {
-      _logger.severe(response.reasonPhrase);
+      _logger.severe('Failed to deregister device: ${response.reasonPhrase}');
+      Sentry.captureException(Exception('Failed to deregister device'));
     }
   }
 
@@ -138,6 +143,7 @@ class ApiService {
       return await client.send(request);
     } on TimeoutException catch (_) {
       _logger.severe('Request to $url timed out.');
+      Sentry.captureException(Exception('Request timed out'));
       throw Exception('Request timed out');
     }
   }
@@ -152,6 +158,7 @@ class ApiService {
           jsonDecode(await response.stream.bytesToString()));
     } else {
       _logger.severe('Failed to login: ${response.reasonPhrase}');
+      Sentry.captureException(Exception('Failed to login'));
       throw Exception('Failed to login');
     }
   }
@@ -164,6 +171,7 @@ class ApiService {
     if (response.statusCode == 200) {
       _logger.info(await response.stream.bytesToString());
     } else {
+      Sentry.captureException(Exception('Failed to send OTP'));
       _logger.severe('Failed to send OTP: ${response.reasonPhrase}');
     }
   }

@@ -26,4 +26,7 @@ class AppConstants {
 
   static int imageQuality = 50; // Set image quality for compression (0-100)
 
+  //sentry dsn
+  static const String sentryDsn = 'https://003feb3606c9ee01edbc85430f6eb498@o4507474330779648.ingest.de.sentry.io/4507474332418128';
+
 }

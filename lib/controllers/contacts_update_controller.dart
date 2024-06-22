@@ -3,6 +3,7 @@ import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class ContactsUpdateController {
   final Logger _logger = Logger('ContactsUpdateController');
@@ -19,6 +20,7 @@ class ContactsUpdateController {
   ContactsUpdateController() {
     _logger.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
+      Sentry.captureMessage('${record.level.name}: ${record.time}: ${record.message}');
     });
   }
 
@@ -50,6 +52,7 @@ class ContactsUpdateController {
           'An error occurred while updating contacts. Please try again.');
       _progressController.close();
       _statusController.close();
+       Sentry.captureException(e);
     }
   }
 

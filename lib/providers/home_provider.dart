@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class HomeProvider {
   static final _logger = Logger('HomeProvider');
@@ -15,6 +16,7 @@ class HomeProvider {
       return users;
     } catch (error) {
       _logger.severe('Failed to fetch contacts: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }
@@ -27,6 +29,7 @@ class HomeProvider {
       return count;
     } catch (error) {
       _logger.severe('Failed to fetch contact count: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }
@@ -39,6 +42,7 @@ class HomeProvider {
       return users;
     } catch (error) {
       _logger.severe('Failed to search users: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }
@@ -51,6 +55,7 @@ class HomeProvider {
       return users;
     } catch (error) {
       _logger.severe('Failed to search users: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }
@@ -63,6 +68,7 @@ class HomeProvider {
       return users;
     } catch (error) {
       _logger.severe('Failed to search users by department: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }
@@ -75,6 +81,7 @@ class HomeProvider {
       return departments;
     } catch (error) {
       _logger.severe('Failed to fetch departments: $error');
+      Sentry.captureException(error);
       rethrow;
     }
   }

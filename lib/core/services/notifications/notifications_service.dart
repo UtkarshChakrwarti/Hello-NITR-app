@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:async';
@@ -116,6 +117,7 @@ class NotificationService {
         );
       }
     } catch (e) {
+      Sentry.captureException(e);
       print('Error scheduling update notification: $e');
     }
   }

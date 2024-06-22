@@ -3,6 +3,7 @@ import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class UserProfileController {
   final ApiService _apiService = ApiService();
@@ -14,6 +15,7 @@ class UserProfileController {
       return await LocalStorageService.getCurrentUser();
     } catch (e, stackTrace) {
       _logger.severe('Error fetching current user', e, stackTrace);
+      Sentry.captureException(e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -24,6 +26,7 @@ class UserProfileController {
       await _apiService.deRegisterDevice(empCode);
     } catch (e, stackTrace) {
       _logger.severe('Error deregistering device', e, stackTrace);
+      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 
@@ -34,6 +37,7 @@ class UserProfileController {
       Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
     } catch (e, stacktrace) {
       _logger.severe("Logout failed", e, stacktrace);
+      Sentry.captureException(e, stackTrace: stacktrace);
     }
   }
 }

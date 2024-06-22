@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/screens/pin/create/pin_creation_screen.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 final Logger _logger = Logger('NavigationUtil');
 
@@ -39,5 +40,6 @@ Future<void> navigateToPinOrHome(BuildContext context) async {
       },
     );
     _logger.severe('Error retrieving PIN: $e');
+    Sentry.captureException(e);
   }
 }

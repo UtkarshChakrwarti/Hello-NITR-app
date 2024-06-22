@@ -1,4 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<void> requestPermissions() async {
   final permissions = [
@@ -10,6 +11,7 @@ Future<void> requestPermissions() async {
 
   statuses.forEach((permission, status) {
     if (status != PermissionStatus.granted) {
+      Sentry.captureMessage('$permission not granted');
       print('$permission not granted');
     }
   });

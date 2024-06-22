@@ -3,6 +3,7 @@ import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:hello_nitr/controllers/pin_creation_controller.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class PinUnlockScreenController {
   final PinCreationController _pinCreationController = PinCreationController();
@@ -15,6 +16,7 @@ class PinUnlockScreenController {
       return await _localAuth.canCheckBiometrics;
     } catch (e) {
       _logger.severe("Error checking biometrics: $e");
+      Sentry.captureException(e);
       return false;
     }
   }
@@ -30,6 +32,7 @@ class PinUnlockScreenController {
       );
     } catch (e) {
       _logger.severe("Error during biometric authentication: $e");
+      Sentry.captureException(e);
       return false;
     }
   }

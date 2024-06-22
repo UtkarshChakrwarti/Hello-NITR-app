@@ -5,6 +5,7 @@ import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 //import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class SplashScreenController {
   final Logger _logger = Logger('SplashScreen');
@@ -48,6 +49,7 @@ class SplashScreenController {
           }
         } catch (e) {
           _logger.severe('Unable to check User Status : Connectivity issues');
+
         }
         if (storedPin != null) {
           _logger
@@ -65,6 +67,7 @@ class SplashScreenController {
       }
     } on PlatformException catch (e) {
       _logger.severe('PlatformException occurred: $e');
+      Sentry.captureException(e);
       return null;
     } catch (e) {
       _logger.severe('An error occurred: $e');
@@ -85,8 +88,9 @@ class SplashScreenController {
           }
         }
       }
-    } catch (e) {
+    } catch (e, stacktrace) {
       _logger.severe('An error occurred: $e');
+      Sentry.captureException(e, stackTrace: stacktrace);
     }
 
     return false;

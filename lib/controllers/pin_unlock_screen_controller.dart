@@ -22,7 +22,7 @@ class PinUnlockScreenController {
   Future<bool> authenticateWithBiometrics() async {
     try {
       return await _localAuth.authenticate(
-        localizedReason: 'Authenticate with biometrics',
+        localizedReason: 'Authenticate to Access Hello NITR',
         options: const AuthenticationOptions(
           useErrorDialogs: true,
           stickyAuth: true,

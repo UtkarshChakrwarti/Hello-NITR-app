@@ -66,7 +66,6 @@ class NotificationService {
       priority: Priority.high,
       ticker: 'ticker',
       icon: '@mipmap/ic_launcher',
-      largeIcon: DrawableResourceAndroidBitmap('@drawable/ic_update'), // Update the large icon reference
       color: AppColors.primaryColor,
       styleInformation: BigTextStyleInformation(
         body,
@@ -74,6 +73,14 @@ class NotificationService {
       ),
       enableVibration: true,
       playSound: true,
+      actions: [
+        AndroidNotificationAction(
+          'update_action',
+          'Update Now',
+          showsUserInterface: true,
+          cancelNotification: true,
+        ),
+      ],
     );
 
     final NotificationDetails platformChannelSpecifics =

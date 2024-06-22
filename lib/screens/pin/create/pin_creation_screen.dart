@@ -165,7 +165,7 @@ class _PinCreationScreenState extends State<PinCreationScreen> {
                         Icon(Icons.check_circle, color: AppColors.primaryColor),
                         SizedBox(width: 8),
                         Text(
-                          'Your PIN codes are the same',
+                            'PINs Match',
                           style: TextStyle(
                             color: AppColors.primaryColor,
                             fontWeight: FontWeight.bold,

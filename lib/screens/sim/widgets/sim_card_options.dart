@@ -39,13 +39,13 @@ class SimCardOptions extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  sim.phoneNumber ?? '',
-                  style: const TextStyle(fontSize: 14, color: AppColors.primaryColor),
+                  sim.phoneNumber?.substring(sim.phoneNumber!.length - 10) ?? '',
+                  style: const TextStyle(fontSize: 15, color: AppColors.primaryColor),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   sim.carrierName ?? '',
-                  style: const TextStyle(fontSize: 10, color: AppColors.primaryColor),
+                  style: const TextStyle(fontSize: 12, color: AppColors.primaryColor),
                 ),
               ],
             ),

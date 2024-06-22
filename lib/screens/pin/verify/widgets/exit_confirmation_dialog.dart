@@ -32,7 +32,7 @@ Future<bool?> showExitConfirmationDialog(BuildContext context) {
             },
           ),
           TextButton(
-            child: Text('Unlcock',
+            child: Text('Unlock',
                 style: TextStyle(
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold)),

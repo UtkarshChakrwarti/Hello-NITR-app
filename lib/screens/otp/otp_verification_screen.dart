@@ -179,7 +179,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                 ],
               ),
               content: const Text(
-                  'Are you sure you want to go back to the login page?',
+                    'Are you sure you want to go back to the login screen?',
                   style: TextStyle(fontSize: 16)),
               actions: [
                 TextButton(
@@ -241,13 +241,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            '🇮🇳',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                          
                           const SizedBox(width: 5),
                           Text(
-                            widget.mobileNumber,
+                            '+91${widget.mobileNumber.substring(widget.mobileNumber.length - 10)}',
                             style: TextStyle(
                                 fontSize: 16, color: AppColors.primaryColor),
                           ),

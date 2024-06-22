@@ -26,4 +26,6 @@ class AppConstants {
 
   // Sentry DSN
   static const String sentryDsn = 'https://003feb3606c9ee01edbc85430f6eb498@o4507474330779648.ingest.de.sentry.io/4507474332418128';
+
+  static const int pageSize = 30;
 }

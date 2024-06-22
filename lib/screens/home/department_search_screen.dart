@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -18,7 +19,7 @@ class DepartmentSearchScreen extends StatefulWidget {
 
 class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
     with TickerProviderStateMixin {
-  static const _pageSize = 10;
+  static const _pageSize = AppConstants.pageSize;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: 0);

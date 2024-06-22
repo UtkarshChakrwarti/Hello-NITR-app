@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/providers/home_provider.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  static const _pageSize = 10;
+  static const _pageSize = AppConstants.pageSize;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: 0);

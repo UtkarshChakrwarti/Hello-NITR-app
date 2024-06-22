@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -19,7 +20,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen>
     with TickerProviderStateMixin {
-  static const _pageSize = 10;
+  static const _pageSize = AppConstants.pageSize;
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: 0);

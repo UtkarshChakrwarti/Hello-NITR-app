@@ -130,8 +130,8 @@ class DialogsAndPrompts {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                'Are you sure you want to Logout?',
-                style: TextStyle(fontSize: 16),
+                'Are you sure you want to logout?',
+                style: TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 10),
               Container(

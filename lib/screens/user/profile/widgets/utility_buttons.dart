@@ -101,7 +101,7 @@ class UtilityButtons extends StatelessWidget {
             ],
           ),
           content: const Text(
-              'Are you sure you want to De-Register your Device?',
+              'Are you sure you want to Deregister your Device?',
               style: TextStyle(fontSize: 16)),
           actions: [
             TextButton(

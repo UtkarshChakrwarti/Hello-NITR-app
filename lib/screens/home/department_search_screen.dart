@@ -143,9 +143,9 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
           decoration: InputDecoration(
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
-            hintText: 'Search users by department',
+            hintText: _selectedDepartment.isEmpty ? 'Search in departments' : 'Search in $_selectedDepartment',
             hintStyle: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 color: Colors.grey[500],
                 fontWeight: FontWeight.normal),
             suffixIcon: _searchQuery.isNotEmpty

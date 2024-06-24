@@ -8,7 +8,7 @@ import 'package:hello_nitr/screens/contacts/update/contacts_update_screen.dart';
 import 'package:hello_nitr/screens/otp/widgets/otp_input.dart';
 import 'package:hello_nitr/screens/otp/widgets/resend_button.dart';
 import 'package:hello_nitr/screens/otp/widgets/verify_button.dart';
-import 'package:hello_nitr/screens/sim/widgets/error_dialog.dart';
+import 'package:hello_nitr/screens/otp/widgets/error_dialog.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 

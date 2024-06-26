@@ -27,6 +27,9 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
   bool _isLoading = true;
   late AnimationController _animationController;
   late Animation<double> _animation;
+  bool _isNextButtonEnabled = false;
+  bool _noSimCardAvailable = false;
+  bool _manualEntry = false;
 
   @override
   void initState() {
@@ -47,8 +50,9 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
       } else {
         setState(() {
           _isLoading = false;
-          _showErrorDialog('Permission to read SIM cards was denied.');
+          _noSimCardAvailable = true;
         });
+        _showErrorDialog('Permission to read SIM cards was denied.');
       }
     });
 
@@ -67,12 +71,17 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
       _logger.info("SIM cards loaded: ${simInfo.cards}");
       setState(() {
         _isLoading = false;
-        if (simInfo.cards.isEmpty ||
+        _noSimCardAvailable = simInfo.cards.isEmpty ||
             simInfo.cards.first.phoneNumber == null ||
-            simInfo.cards.first.phoneNumber!.isEmpty) {
-          _logger.warning("No SIM card or phone number available");
-        } else {
-          _selectedSim = simInfo.cards.first.phoneNumber;
+            simInfo.cards.first.phoneNumber!.isEmpty;
+
+        if (!_noSimCardAvailable) {
+          // Automatically select the first valid SIM card
+          SimCard firstValidSim = simInfo.cards.firstWhere(
+              (sim) => sim.phoneNumber != null && sim.phoneNumber!.length >= 10 && sim.carrierName != null && sim.carrierName!.isNotEmpty,
+              orElse: () => simInfo.cards.first);
+          _selectedSim = firstValidSim.phoneNumber;
+          _isNextButtonEnabled = true;
         }
       });
     } on PlatformException catch (e) {
@@ -80,12 +89,14 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
       _showErrorDialog("Failed to get SIM data: ${e.message}");
       setState(() {
         _isLoading = false;
+        _noSimCardAvailable = true;
       });
     } catch (e) {
       _logger.severe("An unexpected error occurred: ${e.toString()}", e);
       _showErrorDialog("An unexpected error occurred: ${e.toString()}");
       setState(() {
         _isLoading = false;
+        _noSimCardAvailable = true;
       });
     }
   }
@@ -114,29 +125,41 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  simInfo.cards.isEmpty ||
-                          simInfo.cards.first.phoneNumber == null ||
-                          simInfo.cards.first.phoneNumber!.isEmpty
-                      ? NoSimCardWidget()
-                      : SimCardOptions(
-                          simInfo: simInfo,
-                          selectedSim: _selectedSim,
-                          onSimSelected: (sim) {
-                            setState(() {
-                              _selectedSim = sim.phoneNumber;
-                            });
-                          },
-                        ),
+                  _manualEntry
+                      ? NoSimCardWidget(
+                          onPhoneNumberChanged: _onPhoneNumberChanged,
+                        )
+                      : (_noSimCardAvailable
+                          ? NoSimCardWidget(
+                              onPhoneNumberChanged: _onPhoneNumberChanged,
+                            )
+                          : SimCardOptions(
+                              simInfo: simInfo,
+                              selectedSim: _selectedSim,
+                              onSimSelected: (sim) {
+                                setState(() {
+                                  _selectedSim = sim.phoneNumber;
+                                  _isNextButtonEnabled = true; // Enable the next button when a SIM is selected
+                                });
+                              },
+                              onManualEntryTap: () {
+                                setState(() {
+                                  _selectedSim = null;
+                                  _isNextButtonEnabled = false; // Disable the next button
+                                  _manualEntry = true;
+                                });
+                              },
+                            )),
                   const SizedBox(height: 20),
                   Container(
                     width: 140,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _selectedSim == null ? null : _onNextButtonPressed,
+                      onPressed: _isNextButtonEnabled ? _onNextButtonPressed : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _selectedSim == null
-                            ? Colors.grey
-                            : AppColors.primaryColor,
+                        backgroundColor: _isNextButtonEnabled
+                            ? AppColors.primaryColor
+                            : Colors.grey,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -165,10 +188,18 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                       ),
                     ),
                   ),
+                  if (_noSimCardAvailable || _manualEntry) const SizedBox(height: 300), // Add space only if no SIM card is available or in manual entry mode
                 ],
               ),
       ),
     );
+  }
+
+  void _onPhoneNumberChanged(String phoneNumber) {
+    setState(() {
+      _selectedSim = phoneNumber;
+      _isNextButtonEnabled = phoneNumber.length == 10;
+    });
   }
 
   Future<void> _onNextButtonPressed() async {
@@ -189,11 +220,11 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
           );
         } else {
           _showErrorDialog(
-              'Selected SIM card does not match with the registered number.');
+              'Entered phone number does not match with the registered number.');
         }
       }
     } catch (e) {
-      _logger.severe("An error occurred during SIM validation: ${e.toString()}", e);
+      _logger.severe("An error occurred during phone number validation: ${e.toString()}", e);
       _showErrorDialog('An error occurred: ${e.toString()}');
     }
   }

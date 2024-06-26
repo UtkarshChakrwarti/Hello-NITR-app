@@ -31,7 +31,8 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
   }
 
   void _onPhoneNumberChanged(String value) {
-    String filteredValue = value.replaceAll(RegExp(r'\D'), ''); // Remove all non-numeric characters
+    String filteredValue = value.replaceAll(
+        RegExp(r'\D'), ''); // Remove all non-numeric characters
     if (filteredValue.length <= 10) {
       _textFieldController.value = TextEditingValue(
         text: filteredValue,
@@ -57,7 +58,8 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.transparent),
                   borderRadius: BorderRadius.circular(8),
@@ -72,7 +74,8 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
                     SizedBox(width: 8),
                     Text(
                       '+91',
-                      style: TextStyle(color: AppColors.primaryColor, fontSize: 16),
+                      style: TextStyle(
+                          color: AppColors.primaryColor, fontSize: 16),
                     ),
                   ],
                 ),
@@ -102,6 +105,17 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 10),
+          const Center(
+            child: Text(
+              'Please enter your registered mobile number to proceed',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.black54,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

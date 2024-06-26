@@ -58,10 +58,10 @@ class DialogsAndPrompts {
           ),
           title: const Row(
             children: [
-              Icon(Icons.exit_to_app_rounded, color: AppColors.primaryColor),
+              Icon(Icons.info, color: AppColors.primaryColor),
               SizedBox(width: 10),
               Text(
-                'Exit',
+                'Confirm',
                 style: TextStyle(
                   color: AppColors.primaryColor,
                   fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class DialogsAndPrompts {
             ],
           ),
           content: const Text(
-            'Are you sure you want to leave?',
+            'Are you sure you want to go back to the login screen?',
             style: TextStyle(fontSize: 16),
           ),
           actions: [

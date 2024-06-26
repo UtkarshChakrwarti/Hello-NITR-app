@@ -18,7 +18,6 @@ class SimSelectionController {
   }
 
   bool validateSimSelection(String selectedSim, String registeredMobile) {
-    return true;
     _logger.info(
         'Validating SIM selection: selectedSim=$selectedSim, registeredMobile=$registeredMobile');
 

@@ -34,6 +34,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
   @override
   void initState() {
     super.initState();
+    _lockOrientationToPortrait();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -59,8 +60,18 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
     _logger.info('SimSelectionScreen initialized');
   }
 
+    void _lockOrientationToPortrait() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
+  void _resetOrientation() {
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+  }
+
+
   @override
   void dispose() {
+    _resetOrientation();
     _animationController.dispose();
     super.dispose();
   }

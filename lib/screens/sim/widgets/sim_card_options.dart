@@ -25,13 +25,13 @@ class SimCardOptions extends StatelessWidget {
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(), // Prevents GridView from scrolling independently
-      itemCount: validSimCount + (validSimCount == 1 ? 1 : 0), // Add one for the manual entry tile if only one SIM card is valid
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: validSimCount + (validSimCount == 1 ? 1 : 0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // Number of columns in the grid
+        crossAxisCount: 2,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
-        childAspectRatio: 3 / 3.5, // Aspect ratio for the tiles
+        childAspectRatio: 3 / 3.5,
       ),
       itemBuilder: (context, index) {
         if (index < validSimCount) {
@@ -82,7 +82,6 @@ class SimCardOptions extends StatelessWidget {
             ),
           );
         } else {
-          // Manual entry tile
           return GestureDetector(
             onTap: onManualEntryTap,
             child: Container(

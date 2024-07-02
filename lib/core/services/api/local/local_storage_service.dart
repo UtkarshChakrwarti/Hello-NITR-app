@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
-import 'package:hello_nitr/core/utils/image_compressor.dart';
 import 'package:logging/logging.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
@@ -61,18 +60,6 @@ class LocalStorageService {
   // Save a user to the database
   static Future<void> saveUser(User user) async {
     final db = await database;
-
-    // Compress the image field before saving
-    final compressedImage = ImageCompressor.compressBase64Image(user.photo!, AppConstants.imageQuality);
-    _logger.info('Compression Details:');
-    _logger.info('---------------------');
-    _logger.info('Original Size: ${compressedImage['originalSize']} bytes');
-    _logger.info('Compressed Size: ${compressedImage['compressedSize']} bytes');
-    _logger.info('Compression Ratio: ${compressedImage['compressionRatio'].toStringAsFixed(2)}%');
-    _logger.info('Size Difference: ${compressedImage['sizeDifference']} bytes');
-    _logger.info('---------------------');
-
-    user.photo = compressedImage['compressedBase64Image'];
     await db.insert(
       AppConstants.userTable,
       user.toJson(),

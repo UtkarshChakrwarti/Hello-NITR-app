@@ -87,6 +87,8 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
           message: message,
           onDismiss: () {
             Navigator.of(context).pop();
+            // Navigate to the home screen in case of network error ad pin is set
+            navigateToPinOrHome(context);
             _logger.info('Error dialog dismissed');
           },
         );

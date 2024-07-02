@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 
-class SuccessWidget extends StatelessWidget {
+class SuccessWidget extends StatefulWidget {
   final Animation<double> animation;
   final int updatedContacts;
   final int totalContacts;
@@ -16,11 +16,25 @@ class SuccessWidget extends StatelessWidget {
   });
 
   @override
+  _SuccessWidgetState createState() => _SuccessWidgetState();
+}
+
+class _SuccessWidgetState extends State<SuccessWidget> {
+  bool _isButtonClicked = false;
+
+  void _handleButtonClick() {
+    setState(() {
+      _isButtonClicked = true;
+    });
+    widget.onPressed();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ScaleTransition(
-          scale: animation,
+          scale: widget.animation,
           child: const Icon(
             CupertinoIcons.check_mark_circled,
             color: AppColors.primaryColor,
@@ -29,7 +43,7 @@ class SuccessWidget extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         FadeTransition(
-          opacity: animation,
+          opacity: widget.animation,
           child: const Text(
             'Contacts Updated Successfully!',
             style: TextStyle(
@@ -41,26 +55,35 @@ class SuccessWidget extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          'Updated Contacts: $updatedContacts/$totalContacts',
+          'Updated Contacts: ${widget.updatedContacts}/${widget.totalContacts}',
           style: const TextStyle(
             fontSize: 16,
             color: AppColors.primaryColor,
           ),
         ),
         const SizedBox(height: 50),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: const CircleBorder(),
-            backgroundColor: AppColors.primaryColor,
-            padding: const EdgeInsets.all(20),
+        if (!_isButtonClicked)
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+              backgroundColor: AppColors.primaryColor,
+              padding: const EdgeInsets.all(20),
+            ),
+            onPressed: _handleButtonClick,
+            child: const Icon(
+              Icons.arrow_forward,
+              color: Colors.white,
+              size: 30,
+            ),
+          )
+        else
+          const SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryColor),
+            ),
           ),
-          onPressed: onPressed,
-          child: const Icon(
-            Icons.arrow_forward,
-            color: Colors.white,
-            size: 30,
-          ),
-        ),
       ],
     );
   }

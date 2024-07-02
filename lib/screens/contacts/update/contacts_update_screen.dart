@@ -123,6 +123,7 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
                   const SizedBox(height: 20),
                   if (_isLoading)
                     LoadingWidget(
+                      header: 'It may take a few minutes to update your contacts. \n Please wait...',
                       progress: _progress,
                       updatedContacts: _updatedContacts,
                       totalContacts: _controller.totalContacts,

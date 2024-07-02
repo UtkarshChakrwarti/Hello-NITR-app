@@ -3,11 +3,13 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 
 class LoadingWidget extends StatelessWidget {
+  final String header;
   final double progress;
   final int updatedContacts;
   final int totalContacts;
 
   const LoadingWidget({
+    required this.header,
     required this.progress,
     required this.updatedContacts,
     required this.totalContacts,
@@ -19,7 +21,7 @@ class LoadingWidget extends StatelessWidget {
       children: [
         //Add the Text updating contacts center aligned and header
         const Text(
-          'Updating Contacts...',
+          'Updating Contacts',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -46,6 +48,16 @@ class LoadingWidget extends StatelessWidget {
             fontSize: 16,
             color: AppColors.primaryColor,
           ),
+        ),
+        //header
+        SizedBox(height: 20),
+        Text(
+          header,
+          style: TextStyle(
+            fontSize: 12,
+            color: AppColors.primaryColor,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );

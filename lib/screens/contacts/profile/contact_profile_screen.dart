@@ -77,13 +77,13 @@ Email: ${contact.email ?? 'N/A'}, NIT Rourkela
               Divider(),
               ContactTile(
                   title: "Mobile", subtitle: contact.mobile, isMobile: true),
-              if (contact.workPhone != null && contact.workPhone!.isNotEmpty)
+              if (contact.workPhone != null && contact.workPhone!.isNotEmpty && contact.workPhone != "NA")
                 ContactTile(
                     title: "Work Number",
                     subtitle: _prependPrefix(contact.workPhone),
                     isMobile: false),
               if (contact.residencePhone != null &&
-                  contact.residencePhone!.isNotEmpty)
+                  contact.residencePhone!.isNotEmpty && contact.residencePhone != "NA")
                 ContactTile(
                     title: "Residence",
                     subtitle: _prependPrefix(contact.residencePhone),
@@ -91,13 +91,13 @@ Email: ${contact.email ?? 'N/A'}, NIT Rourkela
               Divider(),
               EmailTile(
                   title: "Personal Email", subtitle: contact.personalEmail),
-              if (contact.email != null && contact.email!.isNotEmpty)
+              if (contact.email != null && contact.email!.isNotEmpty && contact.email != "NA")
                 EmailTile(title: "Work Email", subtitle: contact.email!),
               Divider(),
-              if (contact.roomNo != null && contact.roomNo!.isNotEmpty)
+              if (contact.roomNo != null && contact.roomNo!.isNotEmpty && contact.roomNo != "NA")
                 AdditionalInfoTile(
                     label: "Cabin Number:", info: contact.roomNo!),
-              if (contact.quarterNo != null && contact.quarterNo!.isNotEmpty)
+              if (contact.quarterNo != null && contact.quarterNo!.isNotEmpty && contact.quarterNo != "NA")
                 AdditionalInfoTile(
                     label: "Quarter Number:", info: contact.quarterNo!),
             ],

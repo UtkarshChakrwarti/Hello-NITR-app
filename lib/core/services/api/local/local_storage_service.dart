@@ -1,7 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:logging/logging.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:hello_nitr/models/user.dart';
@@ -251,7 +250,6 @@ class LocalStorageService {
           key: AppConstants.currentLoggedInUserKey, value: loginJson);
     } catch (e) {
       _logger.severe('Error saving login response: $e');
-      Sentry.captureException(e);
     }
   }
 
@@ -267,7 +265,6 @@ class LocalStorageService {
       }
     } catch (e) {
       _logger.severe('Error retrieving login time: $e');
-      Sentry.captureException(e);
       return null;
     }
   }
@@ -283,7 +280,6 @@ class LocalStorageService {
       }
     } catch (e) {
       _logger.severe('Error retrieving login response: $e');
-      Sentry.captureException(e);
       return null;
     }
   }
@@ -294,7 +290,6 @@ class LocalStorageService {
       await _secureStorage.delete(key: AppConstants.currentLoggedInUserKey);
     } catch (e) {
       _logger.severe('Error deleting login response: $e');
-      Sentry.captureException(e);
     }
   }
 
@@ -304,7 +299,6 @@ class LocalStorageService {
       await _secureStorage.write(key: AppConstants.pinKey, value: pin);
     } catch (e) {
       _logger.severe('Error saving PIN: $e');
-      Sentry.captureException(e);
     }
   }
 
@@ -314,7 +308,6 @@ class LocalStorageService {
       return await _secureStorage.read(key: AppConstants.pinKey);
     } catch (e) {
       _logger.severe('Error retrieving PIN: $e');
-      Sentry.captureException(e);
       return null;
     }
   }
@@ -325,7 +318,6 @@ class LocalStorageService {
       await _secureStorage.delete(key: AppConstants.pinKey);
     } catch (e) {
       _logger.severe('Error deleting PIN: $e');
-      Sentry.captureException(e);
     }
   }
 

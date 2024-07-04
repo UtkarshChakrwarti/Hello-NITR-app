@@ -8,7 +8,6 @@ import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/screens/sim/sim_selection_screen.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class LoginController {
   final ApiService _apiService = ApiService();
@@ -82,7 +81,6 @@ class LoginController {
       }
     } catch (e, stacktrace) {
       _logger.severe("Login failed", e, stacktrace);
-      Sentry.captureException(e, stackTrace: stacktrace);
       return false;
     }
   }
@@ -95,7 +93,6 @@ class LoginController {
       Navigator.pushNamedAndRemoveUntil(context, "/login", (route) => false);
     } catch (e, stacktrace) {
       _logger.severe("Logout failed", e, stacktrace);
-      Sentry.captureException(e, stackTrace: stacktrace);
     }
   }
 

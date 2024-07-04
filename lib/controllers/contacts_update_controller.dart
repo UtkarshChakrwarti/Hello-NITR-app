@@ -4,7 +4,6 @@ import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/user.dart';
 import 'package:logging/logging.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class ContactsUpdateController {
   final Logger _logger = Logger('ContactsUpdateController');
@@ -19,7 +18,6 @@ class ContactsUpdateController {
   ContactsUpdateController() {
     _logger.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
-      Sentry.captureMessage('${record.level.name}: ${record.time}: ${record.message}');
     });
   }
 
@@ -43,10 +41,9 @@ class ContactsUpdateController {
 
       _logger.info('Contacts updated successfully');
       _statusController.add('Contacts updated successfully');
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('Error updating contacts: $e');
       _statusController.addError('An error occurred while updating contacts. Please try again.');
-      Sentry.captureException(e, stackTrace: stackTrace);
     } finally {
       await _progressController.close();
       await _statusController.close();
@@ -57,9 +54,8 @@ class ContactsUpdateController {
     try {
       _logger.info('Fetching contacts from server');
       return await _apiService.fetchContacts();
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('Error fetching contacts: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
       throw e;
     }
   }

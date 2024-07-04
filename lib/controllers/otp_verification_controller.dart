@@ -7,7 +7,6 @@ import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
 import 'package:otp/otp.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class OtpVerificationController {
   final LoginProvider _loginProvider = LoginProvider();
@@ -36,9 +35,8 @@ class OtpVerificationController {
       generatedOtp = _generateOtp();
       await _apiService.sendOtp(mobileNumber, generatedOtp);
       _logger.info("OTP sent to $mobileNumber");
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe("Failed to send OTP: $e");
-      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 
@@ -65,9 +63,8 @@ class OtpVerificationController {
     try {
       await _loginProvider.logout(context);
       _logger.info('User logged out successfully');
-    } catch (e, stacktrace) {
+    } catch (e) {
       _logger.severe("Logout failed: $e");
-      Sentry.captureException(e, stackTrace: stacktrace);
     }
   }
 
@@ -77,9 +74,8 @@ class OtpVerificationController {
       LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
       await _apiService.updateDeviceId(currentUser!.empCode, udid);
       _logger.info('Device ID updated successfully');
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe("Device ID update failed: $e");
-      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:logging/logging.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class PinCreationController {
   final Logger _logger = Logger('PinCreationController');
@@ -11,9 +10,8 @@ class PinCreationController {
       await LocalStorageService.savePin(pin);
       String? savedPin = await LocalStorageService.getPin();
       _logger.info('Saved PIN: $savedPin');
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('Failed to save PIN: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
     }
   }
 
@@ -22,9 +20,8 @@ class PinCreationController {
       String? savedPin = await LocalStorageService.getPin();
       _logger.info('Saved PIN: $savedPin');
       return savedPin == pin;
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('Failed to validate PIN: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
       return false;
     }
   }

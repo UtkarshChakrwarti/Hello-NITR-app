@@ -4,7 +4,6 @@ import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:logging/logging.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class SplashScreenController {
   final Logger _logger = Logger('SplashScreen');
@@ -29,9 +28,8 @@ class SplashScreenController {
             _logger.info('User logged out because the user is not valid anymore.');
             return '/login';
           }
-        } catch (e, stackTrace) {
+        } catch (e) {
           _logger.severe('Unable to check User Status : Connectivity issues');
-          Sentry.captureException(e, stackTrace: stackTrace);
         }
         if (storedPin != null) {
           _logger.info('User is still valid, Redirecting to PIN unlock screen.');
@@ -45,13 +43,11 @@ class SplashScreenController {
         _logger.info('User is not logged in. Redirecting to login screen.');
         return '/login';
       }
-    } on PlatformException catch (e, stackTrace) {
+    } on PlatformException catch (e) {
       _logger.severe('PlatformException occurred: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
       return null;
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('An error occurred: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
       return null;
     }
   }
@@ -69,9 +65,8 @@ class SplashScreenController {
           }
         }
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe('An error occurred: $e');
-      Sentry.captureException(e, stackTrace: stackTrace);
     }
 
     return false;

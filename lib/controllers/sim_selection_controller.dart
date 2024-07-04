@@ -1,4 +1,3 @@
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:simnumber/sim_number.dart';
 import 'package:simnumber/siminfo.dart';
 import 'package:logging/logging.dart';
@@ -10,9 +9,8 @@ class SimSelectionController {
     try {
       _logger.info("Fetching available SIM cards");
       return await SimNumber.getSimData();
-    } catch (e, stackTrace) {
+    } catch (e) {
       _logger.severe("Error getting SIM data: $e");
-      Sentry.captureException(e, stackTrace: stackTrace);
       throw Exception("Failed to retrieve SIM data. Please try again later.");
     }
   }

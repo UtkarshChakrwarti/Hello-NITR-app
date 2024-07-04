@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 class CustomError extends StatelessWidget {
   final FlutterErrorDetails errorDetails;
@@ -13,12 +12,6 @@ class CustomError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Capture the error using Sentry
-    Sentry.captureException(
-      errorDetails.exception,
-      stackTrace: errorDetails.stack,
-    );
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(

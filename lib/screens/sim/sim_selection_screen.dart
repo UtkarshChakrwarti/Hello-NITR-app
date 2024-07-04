@@ -12,7 +12,6 @@ import 'package:hello_nitr/screens/sim/widgets/sim_card_options.dart';
 import 'package:simnumber/sim_number.dart';
 import 'package:simnumber/siminfo.dart';
 import 'package:logging/logging.dart';
-import 'dart:io' show Platform;
 
 class SimSelectionScreen extends StatefulWidget {
   @override
@@ -46,33 +45,29 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
     );
     _animationController.forward();
 
-    if (Platform.isIOS) {
-      _manualEntry = true;
-      _isLoading = false;
-    } else {
-      SimNumber.listenPhonePermission((isPermissionGranted) {
-        if (isPermissionGranted) {
-          _loadSimCards();
-        } else {
-          setState(() {
-            _isLoading = false;
-            _noSimCardAvailable = true;
-          });
-          _showErrorDialog('Permission to read SIM cards was denied.');
-        }
-      });
-    }
+    SimNumber.listenPhonePermission((isPermissionGranted) {
+      if (isPermissionGranted) {
+        _loadSimCards();
+      } else {
+        setState(() {
+          _isLoading = false;
+          _noSimCardAvailable = true;
+        });
+        _showErrorDialog('Permission to read SIM cards was denied.');
+      }
+    });
 
     _logger.info('SimSelectionScreen initialized');
   }
 
-  void _lockOrientationToPortrait() {
+    void _lockOrientationToPortrait() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
   void _resetOrientation() {
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
+
 
   @override
   void dispose() {
@@ -92,6 +87,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
             simInfo.cards.first.phoneNumber!.isEmpty;
 
         if (!_noSimCardAvailable) {
+          // Automatically select the first valid SIM card
           SimCard firstValidSim = simInfo.cards.firstWhere(
               (sim) => sim.phoneNumber != null && sim.phoneNumber!.length >= 10 && sim.carrierName != null && sim.carrierName!.isNotEmpty,
               orElse: () => simInfo.cards.first);
@@ -154,13 +150,13 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                               onSimSelected: (sim) {
                                 setState(() {
                                   _selectedSim = sim.phoneNumber;
-                                  _isNextButtonEnabled = true;
+                                  _isNextButtonEnabled = true; // Enable the next button when a SIM is selected
                                 });
                               },
                               onManualEntryTap: () {
                                 setState(() {
                                   _selectedSim = null;
-                                  _isNextButtonEnabled = false;
+                                  _isNextButtonEnabled = false; // Disable the next button
                                   _manualEntry = true;
                                 });
                               },
@@ -203,7 +199,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                       ),
                     ),
                   ),
-                  if (_noSimCardAvailable || _manualEntry) const SizedBox(height: 300),
+                  if (_noSimCardAvailable || _manualEntry) const SizedBox(height: 300), // Add space only if no SIM card is available or in manual entry mode
                 ],
               ),
       ),

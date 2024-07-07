@@ -19,6 +19,7 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
   final Logger _logger = Logger('ContactsUpdateScreen');
   double _progress = 0.0;
   bool _isLoading = true;
+  bool _showCounter = false;
   int _updatedContacts = 0;
   late StreamSubscription<double> _progressSubscription;
   late StreamSubscription<String> _statusSubscription;
@@ -43,6 +44,9 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
           _isLoading = false;
           _animationController.forward();
           _logger.info('Contacts update completed');
+        }
+        if (!_showCounter && progress > 0) {
+          _showCounter = true;
         }
       });
     });
@@ -123,10 +127,12 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
                   const SizedBox(height: 20),
                   if (_isLoading)
                     LoadingWidget(
-                      header: 'It may take a few minutes to update your contacts. \n Please wait...',
+                      header: 'It may take a few minutes to update your contacts.',
+                      waitMessage: 'Please wait...',
                       progress: _progress,
                       updatedContacts: _updatedContacts,
                       totalContacts: _controller.totalContacts,
+                      showCounter: _showCounter,
                     )
                   else
                     SuccessWidget(

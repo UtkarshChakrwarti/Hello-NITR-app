@@ -32,6 +32,7 @@ class _SuccessWidgetState extends State<SuccessWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ScaleTransition(
           scale: widget.animation,
@@ -41,15 +42,15 @@ class _SuccessWidgetState extends State<SuccessWidget> {
             size: 100, // Larger icon
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 40),
         Text(
           'Updated Contacts: ${widget.updatedContacts}/${widget.totalContacts}',
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 16,
             color: AppColors.primaryColor,
           ),
         ),
-        const SizedBox(height: 50),
+        const SizedBox(height: 40),
         if (!_isButtonClicked)
           ElevatedButton(
             style: ElevatedButton.styleFrom(

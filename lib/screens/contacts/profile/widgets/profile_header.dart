@@ -16,8 +16,11 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String fullName =
-        '${contact.firstName} ${contact.middleName ?? ''} ${contact.lastName}';
+    final String fullName = [
+      contact.firstName,
+      contact.middleName,
+      contact.lastName
+    ].where((name) => name != null && name.isNotEmpty).join(' ');
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

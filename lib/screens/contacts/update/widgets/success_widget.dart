@@ -42,22 +42,10 @@ class _SuccessWidgetState extends State<SuccessWidget> {
           ),
         ),
         const SizedBox(height: 20),
-        FadeTransition(
-          opacity: widget.animation,
-          child: const Text(
-            'Contacts Updated Successfully!',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryColor,
-            ),
-          ),
-        ),
-        const SizedBox(height: 10),
         Text(
           'Updated Contacts: ${widget.updatedContacts}/${widget.totalContacts}',
           style: const TextStyle(
-            fontSize: 16,
+            fontSize: 20,
             color: AppColors.primaryColor,
           ),
         ),

@@ -17,7 +17,9 @@ ${contact.firstName} ${contact.middleName ?? ''} ${contact.lastName} (${contact.
 Mobile: ${contact.mobile ?? 'N/A'}
 Work: ${_prependPrefix(contact.workPhone) ?? 'N/A'}
 Residence: ${_prependPrefix(contact.residencePhone) ?? 'N/A'}
-Email: ${contact.email ?? 'N/A'}, NIT Rourkela
+Email: ${_formatEmails(contact.email, contact.personalEmail)}
+--
+NIT Rourkela
 ''';
     try {
       Share.share(contactInfo, subject: "Contact Information");
@@ -25,6 +27,18 @@ Email: ${contact.email ?? 'N/A'}, NIT Rourkela
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to share contact: $e')),
       );
+    }
+  }
+
+  static String _formatEmails(String? email1, String? email2) {
+    if (email1 != null && email1.isNotEmpty && email2 != null && email2.isNotEmpty) {
+      return '$email1, $email2';
+    } else if (email1 != null && email1.isNotEmpty) {
+      return email1;
+    } else if (email2 != null && email2.isNotEmpty) {
+      return email2;
+    } else {
+      return 'N/A';
     }
   }
 
@@ -77,27 +91,39 @@ Email: ${contact.email ?? 'N/A'}, NIT Rourkela
               Divider(),
               ContactTile(
                   title: "Mobile", subtitle: contact.mobile, isMobile: true),
-              if (contact.workPhone != null && contact.workPhone!.isNotEmpty && contact.workPhone != "NA")
+              if (contact.workPhone != null &&
+                  contact.workPhone!.isNotEmpty &&
+                  contact.workPhone != "NA")
                 ContactTile(
                     title: "Work Number",
                     subtitle: _prependPrefix(contact.workPhone),
                     isMobile: false),
               if (contact.residencePhone != null &&
-                  contact.residencePhone!.isNotEmpty && contact.residencePhone != "NA")
+                  contact.residencePhone!.isNotEmpty &&
+                  contact.residencePhone != "NA")
                 ContactTile(
                     title: "Residence",
                     subtitle: _prependPrefix(contact.residencePhone),
                     isMobile: false),
               Divider(),
-              EmailTile(
-                  title: "Personal Email", subtitle: contact.personalEmail),
-              if (contact.email != null && contact.email!.isNotEmpty && contact.email != "NA")
+              if (contact.email != null &&
+                  contact.email!.isNotEmpty &&
+                  contact.email != "NA")
                 EmailTile(title: "Work Email", subtitle: contact.email!),
+              if (contact.personalEmail != null &&
+                  contact.personalEmail!.isNotEmpty &&
+                  contact.personalEmail != "NA")
+                EmailTile(
+                    title: "Personal Email", subtitle: contact.personalEmail),
               Divider(),
-              if (contact.roomNo != null && contact.roomNo!.isNotEmpty && contact.roomNo != "NA")
+              if (contact.roomNo != null &&
+                  contact.roomNo!.isNotEmpty &&
+                  contact.roomNo != "NA")
                 AdditionalInfoTile(
                     label: "Cabin Number:", info: contact.roomNo!),
-              if (contact.quarterNo != null && contact.quarterNo!.isNotEmpty && contact.quarterNo != "NA")
+              if (contact.quarterNo != null &&
+                  contact.quarterNo!.isNotEmpty &&
+                  contact.quarterNo != "NA")
                 AdditionalInfoTile(
                     label: "Quarter Number:", info: contact.quarterNo!),
             ],

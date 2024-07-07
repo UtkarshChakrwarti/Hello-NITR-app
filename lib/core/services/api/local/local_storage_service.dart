@@ -227,20 +227,25 @@ class LocalStorageService {
     return result.map((json) => User.fromJson(json)).toList();
   }
 
-  // Get the list of departments from the database
-  static Future<List<String>> getDepartments() async {
-    final db = await database;
+  // Get the list of departments from the database and also sort them alphabetically
+static Future<List<String>> getDepartments() async {
+  final db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query(
-      AppConstants.userTable,
-      columns: ['departmentName'],
-      distinct: true,
-    );
+  final List<Map<String, dynamic>> maps = await db.query(
+    AppConstants.userTable,
+    columns: ['departmentName'],
+    distinct: true,
+  );
 
-    return List.generate(maps.length, (i) {
-      return maps[i]['departmentName'];
-    });
-  }
+  List<String> departments = List.generate(maps.length, (i) {
+    return maps[i]['departmentName'];
+  });
+
+  departments.sort(); // Sort the departments alphabetically
+
+  return departments;
+}
+
 
   // Save login response to secure storage
   static Future<void> saveLoginResponse(LoginResponse loginResponse) async {

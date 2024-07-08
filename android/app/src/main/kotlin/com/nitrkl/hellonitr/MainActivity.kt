@@ -1,4 +1,4 @@
-package com.example.hello_nitr
+package com.nitrkl.hellonitr
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

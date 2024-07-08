@@ -118,6 +118,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
+      _expandedIndex = null; 
       _pagingController.refresh();
     });
   }
@@ -126,6 +127,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
     setState(() {
       _selectedDepartment = department ?? '';
       _pagingController.refresh();
+      _expandedIndex = null; 
     });
   }
 
@@ -157,6 +159,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
                         _searchQuery = '';
                         _pagingController.refresh();
                         _searchController.clear();
+                        _expandedIndex = null; 
                         FocusScope.of(context).requestFocus(_searchFocusNode);
                       });
                     },

@@ -98,6 +98,7 @@ class _SearchScreenState extends State<SearchScreen>
   void _onSearchChanged(String query) {
     setState(() {
       _searchQuery = query;
+      _expandedIndex = null; 
       _pagingController.refresh();
     });
   }
@@ -148,6 +149,7 @@ class _SearchScreenState extends State<SearchScreen>
                         _searchQuery = '';
                         _pagingController.refresh();
                         _searchController.clear();
+                        _expandedIndex = null; 
                         FocusScope.of(context).requestFocus(_searchFocusNode);
                       });
                     },

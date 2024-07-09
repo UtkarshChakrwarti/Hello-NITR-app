@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
-import 'package:flag/flag.dart'; // Import the flag package
 
 class NoSimCardWidget extends StatefulWidget {
   final Function(String) onPhoneNumberChanged;
@@ -66,8 +65,8 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
                 ),
                 child: Row(
                   children: [
-                    Flag.fromCode(
-                      FlagsCode.IN,
+                    Image.asset(
+                      'assets/images/ind.png',
                       height: 24,
                       width: 24,
                     ),

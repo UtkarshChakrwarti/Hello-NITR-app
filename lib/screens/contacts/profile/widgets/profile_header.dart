@@ -1,18 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
 
 class ProfileHeader extends StatelessWidget {
   final User contact;
-  final bool Function(String) isValidBase64;
 
   const ProfileHeader({
     required this.contact,
-    required this.isValidBase64,
-    Key? key,
-  }) : super(key: key);
+  }) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +18,10 @@ class ProfileHeader extends StatelessWidget {
       contact.middleName,
       contact.lastName
     ].where((name) => name != null && name.isNotEmpty).join(' ');
+
+    bool isImageValid =
+        contact.photo != null && UtilityFunctions().isValidBase64Image(contact.photo!);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -35,10 +36,8 @@ class ProfileHeader extends StatelessWidget {
           child: CircleAvatar(
             radius: 40,
             backgroundImage:
-                contact.photo != null && isValidBase64(contact.photo!)
-                    ? MemoryImage(base64Decode(contact.photo!))
-                    : null,
-            child: contact.photo == null || !isValidBase64(contact.photo!)
+                isImageValid ? MemoryImage(base64Decode(contact.photo!)) : null,
+            child: !isImageValid
                 ? Text(
                     "${contact.firstName![0]}",
                     style: TextStyle(

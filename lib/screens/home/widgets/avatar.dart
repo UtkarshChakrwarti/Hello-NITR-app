@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
@@ -20,7 +19,7 @@ class Avatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (photoUrl != null && photoUrl!.isNotEmpty) {
-      if (utilityFunctions.isValidBase64(photoUrl!)) {
+      if (UtilityFunctions().isValidBase64Image(photoUrl!)) {
         return _buildCircleAvatar(
           backgroundImage: MemoryImage(base64Decode(photoUrl!)),
         );

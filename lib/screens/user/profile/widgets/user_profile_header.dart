@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
+import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'package:hello_nitr/models/user.dart';
 
 class UserProfileHeader extends StatelessWidget {
@@ -9,10 +10,6 @@ class UserProfileHeader extends StatelessWidget {
 
   UserProfileHeader(this.user);
 
-  bool _isValidBase64(String base64String) {
-    final base64Pattern = RegExp(r'^[A-Za-z0-9+/]+={0,2}$');
-    return base64Pattern.hasMatch(base64String);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +17,11 @@ class UserProfileHeader extends StatelessWidget {
     final double avatarRadius = mediaQuery.size.width * 0.12;
     final double headerHeight = mediaQuery.size.height * 0.25;
 
-    final String fullName = [
-      user.firstName,
-      user.middleName,
-      user.lastName
-    ].where((name) => name != null && name.isNotEmpty).join(' ');
+    final String fullName = [user.firstName, user.middleName, user.lastName]
+        .where((name) => name != null && name.isNotEmpty)
+        .join(' ');
+
+    bool isImageValid = user.photo != null && UtilityFunctions().isValidBase64Image(user.photo!);
 
     return Container(
       height: headerHeight,
@@ -32,7 +29,7 @@ class UserProfileHeader extends StatelessWidget {
         child: Stack(
           children: [
             Positioned.fill(
-              child: user.photo != null && _isValidBase64(user.photo!)
+              child: isImageValid
                   ? Image.memory(
                       base64Decode(user.photo!),
                       fit: BoxFit.cover,
@@ -58,12 +55,11 @@ class UserProfileHeader extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: avatarRadius,
-                    backgroundImage:
-                        user.photo != null && _isValidBase64(user.photo!)
-                            ? MemoryImage(base64Decode(user.photo!))
-                            : null,
+                    backgroundImage: isImageValid
+                        ? MemoryImage(base64Decode(user.photo!))
+                        : null,
                     backgroundColor: Colors.white,
-                    child: user.photo == null || !_isValidBase64(user.photo!)
+                    child: !isImageValid
                         ? Text(
                             "${user.firstName![0]}",
                             style: TextStyle(

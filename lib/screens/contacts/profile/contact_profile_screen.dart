@@ -87,7 +87,7 @@ NIT Rourkela
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ProfileHeader(contact: contact, isValidBase64: _isValidBase64),
+              ProfileHeader(contact: contact),
               Divider(),
               ContactTile(
                   title: "Mobile", subtitle: contact.mobile, isMobile: true),

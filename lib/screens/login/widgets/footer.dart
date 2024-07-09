@@ -4,6 +4,8 @@ import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/utils/link_launcher.dart';
 
 class Footer extends StatelessWidget {
+  const Footer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -15,7 +17,7 @@ class Footer extends StatelessWidget {
                 fontSize: 14, color: Colors.black, fontFamily: 'Roboto')),
         GestureDetector(
           onTap: () => LinkLauncher.launchURL(AppConstants.catUrl),
-          child: Text("Centre for Automation Technology",
+          child: const Text("Centre for Automation Technology",
               textAlign: TextAlign.center,
               style: TextStyle(
                   color: AppColors.primaryColor,

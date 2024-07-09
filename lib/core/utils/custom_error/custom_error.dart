@@ -6,9 +6,9 @@ class CustomError extends StatelessWidget {
   final FlutterErrorDetails errorDetails;
 
   const CustomError({
-    Key? key,
+    super.key,
     required this.errorDetails,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +25,19 @@ class CustomError extends StatelessWidget {
                   ? errorDetails.summary.toString()
                   : 'Oops! Something went wrong!',
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 color: kDebugMode ? Colors.red : Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 21,
               ),
             ),
             const SizedBox(height: 12),
-            Text(
+            const Text(
               kDebugMode
                   ? 'https://docs.flutter.dev/testing/errors'
                   : "We encountered an error and we've notified our engineering team about it. Sorry for the inconvenience caused.",
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.primaryColor,
                 fontSize: 14,
               ),

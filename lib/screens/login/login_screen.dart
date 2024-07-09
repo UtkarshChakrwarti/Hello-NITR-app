@@ -7,6 +7,8 @@ import 'package:hello_nitr/screens/login/widgets/footer.dart';
 import 'package:hello_nitr/screens/login/widgets/exit_confirmation_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -20,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen>
   late AnimationController _animationController;
   late Animation<double> _buttonScaleAnimation;
   bool _obscureText = true;
-  ValueNotifier<bool> _allFieldsFilled = ValueNotifier(false);
+  final ValueNotifier<bool> _allFieldsFilled = ValueNotifier(false);
 
   @override
   void initState() {
@@ -98,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen>
                             width: constraints.maxWidth * 0.5,
                           ),
                           SizedBox(height: constraints.maxHeight * 0.01),
-                          WelcomeText(),
+                          const WelcomeText(),
                           SizedBox(height: constraints.maxHeight * 0.025),
                           CustomTextField(
                             controller: _usernameController,
@@ -136,11 +138,11 @@ class _LoginScreenState extends State<LoginScreen>
                             },
                           ),
                           SizedBox(height: constraints.maxHeight * 0.05),
-                          TermsText(),
+                          const TermsText(),
                         ],
                       ),
                       SizedBox(height: constraints.maxHeight * 0.02),
-                      Footer(),
+                      const Footer(),
                     ],
                   ),
                 ),

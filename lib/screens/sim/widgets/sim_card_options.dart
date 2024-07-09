@@ -8,7 +8,7 @@ class SimCardOptions extends StatelessWidget {
   final Function(SimCard) onSimSelected;
   final VoidCallback onManualEntryTap;
 
-  SimCardOptions({
+  const SimCardOptions({super.key, 
     required this.simInfo,
     required this.selectedSim,
     required this.onSimSelected,
@@ -36,9 +36,9 @@ class SimCardOptions extends StatelessWidget {
 
     return GridView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: 2, // Always two tiles: one for each SIM slot.
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
@@ -83,12 +83,12 @@ class SimCardOptions extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.primaryColor),
         ),
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.sim_card, color: AppColors.primaryColor, size: 40),
-            SizedBox(height: 10),
+            const Icon(Icons.sim_card, color: AppColors.primaryColor, size: 40),
+            const SizedBox(height: 10),
             Text(
               'SIM ${sim.slotIndex! + 1}',
               style: const TextStyle(
@@ -130,23 +130,23 @@ class SimCardOptions extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: AppColors.primaryColor),
         ),
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.edit, color: AppColors.primaryColor, size: 40),
-            SizedBox(height: 10),
+            const Icon(Icons.edit, color: AppColors.primaryColor, size: 40),
+            const SizedBox(height: 10),
             Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 5),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'Enter manually',
               style: TextStyle(fontSize: 12, color: AppColors.primaryColor),
               textAlign: TextAlign.center,
@@ -164,15 +164,15 @@ class SimCardOptions extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.red),
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.error, color: Colors.red, size: 40),
-          SizedBox(height: 10),
+          const Icon(Icons.error, color: Colors.red, size: 40),
+          const SizedBox(height: 10),
           Text(
             errorMessage,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.red,

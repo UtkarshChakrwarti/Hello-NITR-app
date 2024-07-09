@@ -3,6 +3,8 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/screens/terms_and_conditions/terms_and_conditions_screen.dart';
 
 class TermsText extends StatelessWidget {
+  const TermsText({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -13,8 +15,8 @@ class TermsText extends StatelessWidget {
             textAlign: TextAlign.center),
         GestureDetector(
           onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => TermsAndConditionsScreen())),
-          child: Text("Terms and Conditions",
+              MaterialPageRoute(builder: (_) => const TermsAndConditionsScreen())),
+          child: const Text("Terms and Conditions",
               style: TextStyle(
                   color: AppColors.primaryColor,
                   fontSize: 14,

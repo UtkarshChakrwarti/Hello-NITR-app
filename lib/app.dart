@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 class MyApp extends StatelessWidget {
   final NotificationService notificationService;
 
-  MyApp({required this.notificationService});
+  const MyApp({super.key, required this.notificationService});
 
   @override
   Widget build(BuildContext context) {

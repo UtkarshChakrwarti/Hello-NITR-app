@@ -11,7 +11,7 @@ class UserProfileScreen extends StatelessWidget {
   final String currentFilter;
   final Function(String) onFilterSelected;
 
-  const UserProfileScreen({
+  const UserProfileScreen({super.key, 
     required this.currentFilter,
     required this.onFilterSelected,
   });
@@ -23,11 +23,11 @@ class UserProfileScreen extends StatelessWidget {
         future: UserProfileController().getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading user data'));
+            return const Center(child: Text('Error loading user data'));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return Center(child: Text('No user data available'));
+            return const Center(child: Text('No user data available'));
           } else {
             return UserProfileContent(
               user: snapshot.data!,
@@ -46,7 +46,7 @@ class UserProfileContent extends StatelessWidget {
   final String currentFilter;
   final Function(String) onFilterSelected;
 
-  const UserProfileContent({
+  const UserProfileContent({super.key, 
     required this.user,
     required this.currentFilter,
     required this.onFilterSelected,
@@ -58,9 +58,9 @@ class UserProfileContent extends StatelessWidget {
       padding: EdgeInsets.zero,
       children: [
         UserProfileHeader(user),
-        SectionTitle("Personal Details", 16.0),
+        const SectionTitle("Personal Details", 16.0),
         CompactPersonalDetails(user),
-        SectionTitle("Filter by", 16.0),
+        const SectionTitle("Filter by", 16.0),
         FilterButtons(
           onFilterSelected: onFilterSelected,
         ),

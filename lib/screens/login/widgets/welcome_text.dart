@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 
 class WelcomeText extends StatelessWidget {
+  const WelcomeText({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Row(

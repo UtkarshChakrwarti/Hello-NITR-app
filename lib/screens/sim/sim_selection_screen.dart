@@ -14,6 +14,8 @@ import 'package:simnumber/siminfo.dart';
 import 'package:logging/logging.dart';
 
 class SimSelectionScreen extends StatefulWidget {
+  const SimSelectionScreen({super.key});
+
   @override
   _SimSelectionScreenState createState() => _SimSelectionScreenState();
 }
@@ -123,7 +125,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: _isLoading
-            ? LoadingIndicator()
+            ? const LoadingIndicator()
             : Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -162,7 +164,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                               },
                             )),
                   const SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     width: 140,
                     height: 50,
                     child: ElevatedButton(

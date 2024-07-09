@@ -4,7 +4,7 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 class ErrorDialog extends StatelessWidget {
   final String message;
 
-  ErrorDialog({required this.message});
+  const ErrorDialog({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class ErrorDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('OK', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
+          child: const Text('OK', style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold)),
         ),
       ],
     );

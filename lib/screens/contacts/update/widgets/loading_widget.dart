@@ -10,7 +10,7 @@ class LoadingWidget extends StatelessWidget {
   final int totalContacts;
   final bool showCounter;
 
-  const LoadingWidget({
+  const LoadingWidget({super.key, 
     required this.header,
     required this.waitMessage,
     required this.progress,

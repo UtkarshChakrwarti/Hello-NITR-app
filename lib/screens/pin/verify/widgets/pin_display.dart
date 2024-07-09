@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PinDisplay extends StatelessWidget {
   final String pin;
 
-  PinDisplay({required this.pin});
+  const PinDisplay({super.key, required this.pin});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class PinDisplay extends StatelessWidget {
         children: List.generate(4, (index) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 1.0),
-            child: Container(
+            child: SizedBox(
               width: 40,
               height: 50,
               child: Center(

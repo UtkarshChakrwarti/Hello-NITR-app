@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/models/user.dart';
 
 class CompactPersonalDetails extends StatelessWidget {
   final User user;
 
-  CompactPersonalDetails(this.user);
+  const CompactPersonalDetails(this.user, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +24,18 @@ class CompactPersonalDetails extends StatelessWidget {
 
   Widget _buildCompactListTile(IconData icon, String? title) {
     if (title == null || title.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           Icon(icon, color: AppColors.primaryColor, size: 16),
-          SizedBox(width: 8.0),
+          const SizedBox(width: 8.0),
           Expanded(
             child: Text(
               title,
-              style: TextStyle(fontSize: 14.0, fontFamily: 'Roboto'),
+              style: const TextStyle(fontSize: 14.0, fontFamily: 'Roboto'),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),

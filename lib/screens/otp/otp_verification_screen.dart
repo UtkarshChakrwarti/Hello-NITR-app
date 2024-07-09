@@ -125,7 +125,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
               'No Device Update Needed: Navigating to ContactsUpdateScreen');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ContactsUpdateScreen()),
+            MaterialPageRoute(builder: (context) => const ContactsUpdateScreen()),
           );
         });
       } else {
@@ -232,7 +232,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
-                      Text(
+                      const Text(
                         'Please enter the 6 digit verification code sent to',
                         style: TextStyle(fontSize: 16, color: Colors.black54),
                         textAlign: TextAlign.center,
@@ -244,7 +244,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           const SizedBox(width: 5),
                           Text(
                             '+91${widget.mobileNumber.substring(widget.mobileNumber.length - 10)}',
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16, color: AppColors.primaryColor),
                           ),
                         ],
@@ -260,7 +260,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                       ),
                       const SizedBox(height: 20),
                       if (!_isResendButtonActive)
-                        Text(
+                        const Text(
                           'Didn\'t receive the code?',
                           style: TextStyle(fontSize: 14, color: Colors.black54),
                         ),
@@ -299,7 +299,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(height: 40),
-                          Icon(
+                          const Icon(
                             Icons.check_circle,
                             color: AppColors.primaryColor,
                             size: 48.0,
@@ -307,7 +307,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
                           const SizedBox(height: 10),
                           Text(
                             _verificationMessage,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.primaryColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

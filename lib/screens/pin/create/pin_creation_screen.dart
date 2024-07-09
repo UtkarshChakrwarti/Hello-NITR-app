@@ -6,6 +6,8 @@ import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:hello_nitr/screens/pin/create/widgets/pin_input_field.dart';
 
 class PinCreationScreen extends StatefulWidget {
+  const PinCreationScreen({super.key});
+
   @override
   _PinCreationScreenState createState() => _PinCreationScreenState();
 }

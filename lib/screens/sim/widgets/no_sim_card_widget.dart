@@ -4,7 +4,7 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 class NoSimCardWidget extends StatefulWidget {
   final Function(String) onPhoneNumberChanged;
 
-  NoSimCardWidget({required this.onPhoneNumberChanged});
+  const NoSimCardWidget({super.key, required this.onPhoneNumberChanged});
 
   @override
   _NoSimCardWidgetState createState() => _NoSimCardWidgetState();
@@ -48,7 +48,7 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: Colors.transparent),
       ),
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -70,8 +70,8 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
                       height: 24,
                       width: 24,
                     ),
-                    SizedBox(width: 8),
-                    Text(
+                    const SizedBox(width: 8),
+                    const Text(
                       '+91',
                       style: TextStyle(
                           color: AppColors.primaryColor, fontSize: 16),
@@ -87,14 +87,14 @@ class _NoSimCardWidgetState extends State<NoSimCardWidget> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primaryColor),
+                      borderSide: const BorderSide(color: AppColors.primaryColor),
                     ),
                     labelText: 'Phone Number',
                     hintText: 'Enter your phone number',
-                    labelStyle: TextStyle(color: AppColors.primaryColor),
+                    labelStyle: const TextStyle(color: AppColors.primaryColor),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: AppColors.primaryColor),
+                      borderSide: const BorderSide(color: AppColors.primaryColor),
                     ),
                     counterText: '', // Suppress the character counter
                   ),

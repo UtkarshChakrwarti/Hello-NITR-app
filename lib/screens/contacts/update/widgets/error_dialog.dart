@@ -5,7 +5,7 @@ class ErrorDialog extends StatelessWidget {
   final String message;
   final VoidCallback onDismiss;
 
-  const ErrorDialog({
+  const ErrorDialog({super.key, 
     required this.message,
     required this.onDismiss,
   });
@@ -36,6 +36,7 @@ class ErrorDialog extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
+          onPressed: onDismiss,
           child: const Text(
             'OK',
             style: TextStyle(
@@ -43,7 +44,6 @@ class ErrorDialog extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          onPressed: onDismiss,
         ),
       ],
     );

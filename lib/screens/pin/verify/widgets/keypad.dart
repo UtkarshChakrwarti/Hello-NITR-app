@@ -6,7 +6,7 @@ class Keypad extends StatelessWidget {
   final VoidCallback onDeletePressed;
   final VoidCallback onFingerprintPressed;
 
-  Keypad({
+  const Keypad({super.key, 
     required this.onKeyPressed,
     required this.onDeletePressed,
     required this.onFingerprintPressed,

@@ -5,7 +5,7 @@ class SectionTitle extends StatelessWidget {
   final String title;
   final double fontSize;
 
-  SectionTitle(this.title, this.fontSize);
+  const SectionTitle(this.title, this.fontSize, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class SectionTitle extends StatelessWidget {
       child: Row(
         children: [
           Expanded(child: Divider(color: Colors.grey[300])),
-          SizedBox(width: 8.0),
+          const SizedBox(width: 8.0),
           Text(
             title,
             style: TextStyle(
@@ -24,7 +24,7 @@ class SectionTitle extends StatelessWidget {
               fontFamily: 'Roboto',
             ),
           ),
-          SizedBox(width: 8.0),
+          const SizedBox(width: 8.0),
           Expanded(child: Divider(color: Colors.grey[300])),
         ],
       ),

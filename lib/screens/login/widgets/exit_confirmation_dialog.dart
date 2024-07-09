@@ -9,10 +9,10 @@ Future<bool?> showExitConfirmationDialog(BuildContext context) {
         backgroundColor: Colors.white,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.exit_to_app, color: AppColors.primaryColor),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             Text('Exit',
                 style: TextStyle(
                     color: AppColors.primaryColor,
@@ -23,7 +23,7 @@ Future<bool?> showExitConfirmationDialog(BuildContext context) {
             style: TextStyle(fontSize: 16)),
         actions: [
           TextButton(
-            child: Text('No',
+            child: const Text('No',
                 style: TextStyle(
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold)),
@@ -32,7 +32,7 @@ Future<bool?> showExitConfirmationDialog(BuildContext context) {
             },
           ),
           TextButton(
-            child: Text('Yes',
+            child: const Text('Yes',
                 style: TextStyle(
                     color: AppColors.primaryColor,
                     fontWeight: FontWeight.bold)),

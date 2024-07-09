@@ -10,20 +10,20 @@ class EmailTile extends StatelessWidget {
   const EmailTile({
     required this.title,
     required this.subtitle,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (subtitle == null || subtitle!.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 1.0),
-      title: Text(title, style: TextStyle(fontFamily: 'Roboto')),
-      subtitle: Text(subtitle!, style: TextStyle(fontFamily: 'Roboto')),
+      contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
+      title: Text(title, style: const TextStyle(fontFamily: 'Roboto')),
+      subtitle: Text(subtitle!, style: const TextStyle(fontFamily: 'Roboto')),
       trailing: IconButton(
-        icon: Icon(CupertinoIcons.mail_solid, color: AppColors.primaryColor),
+        icon: const Icon(CupertinoIcons.mail_solid, color: AppColors.primaryColor),
         onPressed: () => _launchEmail(context, subtitle!),
       ),
     );

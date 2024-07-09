@@ -4,7 +4,7 @@ import 'package:hello_nitr/core/constants/app_colors.dart';
 class ErrorDialog extends StatelessWidget {
   final String message;
 
-  ErrorDialog({required this.message});
+  const ErrorDialog({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {

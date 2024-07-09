@@ -13,34 +13,34 @@ class ContactTile extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.isMobile,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     if (subtitle == null || subtitle!.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(vertical: 1.0),
-      title: Text(title, style: TextStyle(fontFamily: 'Roboto')),
-      subtitle: Text(subtitle!, style: TextStyle(fontFamily: 'Roboto')),
+      contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
+      title: Text(title, style: const TextStyle(fontFamily: 'Roboto')),
+      subtitle: Text(subtitle!, style: const TextStyle(fontFamily: 'Roboto')),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: Icon(CupertinoIcons.phone_solid, color: AppColors.primaryColor),
+            icon: const Icon(CupertinoIcons.phone_solid, color: AppColors.primaryColor),
             onPressed: () => _launchCall(context, subtitle!),
           ),
           if (isMobile) ...[
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             IconButton(
-              icon: Icon(FontAwesomeIcons.whatsapp, color: AppColors.primaryColor),
+              icon: const Icon(FontAwesomeIcons.whatsapp, color: AppColors.primaryColor),
               onPressed: () => _launchWhatsApp(context, subtitle!),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             IconButton(
-              icon: Icon(CupertinoIcons.chat_bubble_text_fill,
+              icon: const Icon(CupertinoIcons.chat_bubble_text_fill,
                   color: AppColors.primaryColor),
               onPressed: () => _launchMessage(context, subtitle!),
             ),

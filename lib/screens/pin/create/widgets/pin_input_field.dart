@@ -11,14 +11,14 @@ class PinInputField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
 
   const PinInputField({
-    Key? key,
+    super.key,
     required this.label,
     required this.controller,
     required this.focusNode,
     required this.pinVisible,
     required this.toggleVisibility,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

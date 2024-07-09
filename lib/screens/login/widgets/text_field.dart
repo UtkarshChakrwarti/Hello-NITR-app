@@ -9,7 +9,7 @@ class CustomTextField extends StatelessWidget {
   final FocusNode focusNode;
   final VoidCallback? onVisibilityToggle;
 
-  CustomTextField({
+  const CustomTextField({super.key, 
     required this.controller,
     required this.hintText,
     required this.icon,
@@ -41,10 +41,10 @@ class CustomTextField extends StatelessWidget {
             const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.black26, width: 2.0)),
+            borderSide: const BorderSide(color: Colors.black26, width: 2.0)),
         focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: AppColors.primaryColor, width: 2.0)),
+            borderSide: const BorderSide(color: AppColors.primaryColor, width: 2.0)),
       ),
     );
   }

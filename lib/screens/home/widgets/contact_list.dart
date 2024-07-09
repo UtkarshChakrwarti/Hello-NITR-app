@@ -14,7 +14,7 @@ class ContactListItem extends StatelessWidget {
   final Widget avatar;
 
   const ContactListItem({
-    Key? key,
+    super.key,
     required this.contact,
     required this.isExpanded,
     required this.onTap,
@@ -22,7 +22,7 @@ class ContactListItem extends StatelessWidget {
     required this.onCall,
     required this.onViewProfile,
     required this.avatar,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +51,13 @@ class ContactListItem extends StatelessWidget {
       secondaryBackground:
           _buildSwipeBackgroundRight(CupertinoIcons.person_crop_circle_fill, 'View Profile'),
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
         padding: EdgeInsets.symmetric(
             horizontal: 16.0, vertical: isExpanded ? 12.0 : 6.0),
         decoration: BoxDecoration(
-          color: isExpanded ? Color(0xFFFDEEE8) : Colors.white,
+          color: isExpanded ? const Color(0xFFFDEEE8) : Colors.white,
           borderRadius: BorderRadius.circular(isExpanded ? 16.0 : 0.0),
         ),
         child: Column(
@@ -78,7 +78,7 @@ class ContactListItem extends StatelessWidget {
               onTap: () => onTap(),
             ),
             AnimatedSize(
-              duration: Duration(milliseconds: 300),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               child: isExpanded ? ExpandedMenu(contact: contact) : Container(),
             ),

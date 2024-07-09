@@ -14,7 +14,7 @@ class SignInButton extends StatelessWidget {
   final FocusNode usernameFocusNode;
   final FocusNode passwordFocusNode;
 
-  SignInButton({
+  const SignInButton({super.key, 
     required this.animationController,
     required this.buttonScaleAnimation,
     required this.allFieldsFilled,

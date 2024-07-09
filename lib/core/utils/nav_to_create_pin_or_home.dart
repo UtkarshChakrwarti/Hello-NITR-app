@@ -15,7 +15,7 @@ Future<void> navigateToPinOrHome(BuildContext context) async {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PinCreationScreen(),
+          builder: (context) => const PinCreationScreen(),
         ),
       );
       _logger.info('Navigated to PIN creation screen');
@@ -25,14 +25,14 @@ Future<void> navigateToPinOrHome(BuildContext context) async {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text('An error occurred while retrieving PIN. Please try again.'),
+          title: const Text('Error'),
+          content: const Text('An error occurred while retrieving PIN. Please try again.'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );

@@ -14,25 +14,25 @@ final Map<String, WidgetBuilder> appRoutes = {
   '/': (_) => const SplashScreen(),
 
   //Login Screen
-  '/login': (context) => LoginScreen(),
+  '/login': (context) => const LoginScreen(),
 
   //Sim Selection Screen
-  '/simSelection': (context) => SimSelectionScreen(),
+  '/simSelection': (context) => const SimSelectionScreen(),
 
   //OTP Verification Screen
   '/otp': (context) => const OtpVerificationScreen(mobileNumber: ''),
 
   //Contacts Update Screen
-  '/contactsUpdate': (context) => ContactsUpdateScreen(),
+  '/contactsUpdate': (context) => const ContactsUpdateScreen(),
 
   //Pin Creation Screen
-  '/pinCreation': (context) => PinCreationScreen(),
+  '/pinCreation': (context) => const PinCreationScreen(),
 
   //Pin Unlock Screen
-  '/pinUnlock': (context) => PinUnlockScreen(),
+  '/pinUnlock': (context) => const PinUnlockScreen(),
 
   //Home Screen
-  '/home': (context) => HomeScreen(),
+  '/home': (context) => const HomeScreen(),
 
   //Custom error page
   '/error': (context) => CustomError(

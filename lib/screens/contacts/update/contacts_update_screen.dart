@@ -9,6 +9,8 @@ import 'package:hello_nitr/controllers/contacts_update_controller.dart';
 import 'package:logging/logging.dart';
 
 class ContactsUpdateScreen extends StatefulWidget {
+  const ContactsUpdateScreen({super.key});
+
   @override
   _ContactsUpdateScreenState createState() => _ContactsUpdateScreenState();
 }

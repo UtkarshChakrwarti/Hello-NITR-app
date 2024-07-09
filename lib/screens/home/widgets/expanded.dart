@@ -9,14 +9,14 @@ import 'package:hello_nitr/screens/contacts/profile/contact_profile_screen.dart'
 class ExpandedMenu extends StatelessWidget {
   final User contact;
 
-  const ExpandedMenu({Key? key, required this.contact}) : super(key: key);
+  const ExpandedMenu({super.key, required this.contact});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Color(0xFFFDEEE8),
+        color: const Color(0xFFFDEEE8),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(

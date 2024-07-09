@@ -13,6 +13,8 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:logging/logging.dart';
 
 class DepartmentSearchScreen extends StatefulWidget {
+  const DepartmentSearchScreen({super.key});
+
   @override
   _DepartmentSearchScreenState createState() => _DepartmentSearchScreenState();
 }
@@ -23,7 +25,7 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: 0);
-  final Duration animationDuration = Duration(milliseconds: 300);
+  final Duration animationDuration = const Duration(milliseconds: 300);
   final Logger _logger = Logger('DepartmentSearchScreen');
 
   int? _expandedIndex;
@@ -243,14 +245,14 @@ class _DepartmentSearchScreenState extends State<DepartmentSearchScreen>
                             utilityFunctions: _utilityFunctions),
                   );
                 },
-                noItemsFoundIndicatorBuilder: (context) => Center(
+                noItemsFoundIndicatorBuilder: (context) => const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.search_off,
+                      Icon(Icons.search_off,
                           size: 64, color: AppColors.primaryColor),
-                      const SizedBox(height: 8),
-                      const Text('No results found'),
+                      SizedBox(height: 8),
+                      Text('No results found'),
                     ],
                   ),
                 ),

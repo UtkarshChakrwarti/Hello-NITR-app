@@ -10,11 +10,11 @@ class Avatar extends StatelessWidget {
   final UtilityFunctions utilityFunctions;
 
   const Avatar({
-    Key? key,
+    super.key,
     required this.photoUrl,
     required this.firstName,
     required this.utilityFunctions,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class Avatar extends StatelessWidget {
     return _buildCircleAvatar(
       child: Text(
         firstName?.isNotEmpty == true ? firstName![0] : '',
-        style: TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
+        style: const TextStyle(color: AppColors.primaryColor, fontFamily: 'Roboto'),
       ),
     );
   }

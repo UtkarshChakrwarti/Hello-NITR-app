@@ -43,7 +43,7 @@ class OtpVerificationController {
   // OTP verification with expiration check.
   Future<bool> verifyOtp(String enteredOtp) async {
     final currentTime = DateTime.now();
-    final otpValidityDuration = Duration(seconds: 600); // OTP valid for 10 minutes (600 seconds)
+    const otpValidityDuration = Duration(seconds: 600); // OTP valid for 10 minutes (600 seconds)
     if (currentTime.isBefore(otpGenerationTime.add(otpValidityDuration))) {
       if (enteredOtp == generatedOtp) {
         _logger.info('OTP verified successfully');

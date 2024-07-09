@@ -8,8 +8,8 @@ class AdditionalInfoTile extends StatelessWidget {
   const AdditionalInfoTile({
     required this.label,
     required this.info,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class AdditionalInfoTile extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
                 fontFamily: 'Roboto',
@@ -30,7 +30,7 @@ class AdditionalInfoTile extends StatelessWidget {
           Expanded(
             child: Text(
               info,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
                 fontFamily: 'Roboto',

@@ -16,6 +16,8 @@ import 'package:hello_nitr/core/utils/utility_functions.dart';
 import 'search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -25,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final UtilityFunctions _utilityFunctions = UtilityFunctions();
   final PagingController<int, User> _pagingController =
       PagingController(firstPageKey: 0);
-  final Duration animationDuration = Duration(milliseconds: 300);
+  final Duration animationDuration = const Duration(milliseconds: 300);
   final Logger _logger = Logger('HomeScreen');
 
   int? _expandedIndex;

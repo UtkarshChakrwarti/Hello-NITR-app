@@ -13,6 +13,8 @@ import 'package:hello_nitr/screens/pin/verify/widgets/keypad.dart';
 import 'package:hello_nitr/screens/pin/verify/widgets/pin_display.dart';
 
 class PinUnlockScreen extends StatefulWidget {
+  const PinUnlockScreen({super.key});
+
   @override
   _PinUnlockScreenState createState() => _PinUnlockScreenState();
 }

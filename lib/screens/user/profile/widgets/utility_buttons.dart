@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 class UtilityButtons extends StatelessWidget {
   final UserProfileController controller;
 
-  UtilityButtons(this.controller);
+  const UtilityButtons(this.controller, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +39,13 @@ class UtilityButtons extends StatelessWidget {
                 fontSize: 11.0,
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => TermsAndConditionsScreen(),
+                    builder: (context) => const TermsAndConditionsScreen(),
                   ));
                 },
               ),
             ],
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [

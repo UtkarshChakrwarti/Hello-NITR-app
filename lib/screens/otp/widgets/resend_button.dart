@@ -6,7 +6,7 @@ class ResendButton extends StatelessWidget {
   final int remainingSeconds;
   final VoidCallback onResend;
 
-  ResendButton({required this.isResendButtonActive, required this.remainingSeconds, required this.onResend});
+  const ResendButton({super.key, required this.isResendButtonActive, required this.remainingSeconds, required this.onResend});
 
   @override
   Widget build(BuildContext context) {

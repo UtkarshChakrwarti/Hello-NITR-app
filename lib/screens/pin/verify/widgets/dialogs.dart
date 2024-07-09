@@ -9,7 +9,7 @@ void showErrorDialog(BuildContext context, String message) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.error, color: AppColors.primaryColor),
             SizedBox(width: 10),
@@ -28,7 +28,7 @@ void showErrorDialog(BuildContext context, String message) {
             const SizedBox(height: 10),
             Text(
               message,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
@@ -53,7 +53,7 @@ void showErrorDialog(BuildContext context, String message) {
         ),
         actions: <Widget>[
           TextButton(
-            child: Text(
+            child: const Text(
               'OK',
               style: TextStyle(
                 color: AppColors.primaryColor,

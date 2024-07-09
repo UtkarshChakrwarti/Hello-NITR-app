@@ -8,7 +8,7 @@ class IconButtonWidget extends StatelessWidget {
   final double fontSize;
   final VoidCallback onTap;
 
-  IconButtonWidget({
+  const IconButtonWidget({super.key, 
     required this.icon,
     required this.label,
     required this.iconSize,
@@ -24,7 +24,7 @@ class IconButtonWidget extends StatelessWidget {
       splashColor: AppColors.secondaryColor.withOpacity(0.3),
       child: Container(
         width: MediaQuery.of(context).size.width * 0.25,
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: Colors.transparent,
@@ -33,7 +33,7 @@ class IconButtonWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, color: AppColors.primaryColor, size: iconSize),
-            SizedBox(height: 4.0),
+            const SizedBox(height: 4.0),
             Text(
               label,
               style: TextStyle(

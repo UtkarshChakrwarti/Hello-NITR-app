@@ -5,7 +5,7 @@ class KeypadButton extends StatelessWidget {
   final dynamic value;
   final VoidCallback onPressed;
 
-  KeypadButton({required this.value, required this.onPressed, required ValueKey key});
+  const KeypadButton({super.key, required this.value, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class KeypadButton extends StatelessWidget {
           child: Container(
             width: buttonSize,
             height: buttonSize,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.transparent,
             ),

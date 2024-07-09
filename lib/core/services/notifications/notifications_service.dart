@@ -13,7 +13,7 @@ class NotificationService {
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
     );
@@ -75,7 +75,7 @@ class NotificationService {
       enableVibration: true,
       playSound: true,
       actions: [
-        AndroidNotificationAction(
+        const AndroidNotificationAction(
           'update_action',
           'Update Now',
           showsUserInterface: true,

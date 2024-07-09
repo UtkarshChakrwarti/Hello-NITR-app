@@ -5,7 +5,7 @@ import 'package:hello_nitr/screens/user/profile/widgets/icon_button.dart';
 class FilterButtons extends StatelessWidget {
   final Function(String) onFilterSelected;
 
-  const FilterButtons({
+  const FilterButtons({super.key, 
     required this.onFilterSelected,
   });
 
@@ -34,7 +34,7 @@ class FilterButtons extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -55,7 +55,7 @@ class FilterButtons extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DepartmentSearchScreen(),
+                      builder: (context) => const DepartmentSearchScreen(),
                     ),
                   );
                 },

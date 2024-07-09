@@ -8,7 +8,7 @@ class SuccessWidget extends StatefulWidget {
   final int totalContacts;
   final VoidCallback onPressed;
 
-  const SuccessWidget({
+  const SuccessWidget({super.key, 
     required this.animation,
     required this.updatedContacts,
     required this.totalContacts,

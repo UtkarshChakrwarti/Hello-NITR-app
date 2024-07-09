@@ -7,9 +7,9 @@ import 'package:hello_nitr/models/user.dart';
 class ProfileHeader extends StatelessWidget {
   final User contact;
 
-  const ProfileHeader({
+  const ProfileHeader({super.key, 
     required this.contact,
-  }) : super();
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +37,11 @@ class ProfileHeader extends StatelessWidget {
             radius: 40,
             backgroundImage:
                 isImageValid ? MemoryImage(base64Decode(contact.photo!)) : null,
+            backgroundColor: AppColors.secondaryColor,
             child: !isImageValid
                 ? Text(
-                    "${contact.firstName![0]}",
-                    style: TextStyle(
+                    contact.firstName![0],
+                    style: const TextStyle(
                       color: AppColors.primaryColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -48,23 +49,22 @@ class ProfileHeader extends StatelessWidget {
                     ),
                   )
                 : null,
-            backgroundColor: AppColors.secondaryColor,
           ),
         ),
-        SizedBox(width: 20),
+        const SizedBox(width: 20),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 fullName,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Roboto',
                 ),
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               Text(
                 contact.designation ?? '',
                 style: TextStyle(

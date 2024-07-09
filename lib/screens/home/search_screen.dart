@@ -13,7 +13,7 @@ import 'package:logging/logging.dart';
 
 class SearchScreen extends StatefulWidget {
   final String currentFilter;
-  const SearchScreen({Key? key, required this.currentFilter}) : super(key: key);
+  const SearchScreen({super.key, required this.currentFilter});
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
@@ -188,14 +188,14 @@ class _SearchScreenState extends State<SearchScreen>
                   ),
             );
           },
-          noItemsFoundIndicatorBuilder: (context) => Center(
+          noItemsFoundIndicatorBuilder: (context) => const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.search_off,
+                Icon(Icons.search_off,
                     size: 64, color: AppColors.primaryColor),
-                const SizedBox(height: 8),
-                const Text('No results found'),
+                SizedBox(height: 8),
+                Text('No results found'),
               ],
             ),
           ),

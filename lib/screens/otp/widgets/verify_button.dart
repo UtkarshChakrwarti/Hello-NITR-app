@@ -5,7 +5,7 @@ class VerifyButton extends StatelessWidget {
   final bool isOtpComplete;
   final VoidCallback? onPressed;
 
-  VerifyButton({required this.isOtpComplete, required this.onPressed});
+  const VerifyButton({super.key, required this.isOtpComplete, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {

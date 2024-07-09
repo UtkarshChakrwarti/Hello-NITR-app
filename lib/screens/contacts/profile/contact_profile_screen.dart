@@ -65,17 +65,17 @@ NIT Rourkela
       appBar: AppBar(
         title: Text(
           fullName,
-          style: TextStyle(
+          style: const TextStyle(
             color: AppColors.primaryColor,
             fontSize: 20,
             fontWeight: FontWeight.bold,
             fontFamily: 'Roboto',
           ),
         ),
-        iconTheme: IconThemeData(color: AppColors.primaryColor),
+        iconTheme: const IconThemeData(color: AppColors.primaryColor),
         actions: [
           IconButton(
-            icon: Icon(Icons.share),
+            icon: const Icon(Icons.share),
             color: AppColors.primaryColor,
             onPressed: () => _shareContact(context),
           ),
@@ -88,7 +88,7 @@ NIT Rourkela
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ProfileHeader(contact: contact),
-              Divider(),
+              const Divider(),
               ContactTile(
                   title: "Mobile", subtitle: contact.mobile, isMobile: true),
               if (contact.workPhone != null &&
@@ -105,7 +105,7 @@ NIT Rourkela
                     title: "Residence",
                     subtitle: _prependPrefix(contact.residencePhone),
                     isMobile: false),
-              Divider(),
+              const Divider(),
               if (contact.email != null &&
                   contact.email!.isNotEmpty &&
                   contact.email != "NA")
@@ -115,7 +115,7 @@ NIT Rourkela
                   contact.personalEmail != "NA")
                 EmailTile(
                     title: "Personal Email", subtitle: contact.personalEmail),
-              Divider(),
+              const Divider(),
               if (contact.roomNo != null &&
                   contact.roomNo!.isNotEmpty &&
                   contact.roomNo != "NA")

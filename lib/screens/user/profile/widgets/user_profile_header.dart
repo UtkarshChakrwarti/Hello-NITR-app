@@ -8,7 +8,7 @@ import 'package:hello_nitr/models/user.dart';
 class UserProfileHeader extends StatelessWidget {
   final User user;
 
-  UserProfileHeader(this.user);
+  const UserProfileHeader(this.user, {super.key});
 
 
   @override
@@ -23,7 +23,7 @@ class UserProfileHeader extends StatelessWidget {
 
     bool isImageValid = user.photo != null && UtilityFunctions().isValidBase64Image(user.photo!);
 
-    return Container(
+    return SizedBox(
       height: headerHeight,
       child: ClipRect(
         child: Stack(
@@ -61,7 +61,7 @@ class UserProfileHeader extends StatelessWidget {
                     backgroundColor: Colors.white,
                     child: !isImageValid
                         ? Text(
-                            "${user.firstName![0]}",
+                            user.firstName![0],
                             style: TextStyle(
                               color: AppColors.primaryColor,
                               fontSize: avatarRadius * 0.6,
@@ -71,10 +71,10 @@ class UserProfileHeader extends StatelessWidget {
                           )
                         : null,
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
                     fullName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -86,7 +86,7 @@ class UserProfileHeader extends StatelessWidget {
                   ),
                   Text(
                     "${user.departmentCode}",
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 13,
                       fontFamily: 'Roboto',

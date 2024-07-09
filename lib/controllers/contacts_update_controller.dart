@@ -56,7 +56,7 @@ class ContactsUpdateController {
       return await _apiService.fetchContacts();
     } catch (e) {
       _logger.severe('Error fetching contacts: $e');
-      throw e;
+      rethrow;
     }
   }
 

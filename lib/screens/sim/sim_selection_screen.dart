@@ -8,9 +8,6 @@ import 'package:hello_nitr/screens/otp/otp_verification_screen.dart';
 import 'package:hello_nitr/screens/sim/widgets/error_dialog.dart';
 import 'package:hello_nitr/screens/sim/widgets/loading_indicator.dart';
 import 'package:hello_nitr/screens/sim/widgets/no_sim_card_widget.dart';
-import 'package:hello_nitr/screens/sim/widgets/sim_card_options.dart';
-import 'package:simnumber/sim_number.dart';
-import 'package:simnumber/siminfo.dart';
 import 'package:logging/logging.dart';
 
 class SimSelectionScreen extends StatefulWidget {
@@ -22,16 +19,14 @@ class SimSelectionScreen extends StatefulWidget {
 
 class _SimSelectionScreenState extends State<SimSelectionScreen>
     with SingleTickerProviderStateMixin {
-  final SimSelectionController _simSelectionController = SimSelectionController();
+  final SimSelectionController _simSelectionController =
+      SimSelectionController();
   final Logger _logger = Logger('SimSelectionScreen');
-  SimInfo simInfo = SimInfo([]);
   String? _selectedSim;
   bool _isLoading = true;
   late AnimationController _animationController;
   late Animation<double> _animation;
   bool _isNextButtonEnabled = false;
-  bool _noSimCardAvailable = false;
-  bool _manualEntry = false;
 
   @override
   void initState() {
@@ -47,22 +42,15 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
     );
     _animationController.forward();
 
-    SimNumber.listenPhonePermission((isPermissionGranted) {
-      if (isPermissionGranted) {
-        _loadSimCards();
-      } else {
-        setState(() {
-          _isLoading = false;
-          _noSimCardAvailable = true;
-        });
-        _showErrorDialog('Permission to read SIM cards was denied.');
-      }
+    // Load the screen with manual entry as default
+    setState(() {
+      _isLoading = false;
     });
 
     _logger.info('SimSelectionScreen initialized');
   }
 
-    void _lockOrientationToPortrait() {
+  void _lockOrientationToPortrait() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
 
@@ -70,48 +58,11 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
   }
 
-
   @override
   void dispose() {
     _resetOrientation();
     _animationController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadSimCards() async {
-    try {
-      simInfo = await _simSelectionController.getAvailableSimCards();
-      _logger.info("SIM cards loaded: ${simInfo.cards}");
-      setState(() {
-        _isLoading = false;
-        _noSimCardAvailable = simInfo.cards.isEmpty ||
-            simInfo.cards.first.phoneNumber == null ||
-            simInfo.cards.first.phoneNumber!.isEmpty;
-
-        if (!_noSimCardAvailable) {
-          // Automatically select the first valid SIM card
-          SimCard firstValidSim = simInfo.cards.firstWhere(
-              (sim) => sim.phoneNumber != null && sim.phoneNumber!.length >= 10 && sim.carrierName != null && sim.carrierName!.isNotEmpty,
-              orElse: () => simInfo.cards.first);
-          _selectedSim = firstValidSim.phoneNumber;
-          _isNextButtonEnabled = true;
-        }
-      });
-    } on PlatformException catch (e) {
-      _logger.severe("Failed to get SIM data: ${e.message}", e);
-      _showErrorDialog("Failed to get SIM data: ${e.message}");
-      setState(() {
-        _isLoading = false;
-        _noSimCardAvailable = true;
-      });
-    } catch (e) {
-      _logger.severe("An unexpected error occurred: ${e.toString()}", e);
-      _showErrorDialog("An unexpected error occurred: ${e.toString()}");
-      setState(() {
-        _isLoading = false;
-        _noSimCardAvailable = true;
-      });
-    }
   }
 
   @override
@@ -130,7 +81,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Select the number verified with NITRis',
+                    'Enter the number verified with NITRis',
                     style: TextStyle(
                       fontSize: 17,
                       color: AppColors.primaryColor,
@@ -138,37 +89,16 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _manualEntry
-                      ? NoSimCardWidget(
-                          onPhoneNumberChanged: _onPhoneNumberChanged,
-                        )
-                      : (_noSimCardAvailable
-                          ? NoSimCardWidget(
-                              onPhoneNumberChanged: _onPhoneNumberChanged,
-                            )
-                          : SimCardOptions(
-                              simInfo: simInfo,
-                              selectedSim: _selectedSim,
-                              onSimSelected: (sim) {
-                                setState(() {
-                                  _selectedSim = sim.phoneNumber;
-                                  _isNextButtonEnabled = true; // Enable the next button when a SIM is selected
-                                });
-                              },
-                              onManualEntryTap: () {
-                                setState(() {
-                                  _selectedSim = null;
-                                  _isNextButtonEnabled = false; // Disable the next button
-                                  _manualEntry = true;
-                                });
-                              },
-                            )),
+                  NoSimCardWidget(
+                    onPhoneNumberChanged: _onPhoneNumberChanged,
+                  ),
                   const SizedBox(height: 20),
                   SizedBox(
                     width: 140,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: _isNextButtonEnabled ? _onNextButtonPressed : null,
+                      onPressed:
+                          _isNextButtonEnabled ? _onNextButtonPressed : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isNextButtonEnabled
                             ? AppColors.primaryColor
@@ -201,7 +131,7 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
                       ),
                     ),
                   ),
-                  if (_noSimCardAvailable || _manualEntry) const SizedBox(height: 300), // Add space only if no SIM card is available or in manual entry mode
+                  const SizedBox(height: 300), // Add space
                 ],
               ),
       ),
@@ -218,8 +148,10 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
   Future<void> _onNextButtonPressed() async {
     try {
       if (_selectedSim != null) {
-        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
-        _logger.info("Selected SIM: $_selectedSim, Current user: ${currentUser?.mobile}");
+        LoginResponse? currentUser =
+            await LocalStorageService.getLoginResponse();
+        _logger.info(
+            "Selected SIM: $_selectedSim, Current user: ${currentUser?.mobile}");
 
         if (_simSelectionController.validateSimSelection(
             _selectedSim!, currentUser?.mobile ?? "")) {
@@ -237,7 +169,9 @@ class _SimSelectionScreenState extends State<SimSelectionScreen>
         }
       }
     } catch (e) {
-      _logger.severe("An error occurred during phone number validation: ${e.toString()}", e);
+      _logger.severe(
+          "An error occurred during phone number validation: ${e.toString()}",
+          e);
       _showErrorDialog('An error occurred: ${e.toString()}');
     }
   }

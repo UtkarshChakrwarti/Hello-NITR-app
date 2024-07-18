@@ -5,16 +5,16 @@ import 'package:http/http.dart' as http;
 import 'package:hello_nitr/models/user.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:logging/logging.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class ApiService {
   final String baseUrl = AppConstants.baseUrl;
   final http.Client client = http.Client();
   final Logger _logger = Logger('ApiService');
 
+  final String currentAppVersion = AppConstants.currentAppVersion;// app's current version
+
   Future<LoginResponse> login(String userId, String password) async {
-    final Uri url =
-        Uri.parse('$baseUrl/login?userid=$userId&password=$password');
+    final Uri url = Uri.parse('$baseUrl/login?userid=$userId&password=$password');
     return await _postRequest(url);
   }
 
@@ -37,8 +37,7 @@ class ApiService {
     final response = await _sendRequest('POST', url, headers: headers);
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData =
-          jsonDecode(await response.stream.bytesToString());
+      List<dynamic> jsonData = jsonDecode(await response.stream.bytesToString());
       return jsonData.map((item) => User.fromJson(item)).toList();
     } else {
       _logger.severe('Failed to load contacts: ${response.reasonPhrase}');
@@ -48,8 +47,7 @@ class ApiService {
 
   Future<bool?> updateDeviceId(String? empCode, String udid) async {
     // Implement the updateDeviceIMEI API here
-    final Uri url =
-        Uri.parse('$baseUrl/updatelogin?userid=$empCode&deviceid=$udid');
+    final Uri url = Uri.parse('$baseUrl/updatelogin?userid=$empCode&deviceid=$udid');
     final response = await _sendRequest('POST', url);
 
     if (response.statusCode == 200) {
@@ -72,7 +70,7 @@ class ApiService {
       _logger.severe('Failed to deregister device: ${response.reasonPhrase}');
     }
   }
-
+  
   // Send OTP to the user's mobile number
   Future<void> sendOtp(String mobileNumber, String otp) async {
     //get last 10 digits of the mobile number
@@ -87,58 +85,32 @@ class ApiService {
     }
   }
 
-  Future<bool> checkForUpdate() async {
-    try {
-      // Get the current app version from the platform package info
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      String currentAppVersion = packageInfo.version;
+  // Check for app update
+  Future<bool> checkUpdate() async {
+    final Uri url = Uri.parse('$baseUrl/check_update');
+    final response = await _sendRequest('GET', url);
 
-      // Make an HTTP GET request to the Play Store URL
-      final Uri playStoreUri = Uri.parse(AppConstants.playStoreUrl);
-      final response = await http.get(playStoreUri);
-
-      // If the response status code is 200 (OK), parse the response body
-      if (response.statusCode == 200) {
-        String responseBody = response.body;
-
-        // Use a regular expression to find the current version on the Play Store page
-        RegExp versionRegExp = RegExp(r'Current Version.+?>([\d.]+)<');
-        String? playStoreVersion =
-            versionRegExp.firstMatch(responseBody)?.group(1);
-
-        // If the Play Store version is found, compare it with the current app version
-        if (playStoreVersion != null) {
-          return _isUpdateAvailable(currentAppVersion, playStoreVersion);
-        }
-      }
-    } catch (error) {
-      // Log any errors that occur during the update check
-      _logger.severe('Error checking for update');
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(await response.stream.bytesToString());
+      final serverVersion = responseData['data']['current_version'];
+      return _isUpdateAvailable(currentAppVersion, serverVersion);
+    } else {
+      _logger.severe('Failed to check update: ${response.reasonPhrase}');
+      return false;
     }
-    // Return false if an update is not available or an error occurred
-    _logger.info('No update available or connection issues');
-    return false;
   }
 
-  bool _isUpdateAvailable(String currentVersion, String playStoreVersion) {
-    // Split the version strings into parts for comparison
-    List<String> currentVersionParts = currentVersion.split('.');
-    List<String> playStoreVersionParts = playStoreVersion.split('.');
+  bool _isUpdateAvailable(String currentVersion, String serverVersion) {
+    List<int> current = currentVersion.split('.').map(int.parse).toList();
+    List<int> server = serverVersion.split('.').map(int.parse).toList();
 
-    // Compare each part of the version strings
-    for (int i = 0; i < currentVersionParts.length; i++) {
-      int currentVersionPart = int.parse(currentVersionParts[i]);
-      int playStoreVersionPart = int.parse(playStoreVersionParts[i]);
-
-      // If the Play Store version part is greater, an update is available
-      if (playStoreVersionPart > currentVersionPart) {
+    for (int i = 0; i < current.length; i++) {
+      if (server[i] > current[i]) {
         return true;
-        // If the current version part is greater, no update is available
-      } else if (playStoreVersionPart < currentVersionPart) {
+      } else if (server[i] < current[i]) {
         return false;
       }
     }
-    // If all parts are equal, no update is available
     return false;
   }
 
@@ -158,8 +130,7 @@ class ApiService {
 
   Future<LoginResponse> _postRequest(Uri url,
       {Map<String, String>? headers, dynamic body}) async {
-    final response =
-        await _sendRequest('POST', url, headers: headers, body: body);
+    final response = await _sendRequest('POST', url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(
@@ -169,6 +140,4 @@ class ApiService {
       throw Exception('Failed to login');
     }
   }
-
-
 }

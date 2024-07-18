@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
+import 'package:hello_nitr/core/services/api/remote/api_service.dart';
 import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -103,7 +104,7 @@ class NotificationService {
   Future<void> scheduleUpdateNotification() async {
     try {
       // Check for app update
-      bool isUpdateAvailable = true; // Replace with actual update check logic
+      bool isUpdateAvailable = await ApiService().checkUpdate();
 
       if (isUpdateAvailable) {
         await showNotification(

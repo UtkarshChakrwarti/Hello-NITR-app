@@ -5,11 +5,11 @@ class AppConstants {
   // Security key for encryption and OTP generation
   static const String securityKey = "wW6BOreU82Aab4V"; // Key for encryption
 
-  // API URLs (example, update with real URLs)
+  // API URLs and other constants
   static const String baseUrl = 'https://arogyakavach.nitrkl.ac.in/WebApi';
   
   static const String playStoreUrl =
-      'https://play.google.com/store/apps/details?id=com.example.hellonitr&hl=en&gl=US';
+      'https://play.google.com/store/apps/details?id=com.nitrkl.hellonitr';
 
   static const String catUrl =  
       'https://www.nitrkl.ac.in/CAT#:~:text=The%20Centre%20for%20Automation%20Technology,%2C%20and%20non-academic%20processes.';

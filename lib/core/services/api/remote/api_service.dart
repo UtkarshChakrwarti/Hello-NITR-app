@@ -11,10 +11,12 @@ class ApiService {
   final http.Client client = http.Client();
   final Logger _logger = Logger('ApiService');
 
-  final String currentAppVersion = AppConstants.currentAppVersion;// app's current version
+  final String currentAppVersion =
+      AppConstants.currentAppVersion; // app's current version
 
   Future<LoginResponse> login(String userId, String password) async {
-    final Uri url = Uri.parse('$baseUrl/login?userid=$userId&password=$password');
+    final Uri url =
+        Uri.parse('$baseUrl/login?userid=$userId&password=$password');
     return await _postRequest(url);
   }
 
@@ -37,7 +39,8 @@ class ApiService {
     final response = await _sendRequest('POST', url, headers: headers);
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(await response.stream.bytesToString());
+      List<dynamic> jsonData =
+          jsonDecode(await response.stream.bytesToString());
       return jsonData.map((item) => User.fromJson(item)).toList();
     } else {
       _logger.severe('Failed to load contacts: ${response.reasonPhrase}');
@@ -47,7 +50,8 @@ class ApiService {
 
   Future<bool?> updateDeviceId(String? empCode, String udid) async {
     // Implement the updateDeviceIMEI API here
-    final Uri url = Uri.parse('$baseUrl/updatelogin?userid=$empCode&deviceid=$udid');
+    final Uri url =
+        Uri.parse('$baseUrl/updatelogin?userid=$empCode&deviceid=$udid');
     final response = await _sendRequest('POST', url);
 
     if (response.statusCode == 200) {
@@ -70,7 +74,7 @@ class ApiService {
       _logger.severe('Failed to deregister device: ${response.reasonPhrase}');
     }
   }
-  
+
   // Send OTP to the user's mobile number
   Future<void> sendOtp(String mobileNumber, String otp) async {
     //get last 10 digits of the mobile number
@@ -87,13 +91,18 @@ class ApiService {
 
   // Check for app update
   Future<bool> checkUpdate() async {
-    final Uri url = Uri.parse('$baseUrl/check_update');
+    final Uri url = Uri.parse('$baseUrl/version?appid=com.nitrkl.hellonitr');
     final response = await _sendRequest('GET', url);
 
     if (response.statusCode == 200) {
-      final responseData = jsonDecode(await response.stream.bytesToString());
-      final serverVersion = responseData['data']['current_version'];
-      return _isUpdateAvailable(currentAppVersion, serverVersion);
+      final responseData = await response.stream.bytesToString();
+      final serverVersion = responseData.trim();
+      _logger.info('Server version: $serverVersion');
+      _logger.info('Current version: $currentAppVersion');
+      bool isUpdateAvailable =
+          _isUpdateAvailable(currentAppVersion, serverVersion);
+      _logger.info('Update available: $isUpdateAvailable');
+      return isUpdateAvailable;
     } else {
       _logger.severe('Failed to check update: ${response.reasonPhrase}');
       return false;
@@ -125,12 +134,16 @@ class ApiService {
     } on TimeoutException catch (_) {
       _logger.severe('Request to $url timed out.');
       throw Exception('Request timed out');
+    } catch (e) {
+      _logger.severe('Request to $url failed: $e');
+      throw Exception('Request failed');
     }
   }
 
   Future<LoginResponse> _postRequest(Uri url,
       {Map<String, String>? headers, dynamic body}) async {
-    final response = await _sendRequest('POST', url, headers: headers, body: body);
+    final response =
+        await _sendRequest('POST', url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
       return LoginResponse.fromJson(

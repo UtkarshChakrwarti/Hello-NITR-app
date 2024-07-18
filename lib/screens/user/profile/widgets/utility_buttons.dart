@@ -5,7 +5,7 @@ import 'package:hello_nitr/controllers/user_profile_controller.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/utils/dialogs_and_prompts.dart';
-import 'package:hello_nitr/screens/terms_and_conditions/terms_and_conditions_screen.dart';
+import 'package:hello_nitr/screens/privacy_policy/privacy_policy_screen.dart';
 import 'package:hello_nitr/screens/user/profile/widgets/icon_button.dart';
 import 'package:logging/logging.dart';
 
@@ -39,7 +39,7 @@ class UtilityButtons extends StatelessWidget {
                 fontSize: 11.0,
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const TermsAndConditionsScreen(),
+                    builder: (context) => const PrivacyPolicyScreen(),
                   ));
                 },
               ),

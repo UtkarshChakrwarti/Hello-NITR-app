@@ -11,6 +11,7 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final Logger _logger = Logger('NotificationService');
+
   Future<void> initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -28,7 +29,7 @@ class NotificationService {
           if (payload != null && await canLaunch(payload)) {
             await launch(payload);
           } else {
-            print('Could not launch $payload');
+            _logger.warning('Invalid notification payload: $payload');
           }
         },
       );
@@ -36,7 +37,7 @@ class NotificationService {
       // Request notification permissions
       await requestNotificationPermissions();
     } catch (e) {
-      print('Error initializing notifications: $e');
+      _logger.severe('Error initializing notifications: $e');
     }
   }
 
@@ -44,10 +45,10 @@ class NotificationService {
     try {
       PermissionStatus status = await Permission.notification.request();
       if (status != PermissionStatus.granted) {
-        print('Notification permission not granted');
+        _logger.warning('Notification permissions not granted');
       }
     } catch (e) {
-      print('Error requesting notification permissions: $e');
+      _logger.severe('Error requesting notification permissions: $e');
     }
   }
 
@@ -97,7 +98,7 @@ class NotificationService {
         payload: payload,
       );
     } catch (e) {
-      print('Error showing notification: $e');
+      _logger.severe('Error showing notification: $e');
     }
   }
 

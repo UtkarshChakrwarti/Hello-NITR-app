@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_colors.dart';
 
-class TermsAndConditionsScreen extends StatelessWidget {
+class PrivacyPolicyScreen extends StatelessWidget {
   static const double _padding = 16.0;
 
-  const TermsAndConditionsScreen({super.key});
+  const PrivacyPolicyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

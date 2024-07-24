@@ -7,7 +7,7 @@ class EncryptionFunction {
     if (password.isNotEmpty) {
       String base64Encode = base64.encode(utf8.encode(password));
       String prependedPassword = AppConstants.securityKey + base64Encode;
-      String encryptedPassword = base64.encode(utf8.encode(prependedPassword));
+      String encryptedPassword = prependedPassword;
       return encryptedPassword;
     }
     return password;

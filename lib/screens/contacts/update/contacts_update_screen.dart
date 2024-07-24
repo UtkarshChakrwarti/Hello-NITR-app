@@ -129,7 +129,7 @@ class _ContactsUpdateScreenState extends State<ContactsUpdateScreen>
                   const SizedBox(height: 20),
                   if (_isLoading)
                     LoadingWidget(
-                      header: 'It may take a few minutes to update your contacts.',
+                      header: 'This may take several minutes depending on your network speed.',
                       waitMessage: 'Please wait...',
                       progress: _progress,
                       updatedContacts: _updatedContacts,

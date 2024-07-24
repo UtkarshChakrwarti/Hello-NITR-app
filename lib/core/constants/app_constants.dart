@@ -3,10 +3,10 @@ class AppConstants {
   static const String currentAppVersion = '2.0.0';
 
   // Security key for encryption and OTP generation
-  static const String securityKey = "wW6BOreU82Aab4V"; // Key for encryption
+  static const String securityKey = "opSlTMEmocl0W9hbRv9n"; // Key for encryption
 
   // API URLs and other constants
-  static const String baseUrl = 'https://arogyakavach.nitrkl.ac.in/WebApi';
+  static const String baseUrl = 'https://arogyakavach.nitrkl.ac.in/WebApi/HelloNITR';
   
   static const String playStoreUrl =
       'https://play.google.com/store/apps/details?id=com.nitrkl.hellonitr';

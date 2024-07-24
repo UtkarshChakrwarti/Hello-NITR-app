@@ -25,7 +25,7 @@ class LoadingWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Updating Contacts',
+          'Fetching Contacts from Server',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,

@@ -79,7 +79,7 @@ class ApiService {
   Future<void> sendOtp(String mobileNumber, String otp) async {
     //get last 10 digits of the mobile number
     mobileNumber = mobileNumber.substring(mobileNumber.length - 10);
-    final Uri url = Uri.parse('$baseUrl/otp?otp=$otp&mobileno=$mobileNumber');
+    final Uri url = Uri.parse('$baseUrl/sendotp?otp=$otp&mobileno=$mobileNumber');
     final response = await _sendRequest('POST', url);
 
     if (response.statusCode == 200) {

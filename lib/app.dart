@@ -16,7 +16,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        //ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: MaterialApp(
         builder: (BuildContext context, Widget? widget) {

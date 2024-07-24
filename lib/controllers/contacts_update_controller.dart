@@ -43,7 +43,7 @@ class ContactsUpdateController {
       _statusController.add('Contacts updated successfully');
     } catch (e) {
       _logger.severe('Error updating contacts: $e');
-      _statusController.addError('An error occurred while updating contacts. Please try again.');
+      _statusController.addError('An error occurred while fetching contacts from server. Please check your network settings and try again.');
     } finally {
       await _progressController.close();
       await _statusController.close();

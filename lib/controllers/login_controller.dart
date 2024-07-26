@@ -19,18 +19,21 @@ class LoginController {
     BuildContext context,
   ) async {
     try {
-      //check if the user is a mock user
+      // Get the LoginProvider instance
+      final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+
+      // Check if the user is a mock user
       if (userId == "1000000") {
-        final loginProvider =
-            Provider.of<LoginProvider>(context, listen: false);
         loginProvider.setMockUser(true);
+        _logger.info('Mock user detected: isMockUser set to true');
+      } else {
+        loginProvider.setMockUser(false);
+        _logger.info('Regular user detected: isMockUser set to false');
       }
 
       String encryptedPassword = EncryptionFunction().encryptPassword(password);
       LoginResponse response =
           await _apiService.login(userId, encryptedPassword);
-
-      final loginProvider = Provider.of<LoginProvider>(context, listen: false);
 
       if (response.loginSuccess) {
         await LocalStorageService.saveLoginResponse(response);

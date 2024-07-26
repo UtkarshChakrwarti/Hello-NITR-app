@@ -20,7 +20,7 @@ class OtpVerificationController {
     final otp = OTP.generateTOTPCodeString(
       AppConstants.securityKey,
       DateTime.now().millisecondsSinceEpoch,
-      interval: 60,  // time interval in seconds for OTP generation
+      interval: 60, // time interval in seconds for OTP generation
       length: 6,
       algorithm: Algorithm.SHA256,
     );
@@ -31,6 +31,11 @@ class OtpVerificationController {
 
   // Sends the generated OTP to the specified mobile number.
   Future<void> sendOtp(String mobileNumber) async {
+    //check if the user is a mock user and if the value of isMockUser then do not send the OTP
+    if (_loginProvider.isMockUser) {
+      _logger.info('Use OTP 000000 for mock user');
+      return;
+    }
     try {
       generatedOtp = _generateOtp();
       await _apiService.sendOtp(mobileNumber, generatedOtp);
@@ -42,8 +47,15 @@ class OtpVerificationController {
 
   // OTP verification with expiration check.
   Future<bool> verifyOtp(String enteredOtp) async {
+    //check if the user is a mock user and if the value of isMockUser is true then return true
+    if (_loginProvider.isMockUser && enteredOtp == '000000') {
+      _logger.info('Mock user verified successfully');
+      return true;
+    }
+
     final currentTime = DateTime.now();
-    const otpValidityDuration = Duration(seconds: 600); // OTP valid for 10 minutes (600 seconds)
+    const otpValidityDuration =
+        Duration(seconds: 600); // OTP valid for 10 minutes (600 seconds)
     if (currentTime.isBefore(otpGenerationTime.add(otpValidityDuration))) {
       if (enteredOtp == generatedOtp) {
         _logger.info('OTP verified successfully');

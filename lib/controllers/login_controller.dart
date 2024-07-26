@@ -19,8 +19,16 @@ class LoginController {
     BuildContext context,
   ) async {
     try {
+      //check if the user is a mock user
+      if (userId == "1000000") {
+        final loginProvider =
+            Provider.of<LoginProvider>(context, listen: false);
+        loginProvider.setMockUser(true);
+      }
+
       String encryptedPassword = EncryptionFunction().encryptPassword(password);
-      LoginResponse response = await _apiService.login(userId, encryptedPassword);
+      LoginResponse response =
+          await _apiService.login(userId, encryptedPassword);
 
       final loginProvider = Provider.of<LoginProvider>(context, listen: false);
 
@@ -28,7 +36,8 @@ class LoginController {
         await LocalStorageService.saveLoginResponse(response);
 
         // Fetch the user details from the saved session
-        LoginResponse? currentUser = await LocalStorageService.getLoginResponse();
+        LoginResponse? currentUser =
+            await LocalStorageService.getLoginResponse();
         _logger.info(
           '''User logged in (Fetched From saved logged In info from secured storage):
              ${currentUser!.firstName} ${currentUser.lastName}''',

@@ -9,6 +9,7 @@ class LoginProvider with ChangeNotifier {
   bool isAllowedToLogin = false;
   bool invalidUserNameOrPassword = false;
   bool expiredSession = false;
+  bool isMockUser = false;
 
   Future<bool> login(
       String userId, String password, BuildContext context) async {
@@ -51,6 +52,12 @@ class LoginProvider with ChangeNotifier {
   // Method to set expiredSession
   void setExpiredSession(bool value) {
     expiredSession = value;
+    notifyListeners();
+  }
+
+  // Method to set isMockUser
+  void setMockUser(bool value) {
+    isMockUser = value;
     notifyListeners();
   }
 }

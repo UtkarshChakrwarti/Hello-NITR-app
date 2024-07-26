@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:hello_nitr/core/constants/app_constants.dart';
 import 'package:hello_nitr/core/services/api/local/local_storage_service.dart';
 import 'package:hello_nitr/core/services/api/remote/api_service.dart';
@@ -7,9 +8,9 @@ import 'package:hello_nitr/models/login.dart';
 import 'package:hello_nitr/providers/login_provider.dart';
 import 'package:logging/logging.dart';
 import 'package:otp/otp.dart';
+import 'package:provider/provider.dart';
 
 class OtpVerificationController {
-  final LoginProvider _loginProvider = LoginProvider();
   final Logger _logger = Logger('OtpVerificationController');
   final ApiService _apiService = ApiService();
   String generatedOtp = '';
@@ -30,9 +31,12 @@ class OtpVerificationController {
   }
 
   // Sends the generated OTP to the specified mobile number.
-  Future<void> sendOtp(String mobileNumber) async {
-    //check if the user is a mock user and if the value of isMockUser then do not send the OTP
-    if (_loginProvider.isMockUser) {
+  Future<void> sendOtp(String mobileNumber, BuildContext context) async {
+    // Retrieve the LoginProvider from the context
+    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+
+    // Check if the user is a mock user and if the value of isMockUser then do not send the OTP
+    if (loginProvider.isMockUser) {
       _logger.info('Use OTP 000000 for mock user');
       return;
     }
@@ -46,9 +50,12 @@ class OtpVerificationController {
   }
 
   // OTP verification with expiration check.
-  Future<bool> verifyOtp(String enteredOtp) async {
-    //check if the user is a mock user and if the value of isMockUser is true then return true
-    if (_loginProvider.isMockUser && enteredOtp == '000000') {
+  Future<bool> verifyOtp(String enteredOtp, BuildContext context) async {
+    // Retrieve the LoginProvider from the context
+    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+
+    // Check if the user is a mock user and if the value of isMockUser is true then return true
+    if (loginProvider.isMockUser && enteredOtp == '000000') {
       _logger.info('Mock user verified successfully');
       return true;
     }
@@ -71,16 +78,18 @@ class OtpVerificationController {
   }
 
   // Logs out the user and navigates to the login screen.
-  Future<void> logout(context) async {
+  Future<void> logout(BuildContext context) async {
+    final loginProvider = Provider.of<LoginProvider>(context, listen: false);
+
     try {
-      await _loginProvider.logout(context);
+      await loginProvider.logout(context);
       _logger.info('User logged out successfully');
     } catch (e) {
       _logger.severe("Logout failed: $e");
     }
   }
 
-  Future<void> updateDeviceId() async {
+  Future<void> updateDeviceId(BuildContext context) async {
     try {
       final String udid = await DeviceUtil().getDeviceID();
       LoginResponse? currentUser = await LocalStorageService.getLoginResponse();

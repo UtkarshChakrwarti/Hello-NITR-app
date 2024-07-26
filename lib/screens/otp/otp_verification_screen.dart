@@ -82,7 +82,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 
   void _sendOtp() async {
     try {
-      await _otpVerificationController.sendOtp(widget.mobileNumber);
+      await _otpVerificationController.sendOtp(widget.mobileNumber, context);
       _logger.info('OTP sent successfully on ${widget.mobileNumber}');
     } catch (e) {
       _logger.severe('Failed to fetch OTP: $e');
@@ -92,7 +92,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
 
   void _verifyOtp() async {
     try {
-      bool isSuccess = await _otpVerificationController.verifyOtp(_enteredOtp);
+      bool isSuccess =
+          await _otpVerificationController.verifyOtp(_enteredOtp, context);
       if (isSuccess) {
         setState(() {
           _showCheckButton = true;
@@ -101,7 +102,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
         _logger.info('OTP verified successfully');
         if (loginProvider.isFreshLoginAttempt == true) {
           try {
-            await _otpVerificationController.updateDeviceId();
+            await _otpVerificationController.updateDeviceId(context);
             _logger.info('Device ID updated successfully');
             setState(() {
               _verificationMessage =
@@ -125,7 +126,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen>
               'No Device Update Needed: Navigating to ContactsUpdateScreen');
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const ContactsUpdateScreen()),
+            MaterialPageRoute(
+                builder: (context) => const ContactsUpdateScreen()),
           );
         });
       } else {

@@ -16,6 +16,11 @@ class SimSelectionController {
   }
 
   bool validateSimSelection(String selectedSim, String registeredMobile) {
+    // If registered Sim is '0000000000' then allow any sim selection
+    if (registeredMobile == '0000000000') {
+      _logger.info("This is Mock User. Allowing any SIM selection No OTP Will be sent : use OTP : 000000");
+      return true;
+    }
     _logger.info(
         'Validating SIM selection: selectedSim=$selectedSim, registeredMobile=$registeredMobile');
 

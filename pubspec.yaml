@@ -5,7 +5,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 
 
-version: 2.0.0+1
+version: 2.0.1
 # Breaking, Feature, Fix, Build example: 2.0.0+1
 # The version number should follow the semantic versioning format,
 # which consists of three numbers separated by dots (major.minor.patch), 

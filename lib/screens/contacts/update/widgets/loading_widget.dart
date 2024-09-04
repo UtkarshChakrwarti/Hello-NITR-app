@@ -27,7 +27,7 @@ class LoadingWidget extends StatelessWidget {
         const Text(
           'Fetching Contacts from Server',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppColors.primaryColor,
           ),

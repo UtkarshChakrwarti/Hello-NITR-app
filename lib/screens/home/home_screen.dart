@@ -167,10 +167,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ],
         ),
-        drawer: Drawer(
-          child: UserProfileScreen(
-            currentFilter: _currentFilter,
-            onFilterSelected: _applyFilter,
+        // Increase the width of the drawer
+        drawer: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.7,  // 70% of the screen width for larger drawers
+          child: Drawer(
+            child: UserProfileScreen(
+              currentFilter: _currentFilter,
+              onFilterSelected: _applyFilter,
+            ),
           ),
         ),
         body: Column(

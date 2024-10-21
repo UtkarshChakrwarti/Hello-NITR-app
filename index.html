@@ -1,0 +1,902 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome file</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__left">
+    <div class="stackedit__toc">
+      
+<ul>
+<li>
+<ul>
+<li><a href="#hello-nitr-flutter-application-documentation-for-maintainers-and-contributors">Hello NITR Flutter Application Documentation for Maintainers and Contributors</a></li>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#project-overview">Project Overview</a></li>
+<li><a href="#project-structure">Project Structure</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
+<li><a href="#running-the-application">Running the Application</a></li>
+<li><a href="#building-the-application">Building the Application</a></li>
+<li><a href="#key-features-and-workflows">Key Features and Workflows</a></li>
+<li><a href="#data-management">Data Management</a></li>
+<li><a href="#uiux-considerations">UI/UX Considerations</a></li>
+<li><a href="#security-measures">Security Measures</a></li>
+<li><a href="#logging-and-debugging">Logging and Debugging</a></li>
+<li><a href="#customization-via-appconstants">Customization via AppConstants</a></li>
+<li><a href="#known-issues-and-limitations">Known Issues and Limitations</a></li>
+<li><a href="#branches-and-source-code">Branches and Source Code</a></li>
+<li><a href="#future-enhancements">Future Enhancements</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+  <div class="stackedit__right">
+    <div class="stackedit__html">
+      <h2 id="hello-nitr-flutter-application-documentation-for-maintainers-and-contributors">Hello NITR Flutter Application Documentation for Maintainers and Contributors</h2>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#project-overview">Project Overview</a></li>
+<li><a href="#project-structure">Project Structure</a>
+<ul>
+<li><a href="#directory-structure">Directory Structure</a></li>
+<li><a href="#key-components">Key Components</a></li>
+</ul>
+</li>
+<li><a href="#dependencies">Dependencies</a>
+<ul>
+<li><a href="#pubspecyaml-details">Pubspec.yaml Details</a></li>
+</ul>
+</li>
+<li><a href="#running-the-application">Running the Application</a>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#setup-instructions">Setup Instructions</a></li>
+</ul>
+</li>
+<li><a href="#building-the-application">Building the Application</a>
+<ul>
+<li><a href="#building-for-android">Building for Android</a></li>
+<li><a href="#building-for-ios">Building for iOS</a></li>
+</ul>
+</li>
+<li><a href="#key-features-and-workflows">Key Features and Workflows</a>
+<ul>
+<li><a href="#authentication">Authentication</a></li>
+<li><a href="#contact-management">Contact Management</a></li>
+<li><a href="#user-profile">User Profile</a></li>
+<li><a href="#sim-selection">SIM Selection</a></li>
+</ul>
+</li>
+<li><a href="#data-management">Data Management</a></li>
+<li><a href="#uiux-considerations">UI/UX Considerations</a></li>
+<li><a href="#security-measures">Security Measures</a></li>
+<li><a href="#logging-and-debugging">Logging and Debugging</a></li>
+<li><a href="#customization-via-appconstants">Customization via AppConstants</a></li>
+<li><a href="#known-issues-and-limitations">Known Issues and Limitations</a></li>
+<li><a href="#branches-and-source-code">Branches and Source Code</a></li>
+<li><a href="#future-enhancements">Future Enhancements</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ol>
+<h2 id="introduction">Introduction</h2>
+<p><strong>Hello NITR</strong> is a Flutter-based mobile application designed specifically for the <strong>National Institute of Technology Rourkela (NITR)</strong> community. The app aims to streamline communication and contact sharing among students, faculty, and staff, providing a centralized platform for official use. With features like user authentication, contact management, and profile viewing, Hello NITR serves as a comprehensive tool to enhance connectivity within the institute.</p>
+<h2 id="project-overview">Project Overview</h2>
+<ul>
+<li><strong>Name</strong>: <code>hello_nitr</code></li>
+<li><strong>Description</strong>: A contact-sharing app for NIT Rourkela official use.</li>
+<li><strong>Version</strong>: <code>2.0.1</code></li>
+<li><strong>Environment</strong>: Dart SDK <code>&gt;=3.4.0 &lt;4.0.0</code></li>
+</ul>
+<h2 id="project-structure">Project Structure</h2>
+<p>The application follows a modular <strong>Model-View-Controller (MVC)</strong> architecture, enhanced with state management using the <strong>Provider</strong> package and utility components for scalability and maintainability.</p>
+<h3 id="directory-structure">Directory Structure</h3>
+<p>Here’s a detailed look at the project’s directory structure:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">lib/
+├── controllers/
+│   ├── contacts_update_controller.dart
+│   ├── login_controller.dart
+│   ├── otp_verification_controller.dart
+│   ├── pin_creation_controller.dart
+│   ├── pin_unlock_screen_controller.dart
+│   ├── sim_selection_controller.dart
+│   ├── splash_screen_controller.dart
+│   └── user_profile_controller.dart
+├── core/
+│   ├── constants/
+│   │   ├── app_colors.dart
+│   │   └── app_constants.dart
+│   ├── services/
+│   │   ├── api/
+│   │   │   ├── local/
+│   │   │   │   └── local_storage_service.dart
+│   │   │   └── remote/
+│   │   │       └── api_service.dart
+│   │   └── notifications/
+│   │       └── notification_service.dart
+│   └── utils/
+│       ├── custom_error/
+│       │   └── custom_error.dart
+│       ├── device_id/
+│       │   └── device_util.dart
+│       ├── permissions/
+│       │   └── permission_util.dart
+│       ├── dialogs_and_prompts.dart
+│       ├── encryption_functions.dart
+│       ├── link_launcher.dart
+│       ├── navigation_util.dart
+│       └── utility_functions.dart
+├── models/
+│   ├── login_response.dart
+│   └── user.dart
+├── providers/
+│   ├── home_provider.dart
+│   └── login_provider.dart
+└── screens/
+    ├── contacts/
+    │   ├── profile/
+    │   │   ├── widgets/
+    │   │   │   ├── additional_info.dart
+    │   │   │   ├── contact_tile.dart
+    │   │   │   ├── email_tile.dart
+    │   │   │   └── profile_header.dart
+    │   │   └── contact_profile_screen.dart
+    │   └── update/
+    │       ├── widgets/
+    │       │   ├── error_dialog.dart
+    │       │   ├── loading_widget.dart
+    │       │   ├── status_message.dart
+    │       │   └── success_widget.dart
+    │       └── contacts_update_screen.dart
+    ├── home/
+    │   ├── widgets/
+    │   │   ├── avatar.dart
+    │   │   ├── contact_list.dart
+    │   │   └── expanded_section.dart
+    │   ├── department_search_screen.dart
+    │   ├── home_screen.dart
+    │   └── search_screen.dart
+    ├── login/
+    │   ├── widgets/
+    │   │   ├── exit_confirmation_dialog.dart
+    │   │   ├── footer.dart
+    │   │   ├── sign_in_button.dart
+    │   │   ├── terms_text.dart
+    │   │   ├── text_field.dart
+    │   │   └── welcome_text.dart
+    │   └── login_screen.dart
+    ├── pin/
+    │   ├── create/
+    │   │   ├── widgets/
+    │   │   │   └── pin_input_field.dart
+    │   │   └── pin_creation_screen.dart
+    │   └── verify/
+    │       ├── widgets/
+    │       │   ├── dialogs.dart
+    │       │   ├── exit_confirmation_dialog.dart
+    │       │   ├── keypad.dart
+    │       │   ├── keypad_button.dart
+    │       │   └── pin_display.dart
+    │       └── pin_unlock_screen.dart
+    ├── splash/
+    │   └── splash_screen.dart
+    └── user/
+        └── profile/
+            ├── widgets/
+            │   ├── compact_personal_details.dart
+            │   ├── filter_buttons.dart
+            │   ├── icon_button.dart
+            │   ├── section_title.dart
+            │   ├── user_profile_header.dart
+            │   └── utility_buttons.dart
+            └── user_profile_screen.dart
+</code></pre>
+<h3 id="key-components">Key Components</h3>
+<p>Let’s dive into the key components that make up the application:</p>
+<h4 id="models">Models</h4>
+<ul>
+<li><code>**LoginResponse**</code>: Represents the data received after a successful login attempt, including status codes and user information.</li>
+<li><code>**User**</code>: Defines the user model, encapsulating properties like name, email, department, and contact details.</li>
+</ul>
+<h4 id="controllers">Controllers</h4>
+<ul>
+<li><code>**LoginController**</code>: Manages user authentication and session management.</li>
+<li><code>**PinCreationController**</code>: Handles the creation and validation of user PINs for added security.</li>
+<li><code>**PinUnlockScreenController**</code>: Manages PIN verification and supports biometric authentication for app unlocking.</li>
+<li><code>**OtpVerificationController**</code>: Handles OTP generation, sending, and verification processes.</li>
+<li><code>**ContactsUpdateController**</code>: Manages the fetching and updating of contact information from the server.</li>
+<li><code>**UserProfileController**</code>: Oversees user profile data retrieval and updates.</li>
+<li><code>**SimSelectionController**</code>: Handles SIM card selection and validation, especially for OTP verification.</li>
+<li><code>**SplashScreenController**</code>: Manages the initial loading procedures and login status checks when the app starts.</li>
+</ul>
+<h4 id="core-components">Core Components</h4>
+<h5 id="constants">Constants</h5>
+<ul>
+<li>
+<p><code>**AppConstants**</code>: Stores application-wide constants such as API endpoints, database names, app version, and security keys.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class AppConstants {
+  static const String baseUrl = 'https://api.nitrkl.ac.in';
+  static const String dbName = 'hello_nitr.db';
+  static const String userTable = 'users';
+  static const String securityKey = 'your_security_key_here';
+  static const int otpTimeOutSeconds = 60;
+  // ... other constants
+}
+</code></pre>
+</li>
+<li>
+<p><code>**AppColors**</code>: Defines the app’s color scheme and theme settings.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class AppColors {
+  static const Color primaryColor = Color(0xFF0066CC);
+  static const Color accentColor = Color(0xFFFFA500);
+  // ... other colors
+}
+</code></pre>
+</li>
+</ul>
+<h5 id="services">Services</h5>
+<ul>
+<li>
+<p><code>**ApiService**</code>: Handles all remote API calls to the backend server.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class ApiService {
+  Future&lt;LoginResponse&gt; login(String username, String password) async {
+    // Implement API call here
+  }
+  // ... other API methods
+}
+</code></pre>
+</li>
+<li>
+<p><code>**LocalStorageService**</code>: Manages local data storage using SQLite and secure storage mechanisms.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class LocalStorageService {
+  Future&lt;void&gt; saveUser(User user) async {
+    // Save user data locally
+  }
+  // ... other storage methods
+}
+</code></pre>
+</li>
+<li>
+<p><code>**NotificationService**</code>: Manages local notifications and checks for app updates.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class NotificationService {
+  Future&lt;void&gt; showNotification(String title, String body) async {
+    // Display notification
+  }
+  // ... other notification methods
+}
+</code></pre>
+</li>
+</ul>
+<h5 id="utilities">Utilities</h5>
+<ul>
+<li>
+<p><code>**LinkLauncher**</code>: Provides functions to open URLs, make calls, send emails, and perform other external actions.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class LinkLauncher {
+  Future&lt;void&gt; launchURL(String url) async {
+    // Launch URL in browser
+  }
+  // ... other utility methods
+}
+</code></pre>
+</li>
+<li>
+<p><code>**UtilityFunctions**</code>: Contains helper functions for tasks like input validation and data formatting.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class UtilityFunctions {
+  static bool isValidEmail(String email) {
+    // Email validation logic
+  }
+  // ... other utility functions
+}
+</code></pre>
+</li>
+<li>
+<p><code>**DeviceUtil**</code>: Retrieves device-specific information such as device ID.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class DeviceUtil {
+  Future&lt;String&gt; getDeviceId() async {
+    // Fetch device ID
+  }
+  // ... other device utilities
+}
+</code></pre>
+</li>
+<li>
+<p><code>**DialogsAndPrompts**</code>: Offers reusable dialogs and prompts for user interactions.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class DialogsAndPrompts {
+  static Future&lt;void&gt; showLoadingDialog(BuildContext context) async {
+    // Show loading dialog
+  }
+  // ... other dialog methods
+}
+</code></pre>
+</li>
+<li>
+<p><code>**CustomError**</code>: Displays custom error screens with informative messages.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class CustomError extends StatelessWidget {
+  final String message;
+  // Constructor and build method
+}
+</code></pre>
+</li>
+<li>
+<p><code>**PermissionUtil**</code>: Handles permission requests and checks.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class PermissionUtil {
+  Future&lt;bool&gt; requestContactsPermission() async {
+    // Request permission
+  }
+  // ... other permission methods
+}
+</code></pre>
+</li>
+<li>
+<p><code>**NavigationUtil**</code>: Manages navigation logic within the app.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class NavigationUtil {
+  static void navigateToHome(BuildContext context) {
+    // Navigate to home screen
+  }
+  // ... other navigation methods
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="providers">Providers</h4>
+<ul>
+<li>
+<p><code>**HomeProvider**</code>: Manages state and data for the home screen, including contact lists and search functionality.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class HomeProvider with ChangeNotifier {
+  List&lt;Contact&gt; contacts = [];
+  // Methods to fetch and update contacts
+}
+</code></pre>
+</li>
+<li>
+<p><code>**LoginProvider**</code>: Manages authentication state and user sessions.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class LoginProvider with ChangeNotifier {
+  bool isLoggedIn = false;
+  // Methods for login and logout
+}
+</code></pre>
+</li>
+</ul>
+<h4 id="screens-views">Screens (Views)</h4>
+<ul>
+<li><strong>Home Screen</strong>: Displays a list of contacts with search and filter options.</li>
+<li><strong>Login Screen</strong>: Facilitates user authentication through credential input.</li>
+<li><strong>Contact Profile Screen</strong>: Shows detailed information about a selected contact.</li>
+<li><strong>User Profile Screen</strong>: Displays and allows editing of the logged-in user’s profile.</li>
+<li><strong>PIN Creation Screen</strong>: Guides users through creating a secure PIN.</li>
+<li><strong>PIN Verification Screen</strong>: Handles app unlocking via PIN or biometric authentication.</li>
+<li><strong>Contacts Update Screen</strong>: Manages updating contact information from the server.</li>
+<li><strong>Splash Screen</strong>: Initial loading screen that checks login status and navigates accordingly.</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<h3 id="pubspec.yaml-details">Pubspec.yaml Details</h3>
+<p>Below is the <code>pubspec.yaml</code> file, which lists all the dependencies and assets used in the project:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">name: hello_nitr
+description: "A contact sharing app for NIT Rourkela official use."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 2.0.1
+
+environment:
+  sdk: '&gt;=3.4.0 &lt;4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.6
+  url_launcher: ^6.3.0
+  flutter_local_notifications: ^17.1.2
+  permission_handler: ^11.3.1
+  provider: ^6.1.2
+  http: ^1.2.1
+  logging: ^1.2.0
+  sqflite: ^2.3.3+1
+  flutter_secure_storage: ^9.2.2
+  path: ^1.9.0
+  simnumber: ^0.0.12
+  flutter_udid: ^3.0.0
+  pinput: ^5.0.0
+  loading_animation_widget: ^1.2.1
+  local_auth: ^2.2.0
+  font_awesome_flutter: ^10.7.0
+  share_plus: ^9.0.0
+  infinite_scroll_pagination: ^4.0.0
+  image: ^4.2.0
+  flutter_cache_manager: ^3.3.2
+  cached_network_image: ^3.3.1
+  flutter_slidable: ^3.1.0
+  dropdown_search: ^5.0.6
+  dropdown_button2: ^2.3.9
+  otp: ^3.1.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  rename: ^3.0.2
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/hello_nitr.png
+    - assets/images/error/error_illustration.png
+    - assets/images/login-main-image.png
+    - assets/images/ind.png
+</code></pre>
+<h2 id="running-the-application">Running the Application</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<p>Before you begin, ensure you have met the following requirements:</p>
+<ul>
+<li><strong>Flutter SDK</strong>: Version <code>&gt;=3.4.0 &lt;4.0.0</code></li>
+<li><strong>Dart SDK</strong>: Compatible with your Flutter SDK version</li>
+<li><strong>Development IDE</strong>: Android Studio, Visual Studio Code, or any IDE with Flutter and Dart plugins</li>
+<li><strong>Platform SDKs</strong>:
+<ul>
+<li><strong>Android SDK</strong>: For Android development</li>
+<li><strong>Xcode</strong>: For iOS development (required for building on macOS)</li>
+</ul>
+</li>
+<li><strong>Connected Device or Emulator</strong>: An Android device/emulator or iOS device/simulator</li>
+</ul>
+<h3 id="setup-instructions">Setup Instructions</h3>
+<ol>
+<li>
+<p><strong>Clone the Repository</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">git clone https://github.com/yourusername/hello_nitr.git
+cd hello_nitr
+</code></pre>
+</li>
+<li>
+<p><strong>Install Dependencies</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter pub get
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the Environment</strong></p>
+<ul>
+<li>
+<p>Ensure your Flutter SDK is properly set up.</p>
+</li>
+<li>
+<p>Verify connected devices:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter devices
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Application</strong></p>
+<ul>
+<li>
+<p><strong>On Android</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter run
+</code></pre>
+</li>
+<li>
+<p><strong>On iOS</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter run
+</code></pre>
+</li>
+<li>
+<p><strong>Specify a Device</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter run -d &lt;device_id&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="building-the-application">Building the Application</h2>
+<h3 id="building-for-android">Building for Android</h3>
+<ol>
+<li>
+<p><strong>Generate a Keystore</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">keytool -genkey -v -keystore ~/hello_nitr_keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias hello_nitr
+</code></pre>
+</li>
+<li>
+<p><strong>Create</strong> <code>**key.properties**</code></p>
+<p>In the project root, create a file named <code>key.properties</code>:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">storePassword=your_store_password
+keyPassword=your_key_password
+keyAlias=hello_nitr
+storeFile=/path/to/hello_nitr_keystore.jks
+</code></pre>
+</li>
+<li>
+<p><strong>Update</strong> <code>**build.gradle**</code></p>
+<p>Configure signing configs in <code>android/app/build.gradle</code>:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    // ...
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Build the APK</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter build apk --release
+</code></pre>
+</li>
+<li>
+<p><strong>Locate the APK</strong></p>
+<p>Find your APK at:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">build/app/outputs/flutter-apk/app-release.apk
+</code></pre>
+</li>
+</ol>
+<h3 id="building-for-ios">Building for iOS</h3>
+<p><strong>Important Note</strong>: SIM card selection is not supported on iPads and some iOS devices. On iOS, the app defaults to manual phone number input for OTP verification. Please refer to the <a href="#known-issues-and-limitations">Known Issues and Limitations</a> section for more details.</p>
+<ol>
+<li>
+<p><strong>Switch to the</strong> <code>**ios-release**</code> <strong>Branch</strong></p>
+<p>The <code>ios-release</code> branch contains the necessary adjustments for iOS devices:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">git checkout ios-release
+</code></pre>
+</li>
+<li>
+<p><strong>Open the Project in Xcode</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">open ios/Runner.xcworkspace
+</code></pre>
+</li>
+<li>
+<p><strong>Configure Code Signing</strong></p>
+<ul>
+<li>Select your development team in the <strong>Signing &amp; Capabilities</strong> tab.</li>
+<li>Ensure that the bundle identifier is unique.</li>
+</ul>
+</li>
+<li>
+<p><strong>Update</strong> <code>**Info.plist**</code></p>
+<ul>
+<li>Ensure all necessary permissions are included.</li>
+<li>Add any required privacy descriptions.</li>
+</ul>
+</li>
+<li>
+<p><strong>Build the App</strong></p>
+<p>From the command line:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">flutter build ios --release
+</code></pre>
+</li>
+<li>
+<p><strong>Archive and Distribute</strong></p>
+<ul>
+<li>In Xcode, go to <strong>Product &gt; Archive</strong>.</li>
+<li>Follow the on-screen instructions to distribute your app.</li>
+</ul>
+</li>
+</ol>
+<h2 id="key-features-and-workflows">Key Features and Workflows</h2>
+<h3 id="authentication">Authentication</h3>
+<h4 id="login-process">Login Process</h4>
+<ul>
+<li>
+<p><strong>User Input</strong></p>
+<p>Users enter their credentials on the login screen:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">String username = _usernameController.text;
+String password = _passwordController.text;
+</code></pre>
+</li>
+<li>
+<p><strong>Authentication</strong></p>
+<p>The <code>LoginController</code> handles authentication:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">LoginController loginController = LoginController();
+loginController.login(username, password);
+</code></pre>
+</li>
+</ul>
+<h4 id="pin-creation-and-verification">PIN Creation and Verification</h4>
+<ul>
+<li>
+<p><strong>PIN Creation</strong></p>
+<p>After successful login:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">PinCreationController pinController = PinCreationController();
+pinController.createPin(pin);
+</code></pre>
+</li>
+<li>
+<p><strong>PIN Verification</strong></p>
+<p>On app launch:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">PinUnlockScreenController pinUnlockController = PinUnlockScreenController();
+pinUnlockController.verifyPin(enteredPin);
+</code></pre>
+</li>
+<li>
+<p><strong>Biometric Authentication</strong></p>
+<p>Optional biometric authentication using <code>local_auth</code>:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">LocalAuthentication auth = LocalAuthentication();
+bool authenticated = await auth.authenticate(
+  localizedReason: 'Please authenticate to access the app',
+  options: const AuthenticationOptions(biometricOnly: true),
+);
+</code></pre>
+</li>
+</ul>
+<h4 id="otp-verification">OTP Verification</h4>
+<ul>
+<li>
+<p><strong>OTP Generation and Verification</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">OtpVerificationController otpController = OtpVerificationController();
+otpController.sendOtp(phoneNumber);
+// After user enters OTP
+otpController.verifyOtp(enteredOtp);
+</code></pre>
+</li>
+</ul>
+<h3 id="contact-management">Contact Management</h3>
+<h4 id="fetching-contacts">Fetching Contacts</h4>
+<ul>
+<li>
+<p><strong>Update Contacts</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">ContactsUpdateController contactsController = ContactsUpdateController();
+contactsController.updateContacts();
+</code></pre>
+</li>
+</ul>
+<h4 id="displaying-contacts">Displaying Contacts</h4>
+<ul>
+<li>
+<p><strong>Using</strong> <code>**HomeProvider**</code></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">HomeProvider homeProvider = Provider.of&lt;HomeProvider&gt;(context);
+List&lt;Contact&gt; contacts = homeProvider.contacts;
+</code></pre>
+</li>
+<li>
+<p><strong>In the UI</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">ListView.builder(
+  itemCount: contacts.length,
+  itemBuilder: (context, index) {
+    return ContactTile(contact: contacts[index]);
+  },
+);
+</code></pre>
+</li>
+</ul>
+<h3 id="user-profile">User Profile</h3>
+<h4 id="retrieving-profile-data">Retrieving Profile Data</h4>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">UserProfileController userProfileController = UserProfileController();
+User user = await userProfileController.getUserProfile();
+</code></pre>
+<h4 id="updating-profile-data">Updating Profile Data</h4>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">userProfileController.updateUserProfile(updatedUser);
+</code></pre>
+<h3 id="sim-selection">SIM Selection</h3>
+<p><strong>Note</strong>: SIM card selection is not supported on iPads and some iOS devices. On iOS, users must manually input their phone number for OTP verification.</p>
+<h4 id="selecting-sim-card-android-only">Selecting SIM Card (Android Only)</h4>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">SimSelectionController simController = SimSelectionController();
+List&lt;SimCard&gt; sims = await simController.getAvailableSims();
+
+// User selects a SIM
+simController.selectSim(selectedSim);
+</code></pre>
+<h2 id="data-management">Data Management</h2>
+<h3 id="local-storage">Local Storage</h3>
+<ul>
+<li>
+<p><strong>SQLite Database</strong></p>
+<p>Used for storing user data and contacts.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">// Saving data
+await localStorageService.saveData('key', 'value');
+</code></pre>
+</li>
+<li>
+<p><strong>Flutter Secure Storage</strong></p>
+<p>For sensitive information like tokens and PINs.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">// Storing securely
+await secureStorage.write(key: 'token', value: token);
+</code></pre>
+</li>
+</ul>
+<h3 id="remote-api-calls">Remote API Calls</h3>
+<ul>
+<li>
+<p><strong>Using</strong> <code>**ApiService**</code></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">ApiService apiService = ApiService();
+var response = await apiService.fetchData(endpoint);
+</code></pre>
+</li>
+</ul>
+<h3 id="state-management">State Management</h3>
+<p>Implemented using the <strong>Provider</strong> package.</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">class SomeProvider with ChangeNotifier {
+  // State variables
+  // Methods to modify state and notify listeners
+}
+</code></pre>
+<h2 id="uiux-considerations">UI/UX Considerations</h2>
+<h3 id="responsive-design">Responsive Design</h3>
+<ul>
+<li>Utilizes Flutter’s layout widgets to adapt to different screen sizes and orientations.</li>
+</ul>
+<h3 id="consistent-theme">Consistent Theme</h3>
+<ul>
+<li>The app’s color scheme is defined in <code>AppColors</code> and applied throughout the app for a consistent look and feel.</li>
+</ul>
+<h3 id="custom-widgets">Custom Widgets</h3>
+<ul>
+<li>Reusable components like buttons, text fields, and dialogs enhance maintainability and consistency.</li>
+</ul>
+<h3 id="user-feedback">User Feedback</h3>
+<ul>
+<li>Loading indicators, success messages, and error prompts are implemented to enhance user experience.</li>
+</ul>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">// Showing a loading indicator
+showDialog(
+  context: context,
+  builder: (context) =&gt; LoadingWidget(),
+);
+</code></pre>
+<h2 id="security-measures">Security Measures</h2>
+<h3 id="authentication-1">Authentication</h3>
+<ul>
+<li>Secure login with server-side validation.</li>
+<li>Tokens are securely stored using <code>flutter_secure_storage</code>.</li>
+</ul>
+<h3 id="pin-and-biometric-lock">PIN and Biometric Lock</h3>
+<ul>
+<li>Adds an extra layer of security to prevent unauthorized access.</li>
+</ul>
+<h3 id="otp-verification-1">OTP Verification</h3>
+<ul>
+<li>Ensures that sensitive operations are performed by the authenticated user.</li>
+</ul>
+<h3 id="secure-storage">Secure Storage</h3>
+<ul>
+<li>Sensitive data is encrypted and securely stored on the device.</li>
+</ul>
+<h2 id="logging-and-debugging">Logging and Debugging</h2>
+<h3 id="logging">Logging</h3>
+<ul>
+<li>Uses the <code>logging</code> package to record app events.</li>
+</ul>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">final log = Logger('MainLogger');
+
+log.info('Application started');
+log.warning('Potential issue detected');
+log.severe('An error occurred');
+</code></pre>
+<h3 id="error-handling">Error Handling</h3>
+<ul>
+<li>Custom error screens and messages inform the user about issues.</li>
+</ul>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">try {
+  // Code that may throw an exception
+} catch (e) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) =&gt; CustomError(message: e.toString())),
+  );
+}
+</code></pre>
+<h2 id="customization-via-appconstants">Customization via AppConstants</h2>
+<p>Developers can customize various aspects by modifying <code>AppConstants</code>:</p>
+<ul>
+<li>
+<p><strong>App Version</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String currentAppVersion = '2.0.1';
+</code></pre>
+</li>
+<li>
+<p><strong>Security Key</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String securityKey = 'your_new_security_key';
+</code></pre>
+</li>
+<li>
+<p><strong>API Configuration</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String baseUrl = 'https://api.nitrkl.ac.in';
+</code></pre>
+</li>
+<li>
+<p><strong>External Links</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String playStoreUrl = 'https://play.google.com/store/apps/details?id=com.nitrkl.hello_nitr';
+</code></pre>
+</li>
+<li>
+<p><strong>Database Configuration</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String dbName = 'hello_nitr.db';
+</code></pre>
+</li>
+<li>
+<p><strong>Session Management</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const String pinKey = 'user_pin';
+</code></pre>
+</li>
+<li>
+<p><strong>OTP Settings</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const int otpTimeOutSeconds = 60;
+</code></pre>
+</li>
+<li>
+<p><strong>Pagination</strong></p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">static const int pageSize = 20;
+</code></pre>
+</li>
+</ul>
+<p><strong>Caution</strong>: Modifying these constants can significantly affect app functionality and security. Proceed with care.</p>
+<h2 id="known-issues-and-limitations">Known Issues and Limitations</h2>
+<h3 id="sim-card-selection-on-ipads-and-ios-devices">SIM Card Selection on iPads and iOS Devices</h3>
+<ul>
+<li><strong>Issue</strong>: SIM card selection is not supported on iPads and some iOS devices due to platform limitations.</li>
+<li><strong>Impact</strong>: Users cannot automatically retrieve their phone number for OTP verification.</li>
+<li><strong>Workaround</strong>: On iOS, the app defaults to manual phone number input for OTP verification.</li>
+</ul>
+<p><strong>Important</strong>: Ensure that users on iOS devices are informed to manually enter their phone numbers during the OTP verification process.</p>
+<h2 id="branches-and-source-code">Branches and Source Code</h2>
+<h3 id="ios-release-branch"><code>ios-release</code> Branch</h3>
+<ul>
+<li><strong>Purpose</strong>: Contains adjustments specific to iOS devices to handle the limitations regarding SIM card selection.</li>
+<li><strong>Features</strong>:
+<ul>
+<li>Manual phone number input for OTP verification.</li>
+<li>Adjusted UI elements to accommodate iOS design guidelines.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Switching to the</strong> <code>**ios-release**</code> <strong>Branch</strong>:</p>
+<pre class=" language-plaintext"><code class="prism  language-plaintext">git checkout ios-release
+</code></pre>
+<p><strong>Note</strong>: The <code>ios-release</code> branch is maintained separately to ensure that iOS-specific changes do not affect the Android version of the app.</p>
+<h2 id="future-enhancements">Future Enhancements</h2>
+<h3 id="push-notifications">Push Notifications</h3>
+<ul>
+<li><strong>Objective</strong>: Integrate Firebase Cloud Messaging for real-time updates and announcements.</li>
+</ul>
+<h3 id="offline-mode">Offline Mode</h3>
+<ul>
+<li><strong>Objective</strong>: Implement caching mechanisms to allow access to contacts and profiles without an internet connection.</li>
+</ul>
+<h3 id="profile-editing">Profile Editing</h3>
+<ul>
+<li><strong>Objective</strong>: Enable users to update their profile information directly within the app.</li>
+</ul>
+<h3 id="advanced-search-and-filtering">Advanced Search and Filtering</h3>
+<ul>
+<li><strong>Objective</strong>: Enhance the search functionality with filters based on departments, roles, and other criteria.</li>
+</ul>
+<h3 id="localization">Localization</h3>
+<ul>
+<li><strong>Objective</strong>: Support multiple languages to cater to a diverse user base.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>The <strong>Hello NITR</strong> app is a robust and feature-rich platform designed to enhance communication within the NIT Rourkela community. By providing centralized access to contact information and profiles, it simplifies networking and official communication. The app’s modular architecture and adherence to best practices make it both maintainable and scalable.</p>
+<p><strong>Happy Maintaing!</strong></p>
+<p>We encourage developers and contributors to explore the codebase, suggest improvements, and collaborate to make Hello NITR even better. For any questions or contributions, please reach out to the development team or submit a pull request on GitHub.</p>
+<p><em>This documentation is intended to serve as a comprehensive guide for developers and contributors working on the Hello NITR application. By following the instructions and guidelines provided, you should be able to set up, run, and contribute to the project effectively.</em></p>
+
+    </div>
+  </div>
+</body>
+
+</html>
